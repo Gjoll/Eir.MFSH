@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSHpp", "Projects\FSHpp\FSHpp.csproj", "{C6C6015B-8992-4842-B73A-E144C1E6D250}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FSHpp.tests", "Projects\FSHpp.tests\FSHpp.tests.csproj", "{12B0A79C-15AB-4111-8EED-80D39ABA29E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{C6C6015B-8992-4842-B73A-E144C1E6D250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6C6015B-8992-4842-B73A-E144C1E6D250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6C6015B-8992-4842-B73A-E144C1E6D250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12B0A79C-15AB-4111-8EED-80D39ABA29E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B0A79C-15AB-4111-8EED-80D39ABA29E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B0A79C-15AB-4111-8EED-80D39ABA29E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B0A79C-15AB-4111-8EED-80D39ABA29E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
