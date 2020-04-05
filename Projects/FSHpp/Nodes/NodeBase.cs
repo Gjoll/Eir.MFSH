@@ -11,6 +11,7 @@ namespace FSHpp
     {
         public String NodeType;
         public String Comments;
+        public String Code;
 
         public NodeBase() : base()
         {
@@ -18,7 +19,7 @@ namespace FSHpp
 
         public virtual String ToFSH()
         {
-            return this.Comments;
+            return this.Comments + this.Code;
         }
     }
 }

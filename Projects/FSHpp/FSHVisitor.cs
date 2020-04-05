@@ -56,7 +56,7 @@ namespace FSHpp
 
         public override object VisitProfile(FSHParser.ProfileContext context)
         {
-            NodeCode n = this.info.Code<NodeCode>("alias", context);
+            NodeProfile n = this.info.Code<NodeProfile>("alias", context);
             StoreCurrent(n);
             return null;
         }

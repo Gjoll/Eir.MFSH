@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public class NodeMapping : NodeCode
+    public class NodeMapping : NodeNamed
     {
-        public String Name;
+        public NodeMapping() { this.NodeType = "mapping"; }
     }
 }

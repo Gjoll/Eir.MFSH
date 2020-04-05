@@ -81,7 +81,7 @@ namespace FSHpp
 
         public T Code<T>(String name,
             ParserRuleContext context)
-            where T : NodeCode, new()
+            where T : NodeBase , new()
         {
             T retVal = new T();
             Int32 length = context.Start.StartIndex - this.InputIndex;

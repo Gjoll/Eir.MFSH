@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeAlias : NodeNamed
+    public class NodeProfile : NodeNamed
     {
-        public String Value;
-
-        public NodeAlias() {this.NodeType = "alias"; }
+        public NodeProfile() { this.NodeType = "profile"; }
     }
 }

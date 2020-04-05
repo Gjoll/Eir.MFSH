@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public class NodeNamed : NodeCode
+    public class NodeNamed : NodeBase
     {
         public String Name;
     }
