@@ -12,7 +12,7 @@ namespace FSHpp
 
         public override String ToFSH()
         {
-            return this.Code;
+            return base.ToFSH() + this.Code;
         }
     }
 }

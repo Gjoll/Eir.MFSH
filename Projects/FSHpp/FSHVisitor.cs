@@ -41,12 +41,61 @@ namespace FSHpp
             NodeDocument doc = this.info.Start<NodeDocument>("doc", context);
             this.PushAndVisit(doc, context);
             this.info.End("doc", context);
-            return null;
+            doc.TrailingText = this.info.CopyToEnd();
+            return doc;
         }
 
         public override object VisitAlias(FSHParser.AliasContext context)
         {
             StoreCurrent(this.info.Code("alias", context));
+            return null;
+        }
+
+        public override object VisitProfile(FSHParser.ProfileContext context)
+        {
+            StoreCurrent(this.info.Code("profile", context));
+            return null;
+        }
+
+        public override object VisitExtension(FSHParser.ExtensionContext context)
+        {
+            StoreCurrent(this.info.Code("extension", context));
+            return null;
+        }
+
+        public override object VisitInvariant(FSHParser.InvariantContext context)
+        {
+            StoreCurrent(this.info.Code("invariant", context));
+            return null;
+        }
+
+        public override object VisitInstance(FSHParser.InstanceContext context)
+        {
+            StoreCurrent(this.info.Code("instance", context));
+            return null;
+        }
+
+        public override object VisitValueSet(FSHParser.ValueSetContext context)
+        {
+            StoreCurrent(this.info.Code("valueSet", context));
+            return null;
+        }
+
+        public override object VisitCodeSystem(FSHParser.CodeSystemContext context)
+        {
+            StoreCurrent(this.info.Code("codeSystem", context));
+            return null;
+        }
+
+        public override object VisitRuleSet(FSHParser.RuleSetContext context)
+        {
+            StoreCurrent(this.info.Code("ruleSet", context));
+            return null;
+        }
+
+        public override object VisitMapping(FSHParser.MappingContext context)
+        {
+            StoreCurrent(this.info.Code("mapping", context));
             return null;
         }
     }

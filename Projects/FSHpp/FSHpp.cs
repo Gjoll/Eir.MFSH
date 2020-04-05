@@ -12,8 +12,7 @@ namespace FSHpp
 {
     public class FSHpp
     {
-        public void ProcessInput(NodeDocument d,
-            String fshText)
+        public NodeDocument ProcessInput(String fshText)
         {
             fshText = fshText.Replace("\r", "");
             FSHLexer lexer = new FSHLexer(new AntlrInputStream(fshText));
@@ -32,20 +31,14 @@ namespace FSHpp
             };
 
             FSHVisitor fsh = new FSHVisitor(info);
-            fsh.VisitDoc(parser.doc());
-            info.CopyToEnd();
-            //return info.Output.ToString();
+            return (NodeDocument) fsh.VisitDoc(parser.doc());
         }
 
         public void ProcessFile(String path)
         {
-            NodeDocument d = new NodeDocument
-            {
-                FileName = path
-            };
-
             String fshText = File.ReadAllText(path);
-            ProcessInput(d, fshText);
+            NodeDocument d = ProcessInput(fshText);
+            d.FileName = path;
         }
 
         public void ProcessDir(String path, String filter)

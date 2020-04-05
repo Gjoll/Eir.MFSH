@@ -11,6 +11,10 @@ namespace FSHpp
     {
         public String Name;
         public String Comments;
-        public abstract String ToFSH();
+
+        public virtual String ToFSH()
+        {
+            return this.Comments;
+        }
     }
 }

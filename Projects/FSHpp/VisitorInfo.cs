@@ -11,7 +11,6 @@ namespace FSHpp
 {
     public class VisitorInfo
     {
-        public StringBuilder Output = new StringBuilder();
         public String Input;
         public Int32 InputIndex = 0;
 
@@ -60,21 +59,16 @@ namespace FSHpp
             Trace.WriteLine($"        Line {CurrentLineNum()}, Index {this.InputIndex}");
         }
 
-        public void CopyToEnd()
+        public String CopyToEnd()
         {
-            CopyBytes(this.Input.Length);
+            String retVal = this.Input.Substring(this.InputIndex);
+            this.InputIndex += retVal.Length;
+            return retVal;
         }
 
         public void SkipBytes(Int32 newIndex)
         {
             this.InputIndex = newIndex;
-        }
-
-        public void CopyBytes(Int32 newIndex)
-        {
-            this.Output.Append((this.Input.Substring(this.InputIndex,
-                newIndex - this.InputIndex)));
-            SkipBytes(newIndex);
         }
 
         public NodeCode Code(String name,
@@ -85,9 +79,9 @@ namespace FSHpp
             retVal.Comments = this.Input.Substring(this.InputIndex, length);
 
             this.InputIndex = context.Start.StartIndex;
-            length = context.Stop.StopIndex - this.InputIndex;
+            length = context.Stop.StopIndex - this.InputIndex + 1;
             retVal.Code = this.Input.Substring(this.InputIndex, length);
-            this.InputIndex = context.Stop.StopIndex + 1;
+            this.InputIndex += length;
             CLog(name);
             return retVal;
         }
@@ -99,6 +93,7 @@ namespace FSHpp
             T retVal = new T();
             Int32 length = context.Start.StartIndex - this.InputIndex;
             retVal.Comments = this.Input.Substring(this.InputIndex, length);
+            this.InputIndex = context.Start.StartIndex;
             CLog(name);
             return retVal;
         }

@@ -12,10 +12,12 @@ namespace FSHpp.tests
         public void PassThroughTest()
         {
             String input = File.ReadAllText("test1.fsh");
+            input = input.Replace("\r", "");
+
             FSHpp pp = new FSHpp();
-            NodeDocument d = new NodeDocument();
-            pp.ProcessInput(d, input);
-            //Debug.Assert(String.Compare(input, output) == 0);
+            NodeDocument d = pp.ProcessInput(input);
+            String output = d.ToFSH();
+            Debug.Assert(String.Compare(input, output) == 0);
         }
     }
 }

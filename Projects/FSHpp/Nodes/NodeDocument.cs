@@ -9,5 +9,11 @@ namespace FSHpp
     public class NodeDocument : NodeContainer
     {
         public String FileName;
+        public String TrailingText;
+
+        public override string ToFSH()
+        {
+            return base.ToFSH() + this.TrailingText;
+        }
     }
 }
