@@ -51,6 +51,15 @@
     <Compile Include="Antlr\FSHVisitor.cs" />
     <Compile Include="FSHpp.cs" />
     <Compile Include="FSHVisitor.cs" />
+    <Compile Include="Nodes\NodeMapping.cs" />
+    <Compile Include="Nodes\NodeRuleSet.cs" />
+    <Compile Include="Nodes\NodeCodeSystem.cs" />
+    <Compile Include="Nodes\NodeValueSet.cs" />
+    <Compile Include="Nodes\NodeNamed.cs" />
+    <Compile Include="Nodes\NodeInstance.cs" />
+    <Compile Include="Nodes\NodeInvariant.cs" />
+    <Compile Include="Nodes\NodeExtension.cs" />
+    <Compile Include="Nodes\NodeAlias.cs" />
     <Compile Include="Nodes\NodeContainer.cs" />
     <Compile Include="Nodes\NodeDocument.cs" />
     <Compile Include="Nodes\NodeBase.cs" />

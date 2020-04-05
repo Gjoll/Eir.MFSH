@@ -9,8 +9,12 @@ namespace FSHpp
 {
     public abstract class NodeBase
     {
-        public String Name;
+        public String NodeType;
         public String Comments;
+
+        public NodeBase() : base()
+        {
+        }
 
         public virtual String ToFSH()
         {

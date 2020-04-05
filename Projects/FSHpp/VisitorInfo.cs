@@ -79,10 +79,11 @@ namespace FSHpp
             this.InputIndex = newIndex;
         }
 
-        public NodeCode Code(String name,
+        public T Code<T>(String name,
             ParserRuleContext context)
+            where T : NodeCode, new()
         {
-            NodeCode retVal = new NodeCode();
+            T retVal = new T();
             Int32 length = context.Start.StartIndex - this.InputIndex;
             retVal.Comments = this.Input.Substring(this.InputIndex, length);
 

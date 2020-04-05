@@ -10,6 +10,10 @@ namespace FSHpp
     {
         public String Code;
 
+        public NodeCode() : base()
+        {
+        }
+
         public override String ToFSH()
         {
             return base.ToFSH() + this.Code;
