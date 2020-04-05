@@ -51,6 +51,11 @@
     <Compile Include="Antlr\FSHVisitor.cs" />
     <Compile Include="FSHpp.cs" />
     <Compile Include="FSHVisitor.cs" />
+    <Compile Include="Nodes\NodeContainer.cs" />
+    <Compile Include="Nodes\NodeDocument.cs" />
+    <Compile Include="Nodes\NodeBase.cs" />
+    <Compile Include="Nodes\NodeCode.cs" />
+    <Compile Include="ParserExtensionscs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VisitorInfo.cs" />

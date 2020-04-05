@@ -5,13 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 
 namespace FSHpp
 {
     public class FSHpp
     {
-        public String ProcessInput(String fshText)
+        public void ProcessInput(NodeDocument d,
+            String fshText)
         {
             FSHLexer lexer = new FSHLexer(new AntlrInputStream(fshText));
 
@@ -31,11 +33,18 @@ namespace FSHpp
             FSHVisitor fsh = new FSHVisitor(info);
             fsh.VisitDoc(parser.doc());
             info.CopyToEnd();
-            return info.Output.ToString();
+            //return info.Output.ToString();
         }
 
         public void ProcessFile(String path)
         {
+            NodeDocument d = new NodeDocument
+            {
+                FileName = path
+            };
+
+            String fshText = File.ReadAllText(path);
+            ProcessInput(d, fshText);
         }
 
         public void ProcessDir(String path, String filter)
