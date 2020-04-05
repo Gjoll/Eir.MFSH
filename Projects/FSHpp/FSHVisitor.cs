@@ -38,7 +38,8 @@ namespace FSHpp
 
         public override object VisitDoc([NotNull] FSHParser.DocContext context)
         {
-            NodeDocument doc = this.info.Start<NodeDocument>("doc", context);
+            NodeDocument doc = new NodeDocument();
+            doc.Comments = this.info.GetComments(context);
             this.PushAndVisit(doc, context);
             this.info.End("doc", context);
             doc.TrailingText = this.info.CopyToEnd();
@@ -47,7 +48,7 @@ namespace FSHpp
 
         public override object VisitAlias(FSHParser.AliasContext context)
         {
-            NodeAlias n = this.info.Code<NodeAlias>("alias", context);
+            NodeAlias n = this.info.GetCode<NodeAlias>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE(0).GetText();
             n.Value= context.SEQUENCE(1).GetText();
@@ -56,14 +57,14 @@ namespace FSHpp
 
         public override object VisitProfile(FSHParser.ProfileContext context)
         {
-            NodeProfile n = this.info.Code<NodeProfile>("alias", context);
+            NodeProfile n = this.info.GetCode<NodeProfile>("alias", context);
             StoreCurrent(n);
             return null;
         }
 
         public override object VisitExtension(FSHParser.ExtensionContext context)
         {
-            NodeExtension n = this.info.Code<NodeExtension>("alias", context);
+            NodeExtension n = this.info.GetCode<NodeExtension>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
             return null;
@@ -71,7 +72,7 @@ namespace FSHpp
 
         public override object VisitInvariant(FSHParser.InvariantContext context)
         {
-            NodeInvariant n = this.info.Code<NodeInvariant>("alias", context);
+            NodeInvariant n = this.info.GetCode<NodeInvariant>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
             return null;
@@ -79,7 +80,7 @@ namespace FSHpp
 
         public override object VisitInstance(FSHParser.InstanceContext context)
         {
-            NodeInstance n = this.info.Code<NodeInstance>("alias", context);
+            NodeInstance n = this.info.GetCode<NodeInstance>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
             return null;
@@ -87,7 +88,7 @@ namespace FSHpp
 
         public override object VisitValueSet(FSHParser.ValueSetContext context)
         {
-            NodeValueSet n = this.info.Code<NodeValueSet>("alias", context);
+            NodeValueSet n = this.info.GetCode<NodeValueSet>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
             return null;
@@ -95,7 +96,7 @@ namespace FSHpp
 
         public override object VisitCodeSystem(FSHParser.CodeSystemContext context)
         {
-            NodeCodeSystem n = this.info.Code<NodeCodeSystem>("alias", context);
+            NodeCodeSystem n = this.info.GetCode<NodeCodeSystem>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
             return null;
@@ -103,7 +104,7 @@ namespace FSHpp
 
         public override object VisitRuleSet(FSHParser.RuleSetContext context)
         {
-            NodeRuleSet n = this.info.Code<NodeRuleSet>("alias", context);
+            NodeRuleSet n = this.info.GetCode<NodeRuleSet>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
             return null;
@@ -111,7 +112,7 @@ namespace FSHpp
 
         public override object VisitMapping(FSHParser.MappingContext context)
         {
-            NodeMapping n = this.info.Code<NodeMapping>("alias", context);
+            NodeMapping n = this.info.GetCode<NodeMapping>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
             return null;

@@ -79,32 +79,30 @@ namespace FSHpp
             this.InputIndex = newIndex;
         }
 
-        public T Code<T>(String name,
+        public T GetCode<T>(String name,
             ParserRuleContext context)
             where T : NodeBase , new()
         {
             T retVal = new T();
-            Int32 length = context.Start.StartIndex - this.InputIndex;
-            retVal.Comments = this.Input.Substring(this.InputIndex, length);
+            retVal.Comments = GetComments(context);
 
-            this.InputIndex = context.Start.StartIndex;
-            length = context.Stop.StopIndex - this.InputIndex + 1;
-            retVal.Code = this.Input.Substring(this.InputIndex, length);
-            this.InputIndex += length;
+            retVal.Code = this.Input.Substring(context.Start.StartIndex,
+                context.Stop.StopIndex - context.Start.StartIndex + 1);
+            this.InputIndex = context.Stop.StopIndex + 1;
             CLog(name);
             return retVal;
         }
 
-        public T Start<T>(String name,
-            ParserRuleContext context)
-            where T : NodeBase, new()
+        public String GetComments(ParserRuleContext context)
         {
-            T retVal = new T();
-            Int32 length = context.Start.StartIndex - this.InputIndex;
-            retVal.Comments = this.Input.Substring(this.InputIndex, length);
-            this.InputIndex = context.Start.StartIndex;
-            CLog(name);
-            return retVal;
+            String comments = "";
+            if (context.Start.StartIndex > this.InputIndex)
+            {
+                Int32 length = context.Start.StartIndex - this.InputIndex;
+                comments = this.Input.Substring(this.InputIndex, length);
+                this.InputIndex = context.Start.StartIndex;
+            }
+            return comments;
         }
 
         public void End(String name,
