@@ -15,6 +15,7 @@ namespace FSHpp
         public void ProcessInput(NodeDocument d,
             String fshText)
         {
+            fshText = fshText.Replace("\r", "");
             FSHLexer lexer = new FSHLexer(new AntlrInputStream(fshText));
 
             //lexer.RemoveErrorListeners();

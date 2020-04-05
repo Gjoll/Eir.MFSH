@@ -7,65 +7,47 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
-using FSHpp.Nodes;
+using Antlr4.Runtime.Tree;
 
 namespace FSHpp
 {
     class FSHVisitor : FSHBaseVisitor<object>
     {
+        Stack<NodeContainer> current = new Stack<NodeContainer>();
+
         private VisitorInfo info;
+
 
         public FSHVisitor(VisitorInfo info)
         {
             this.info = info;
         }
 
-        NodeCode Code(ParserRuleContext context)
+        void PushAndVisit(NodeContainer c,
+            IRuleNode context)
         {
-            NodeCode retVal = new NodeCode();
-            Int32 length = context.Start.StartIndex - this.info.InputIndex;
-            retVal.Comments = this.info.Input.Substring(this.info.InputIndex, length);
-
-            this.info.InputIndex = context.Start.StartIndex;
-            length = context.Stop.StopIndex - this.info.InputIndex;
-            retVal.Code = this.info.Input.Substring(this.info.InputIndex, length);
-            this.info.InputIndex = context.Stop.StopIndex + 1;
-            return retVal;
+            this.current.Push(c);
+            this.VisitChildren(context);
+            this.current.Pop();
         }
 
-        T Start<T>(ParserRuleContext context)
-            where T : NodeBase, new() 
+        void StoreCurrent(NodeBase b)
         {
-            T retVal = new T();
-            Int32 length = context.Start.StartIndex - this.info.InputIndex;
-            retVal.Comments = this.info.Input.Substring(this.info.InputIndex, length);
-            return retVal;
+            this.current.Peek().Nodes.Add(b);
         }
 
-        void End(ParserRuleContext context)
-        {
-            this.info.InputIndex = context.Stop.StopIndex + 1;
-        }
         public override object VisitDoc([NotNull] FSHParser.DocContext context)
         {
-            NodeDocument doc = this.Start<NodeDocument>(context);
-            this.VisitChildren(context);
-            this.End(context);
-            return doc;
-        }
-
-        public override object VisitEntity(FSHParser.EntityContext context)
-        {
-            NodeCode retVal = this.Code(context);
-            this.VisitChildren(context);
-            return retVal;
+            NodeDocument doc = this.info.Start<NodeDocument>("doc", context);
+            this.PushAndVisit(doc, context);
+            this.info.End("doc", context);
+            return null;
         }
 
         public override object VisitAlias(FSHParser.AliasContext context)
         {
-            Debugger.Break();
-            NodeCode retVal = this.Code(context);
-            return retVal;
+            StoreCurrent(this.info.Code("alias", context));
+            return null;
         }
     }
 }
