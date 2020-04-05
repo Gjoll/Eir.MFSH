@@ -51,9 +51,17 @@ namespace FSHpp
 
             String start = StartOfLine();
             String end = EndOfLine();
-            String current = this.Input[this.InputIndex].ToString();
-            if (current == "\n")
-                current = "\\n";
+            String current;
+            if (this.InputIndex == this.Input.Length)
+            {
+                current = "<eof>";
+            }
+            else
+            {
+                current = this.Input[this.InputIndex].ToString();
+                if (current == "\n")
+                    current = "\\n";
+            }
 
             Trace.WriteLine($"{name}: '{start}|{current}|{end}'");
             Trace.WriteLine($"        Line {CurrentLineNum()}, Index {this.InputIndex}");
