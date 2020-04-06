@@ -25,12 +25,7 @@ namespace FSHpp
             //parser.RemoveErrorListeners();
             //parser.AddErrorListener(new ThrowingErrorListener());
 
-            VisitorInfo info = new VisitorInfo
-            {
-                Input = fshText
-            };
-
-            FSHVisitor fsh = new FSHVisitor(info);
+            FSHVisitor fsh = new FSHVisitor(fshText);
             return (NodeDocument) fsh.VisitDoc(parser.doc());
         }
 

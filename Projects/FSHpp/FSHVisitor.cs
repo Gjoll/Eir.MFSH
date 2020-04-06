@@ -26,17 +26,19 @@ namespace FSHpp
             return retVal;
         }
 
-        public FSHVisitor(VisitorInfo info)
+        public FSHVisitor(String fshText)
         {
-            this.info = info;
+            this.info = new VisitorInfo(fshText);
         }
 
         void PushAndVisit(NodeBase c,
-            IRuleNode context)
+            ParserRuleContext context)
         {
+            this.info.PushSubString(0, context.Stop.StopIndex + 1);
             this.current.Push(c);
             this.VisitChildren(context);
             this.current.Pop();
+            this.info.PopSubString();
         }
 
         void StoreCurrent(NodeBase b)
