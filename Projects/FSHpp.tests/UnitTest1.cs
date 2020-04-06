@@ -15,6 +15,40 @@ namespace FSHpp.tests
                 PassThrough(fileName);
         }
 
+        void ShowChunk(String text, Int32 index)
+        {
+            Int32 PrevIndex(Int32 count)
+            {
+                Int32 start = index;
+                while (count-- > 0)
+                {
+                    start = text.LastIndexOf('\n', start);
+                    if (start < 0)
+                        return 0;
+                    start = start - 1;
+                }
+
+                return start + 1;
+            }
+
+            Int32 NextIndex(Int32 count)
+            {
+                Int32 next = index;
+                while (count-- > 0)
+                {
+                    next = text.IndexOf('\n', next);
+                    if (next < 0)
+                        return 0;
+                    next = next + 1;
+                }
+
+                return next - 1;
+            }
+
+            Int32 startIndex = PrevIndex(3);
+            Int32 nextIndex = NextIndex(3);
+            Trace.WriteLine(text.Substring(startIndex, nextIndex - startIndex));
+        }
 
         void PassThrough(String path)
         {
@@ -36,24 +70,11 @@ namespace FSHpp.tests
 
             if ((i < input.Length) || (i < output.Length))
             {
-                Int32 start1 = i;
-                while ((start1 > 0) && (input[start1] != '\n'))
-                    start1 -= 1;
-
-                Int32 len1 = input.IndexOf('\n', start1);
-                if (len1 < 0)
-                    len1 = input.Length;
-
-                Int32 start2 = i;
-                while ((start2 > 0) && (input[start2] != '\n'))
-                    start2 -= 1;
-
-                Int32 len2 = output.IndexOf('\n', start2);
-                if (len2 < 0)
-                    len2 = output.Length;
-
-                Trace.WriteLine(input.Substring(start1, len1 - start1));
-                Trace.WriteLine(output.Substring(start2, len2 - start2));
+                Trace.WriteLine("---------------------------");
+                ShowChunk(input, i);
+                Trace.WriteLine("---------------------------");
+                ShowChunk(output, i);
+                Trace.WriteLine("---------------------------");
             }
 
             Debug.Assert(String.Compare(input, output) == 0);

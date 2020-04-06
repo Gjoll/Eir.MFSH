@@ -16,10 +16,11 @@ namespace FSHpp
             public String Text;
             public Int32 Index = 0;
 
-            public InputBlock(String text)
+            public InputBlock(String text,
+                Int32 index)
             {
                 this.Text = text;
-                this.Index = 0;
+                this.Index = index;
             }
         }
 
@@ -28,7 +29,7 @@ namespace FSHpp
 
         public VisitorInfo(String input)
         {
-            this.inputStack.Push(new InputBlock(input));
+            this.inputStack.Push(new InputBlock(input, 0));
         }
 
         /// <summary>
@@ -38,7 +39,7 @@ namespace FSHpp
         public void PushSubString(Int32 index, Int32 length)
         {
             String subString = this.Input.Text.Substring(index, length);
-            this.inputStack.Push(new InputBlock(subString));
+            this.inputStack.Push(new InputBlock(subString, this.Input.Index));
         }
 
         public void PopSubString()
