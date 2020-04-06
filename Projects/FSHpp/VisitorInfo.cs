@@ -88,7 +88,10 @@ namespace FSHpp
 
             retVal.Code = this.Input.Substring(context.Start.StartIndex,
                 context.Stop.StopIndex - context.Start.StartIndex + 1);
-            this.InputIndex = context.Stop.StopIndex + 1;
+            Int32 stopNextIndex = context.Stop.StopIndex + 1;
+            if (this.InputIndex < stopNextIndex)
+                this.InputIndex = stopNextIndex;
+
             CLog(name);
             return retVal;
         }

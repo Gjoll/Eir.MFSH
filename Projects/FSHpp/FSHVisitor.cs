@@ -13,17 +13,25 @@ namespace FSHpp
 {
     class FSHVisitor : FSHBaseVisitor<object>
     {
-        Stack<NodeContainer> current = new Stack<NodeContainer>();
+        Stack<NodeBase> current = new Stack<NodeBase>();
+        VisitorInfo info;
 
-        private VisitorInfo info;
 
+        T GetCurrent<T>()
+            where T : class
+        {
+            T retVal = this.current.Peek() as T;
+            if (retVal == null)
+                throw new Exception($"Internal Error. Can not convert current node {this.current.Peek().GetType().FullName} to {typeof(T).FullName}");
+            return retVal;
+        }
 
         public FSHVisitor(VisitorInfo info)
         {
             this.info = info;
         }
 
-        void PushAndVisit(NodeContainer c,
+        void PushAndVisit(NodeBase c,
             IRuleNode context)
         {
             this.current.Push(c);
@@ -33,7 +41,7 @@ namespace FSHpp
 
         void StoreCurrent(NodeBase b)
         {
-            this.current.Peek().Nodes.Add(b);
+            this.GetCurrent<IContainer>().Nodes.Add(b);
         }
 
         public override object VisitDoc([NotNull] FSHParser.DocContext context)
@@ -58,7 +66,9 @@ namespace FSHpp
         public override object VisitProfile(FSHParser.ProfileContext context)
         {
             NodeProfile n = this.info.GetCode<NodeProfile>("alias", context);
+            n.Name = context.SEQUENCE().GetText();
             StoreCurrent(n);
+            this.PushAndVisit(n, context);
             return null;
         }
 
@@ -67,54 +77,87 @@ namespace FSHpp
             NodeExtension n = this.info.GetCode<NodeExtension>("alias", context);
             StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
+            this.PushAndVisit(n, context);
+            return null;
+        }
+
+        public override object VisitParent(FSHParser.ParentContext context)
+        {
+            NodeParent n = this.info.GetCode<NodeParent>("parent", context);
+            n.Name = context.SEQUENCE().GetText();
+            this.GetCurrent<IMetadata>().SdMetadata.Add(n);
+            return null;
+        }
+
+        public override object VisitId(FSHParser.IdContext context)
+        {
+            NodeId n = this.info.GetCode<NodeId>("id", context);
+            n.Name = context.SEQUENCE().GetText();
+            this.GetCurrent<IMetadata>().SdMetadata.Add(n);
+            return null;
+        }
+
+        public override object VisitTitle(FSHParser.TitleContext context)
+        {
+            NodeTitle n = this.info.GetCode<NodeTitle>("title", context);
+            n.Name = context.STRING().GetText();
+            this.GetCurrent<IMetadata>().SdMetadata.Add(n);
+            return null;
+        }
+
+        public override object VisitDescription(FSHParser.DescriptionContext context)
+        {
+            NodeDescription n = this.info.GetCode<NodeDescription>("description", context);
+            n.Description = context.GetText();
+            this.GetCurrent<IMetadata>().SdMetadata.Add(n);
             return null;
         }
 
         public override object VisitInvariant(FSHParser.InvariantContext context)
         {
             NodeInvariant n = this.info.GetCode<NodeInvariant>("alias", context);
-            StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
+            StoreCurrent(n);
             return null;
         }
 
         public override object VisitInstance(FSHParser.InstanceContext context)
         {
             NodeInstance n = this.info.GetCode<NodeInstance>("alias", context);
-            StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
+            StoreCurrent(n);
             return null;
         }
 
         public override object VisitValueSet(FSHParser.ValueSetContext context)
         {
             NodeValueSet n = this.info.GetCode<NodeValueSet>("alias", context);
-            StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
+            StoreCurrent(n);
             return null;
         }
 
         public override object VisitCodeSystem(FSHParser.CodeSystemContext context)
         {
             NodeCodeSystem n = this.info.GetCode<NodeCodeSystem>("alias", context);
-            StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
+            StoreCurrent(n);
             return null;
         }
 
         public override object VisitRuleSet(FSHParser.RuleSetContext context)
         {
             NodeRuleSet n = this.info.GetCode<NodeRuleSet>("alias", context);
-            StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
+            StoreCurrent(n);
             return null;
         }
 
         public override object VisitMapping(FSHParser.MappingContext context)
         {
             NodeMapping n = this.info.GetCode<NodeMapping>("alias", context);
-            StoreCurrent(n);
             n.Name = context.SEQUENCE().GetText();
+            StoreCurrent(n);
             return null;
         }
     }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public class NodeContainer : NodeBase
+    public class NodeContainer : NodeBase, IContainer
     {
-        public List<NodeBase> Nodes = new List<NodeBase>();
+        public List<NodeBase> Nodes { get; }  = new List<NodeBase>();
+
         public override string ToFSH()
         {
             StringBuilder sb = new StringBuilder();

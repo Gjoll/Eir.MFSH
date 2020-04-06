@@ -6,7 +6,7 @@ entity:             alias | profile | extension | invariant | instance | valueSe
 alias:              KW_ALIAS SEQUENCE EQUAL SEQUENCE;
 
 profile:            KW_PROFILE SEQUENCE sdMetadata+ sdRule*;
-extension:          KW_EXTENSION SEQUENCE sdMetadata* sdRule*;
+extension:          KW_EXTENSION SEQUENCE sdMetadata* sdRuTle*;
 sdMetadata:         parent | id | title | description | mixins;
 sdRule:             cardRule | flagRule | valueSetRule | fixedValueRule | containsRule | onlyRule | obeysRule | caretValueRule;
 

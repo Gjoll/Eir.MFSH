@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeInvariant: NodeNamed
+    class NodeInvariant: NodeBase
     {
+        public String Name;
         public NodeInvariant() { this.NodeType = "invariant"; }
     }
 }

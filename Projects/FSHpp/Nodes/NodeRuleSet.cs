@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeRuleSet : NodeNamed
+    class NodeRuleSet : NodeBase
     {
+        public String Name;
         public NodeRuleSet() { this.NodeType = "ruleSet"; }
     }
 }

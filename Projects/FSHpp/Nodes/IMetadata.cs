@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public class NodeMapping : NodeBase
+    public interface IMetadata
     {
-        public String Name;
-        public NodeMapping() { this.NodeType = "mapping"; }
+        List<NodeBase> SdMetadata { get; }
     }
 }
