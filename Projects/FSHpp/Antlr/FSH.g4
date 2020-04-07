@@ -21,7 +21,8 @@ vsMetadata:         id | title | description;
 codeSystem:         KW_CODESYSTEM SEQUENCE csMetadata* (caretValueRule | concept)*;
 csMetadata:         id | title | description;
 
-ruleSet:            KW_RULESET SEQUENCE sdRule+;
+ruleSet:            KW_RULESET SEQUENCE (sdRule | ruleSetReference)+ ; 
+ruleSetReference:   KW_RULESET SEQUENCE;
 
 mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;
 mappingMetadata:    id | source | target | description | title;

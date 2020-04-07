@@ -303,7 +303,15 @@ namespace FSHpp
             this.GetCurrent<IRule>().Rules.Add(n);
             return null;
         }
-        
+
+        public override object VisitRuleSetReference(FSHParser.RuleSetReferenceContext context)
+        {
+            NodeMappingRule n = this.info.GetCode<NodeMappingRule>("ruleSetReference", context);
+            n.Contents = context.GetText();
+            this.GetCurrent<IRule>().Rules.Add(n);
+            return null;
+        }
+
         #endregion
 
     }

@@ -192,6 +192,16 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitRuleSet([NotNull] FSHParser.RuleSetContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.ruleSetReference"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRuleSetReference([NotNull] FSHParser.RuleSetReferenceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.ruleSetReference"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRuleSetReference([NotNull] FSHParser.RuleSetReferenceContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
