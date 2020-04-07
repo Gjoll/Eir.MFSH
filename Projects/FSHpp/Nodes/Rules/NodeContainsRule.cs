@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeContainsRule : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Contents;
+        public NodeContainsRule() { this.NodeType = "containsRule"; }
     }
 }

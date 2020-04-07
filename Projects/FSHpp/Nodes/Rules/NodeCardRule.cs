@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeCardRule : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Contents;
+        public NodeCardRule() { this.NodeType = "cardRule"; }
     }
 }

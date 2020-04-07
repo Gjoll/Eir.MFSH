@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeExpression : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Expression { get; set; }
+        public NodeExpression() { this.NodeType = "expression"; }
     }
 }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeXPath : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String XPath { get; set; }
+        public NodeXPath() { this.NodeType = "xpath"; }
     }
 }

@@ -312,6 +312,16 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitMixins([NotNull] FSHParser.MixinsContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.mixin"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMixin([NotNull] FSHParser.MixinContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.mixin"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMixin([NotNull] FSHParser.MixinContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.source"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

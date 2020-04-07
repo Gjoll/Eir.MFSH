@@ -6,7 +6,7 @@ entity:             alias | profile | extension | invariant | instance | valueSe
 alias:              KW_ALIAS SEQUENCE EQUAL SEQUENCE;
 
 profile:            KW_PROFILE SEQUENCE sdMetadata+ sdRule*;
-extension:          KW_EXTENSION SEQUENCE sdMetadata* sdRuTle*;
+extension:          KW_EXTENSION SEQUENCE sdMetadata* sdRule*;
 sdMetadata:         parent | id | title | description | mixins;
 sdRule:             cardRule | flagRule | valueSetRule | fixedValueRule | containsRule | onlyRule | obeysRule | caretValueRule;
 
@@ -36,7 +36,8 @@ xpath:              KW_XPATH STRING;
 severity:           KW_SEVERITY CODE;
 instanceOf:         KW_INSTANCEOF SEQUENCE;
 usage:              KW_USAGE CODE;
-mixins:             KW_MIXINS (SEQUENCE | COMMA_DELIMITED_SEQUENCES);
+mixins:             KW_MIXINS mixin (COMMA mixin)*;
+mixin:              KW_MIXINS SEQUENCE;
 source:             KW_SOURCE SEQUENCE;
 target:             KW_TARGET STRING;
 

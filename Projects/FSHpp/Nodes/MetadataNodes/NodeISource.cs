@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeSource : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Source { get; set; }
+        public NodeSource() { this.NodeType = "source"; }
     }
 }

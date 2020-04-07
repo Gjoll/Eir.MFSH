@@ -372,6 +372,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMixins([NotNull] FSHParser.MixinsContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.mixin"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMixin([NotNull] FSHParser.MixinContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.mixin"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMixin([NotNull] FSHParser.MixinContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.source"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

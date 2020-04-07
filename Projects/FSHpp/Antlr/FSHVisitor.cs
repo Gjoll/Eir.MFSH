@@ -201,6 +201,12 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMixins([NotNull] FSHParser.MixinsContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.mixin"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMixin([NotNull] FSHParser.MixinContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.source"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

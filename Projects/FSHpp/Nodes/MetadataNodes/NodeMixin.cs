@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeMixin : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Name;
+        public NodeMixin() { this.NodeType = "mixin"; }
     }
 }

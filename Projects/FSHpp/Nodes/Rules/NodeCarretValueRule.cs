@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeCaretValueRule : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Contents;
+        public NodeCaretValueRule() { this.NodeType = "caretValue"; }
     }
 }

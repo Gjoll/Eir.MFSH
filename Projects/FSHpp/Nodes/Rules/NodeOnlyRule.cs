@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeOnlyRule : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Contents;
+        public NodeOnlyRule() { this.NodeType = "only"; }
     }
 }

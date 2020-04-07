@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    public interface IRule
     {
-        List<NodeBase> Metadata { get; }
+        List<NodeBase> Rules{ get; }
     }
 }

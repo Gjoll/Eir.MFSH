@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public interface IMetadata
+    class NodeSeverity : NodeBase
     {
-        List<NodeBase> Metadata { get; }
+        public String Severity { get; set; }
+        public NodeSeverity() { this.NodeType = "severity"; }
     }
 }
