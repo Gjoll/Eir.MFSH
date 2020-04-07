@@ -7,11 +7,9 @@ using FSHpp;
 
 namespace FSHpp
 {
-    public class NodeProfile : NodeBase, IMetadata, IRule
+    public class NodeProfile : NodeBase
     {
         public String Name;
-        public List<NodeBase> Metadata { get; } = new List<NodeBase>();
-        public List<NodeBase> Rules{ get; } = new List<NodeBase>();
         public NodeProfile() { this.NodeType = "profile"; }
     }
 }

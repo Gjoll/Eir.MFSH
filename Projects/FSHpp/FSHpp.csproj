@@ -52,9 +52,6 @@
     <Compile Include="Antlr\FSHVisitor.cs" />
     <Compile Include="FSHpp.cs" />
     <Compile Include="FSHVisitor.cs" />
-    <Compile Include="Nodes\IContainer.cs" />
-    <Compile Include="Nodes\IRule.cs" />
-    <Compile Include="Nodes\IMetadata.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeITarget.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeISource.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeIUsage.cs" />
@@ -76,7 +73,6 @@
     <Compile Include="Nodes\Entities\NodeInvariant.cs" />
     <Compile Include="Nodes\Entities\NodeExtension.cs" />
     <Compile Include="Nodes\Entities\NodeAlias.cs" />
-    <Compile Include="Nodes\NodeContainer.cs" />
     <Compile Include="Nodes\NodeDocument.cs" />
     <Compile Include="Nodes\NodeBase.cs" />
     <Compile Include="Nodes\Rules\NodeCarretValueRule.cs" />

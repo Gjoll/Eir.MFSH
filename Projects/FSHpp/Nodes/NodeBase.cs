@@ -13,6 +13,8 @@ namespace FSHpp
         public String Comments;
         public String Code;
 
+        public List<NodeBase> ChildNodes { get; } = new List<NodeBase>();
+
         public NodeBase() : base()
         {
         }

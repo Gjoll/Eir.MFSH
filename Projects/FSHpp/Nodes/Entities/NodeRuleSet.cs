@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeRuleSet : NodeBase, IRule
+    class NodeRuleSet : NodeBase
     {
         public String Name;
-        public List<NodeBase> Rules { get; } = new List<NodeBase>();
         public NodeRuleSet() { this.NodeType = "ruleSet"; }
     }
 }

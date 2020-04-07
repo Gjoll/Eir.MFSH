@@ -41,9 +41,9 @@ namespace FSHpp
             this.info.PopSubString();
         }
 
-        void StoreCurrent(NodeBase b)
+        void StoreCurrent(NodeBase n)
         {
-            this.GetCurrent<IContainer>().Nodes.Add(b);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
         }
 
         public override object VisitDoc([NotNull] FSHParser.DocContext context)
@@ -137,7 +137,7 @@ namespace FSHpp
         {
             NodeParent n = this.info.GetCode<NodeParent>("parent", context);
             n.Name = context.SEQUENCE().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -145,7 +145,7 @@ namespace FSHpp
         {
             NodeId n = this.info.GetCode<NodeId>("id", context);
             n.Name = context.SEQUENCE().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -153,7 +153,7 @@ namespace FSHpp
         {
             NodeTitle n = this.info.GetCode<NodeTitle>("title", context);
             n.Name = context.STRING().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -161,7 +161,7 @@ namespace FSHpp
         {
             NodeDescription n = this.info.GetCode<NodeDescription>("description", context);
             n.Description = context.GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -169,7 +169,7 @@ namespace FSHpp
         {
             NodeMixin n = this.info.GetCode<NodeMixin>("mixin", context);
             n.Name = context.SEQUENCE().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -177,7 +177,7 @@ namespace FSHpp
         {
             NodeExpression n = this.info.GetCode<NodeExpression>("expression", context);
             n.Expression = context.STRING().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -185,7 +185,7 @@ namespace FSHpp
         {
             NodeXPath n = this.info.GetCode<NodeXPath>("xpath", context);
             n.XPath = context.STRING().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -193,7 +193,7 @@ namespace FSHpp
         {
             NodeSeverity n = this.info.GetCode<NodeSeverity>("severity", context);
             n.Severity = context.CODE().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -201,7 +201,7 @@ namespace FSHpp
         {
             NodeInstanceOf n = this.info.GetCode<NodeInstanceOf>("instanceOf", context);
             n.InstanceOf = context.SEQUENCE().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -209,7 +209,7 @@ namespace FSHpp
         {
             NodeUsage n = this.info.GetCode<NodeUsage>("usage", context);
             n.Usage = context.CODE().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -217,7 +217,7 @@ namespace FSHpp
         {
             NodeSource n = this.info.GetCode<NodeSource>("source", context);
             n.Source = context.SEQUENCE().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -226,7 +226,7 @@ namespace FSHpp
         {
             NodeTarget n = this.info.GetCode<NodeTarget>("target", context);
             n.Target = context.STRING().GetText();
-            this.GetCurrent<IMetadata>().Metadata.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
         #endregion
@@ -236,7 +236,7 @@ namespace FSHpp
         {
             NodeCardRule n = this.info.GetCode<NodeCardRule>("cardRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -244,7 +244,7 @@ namespace FSHpp
         {
             NodeFlagRule n = this.info.GetCode<NodeFlagRule>("flagRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -252,7 +252,7 @@ namespace FSHpp
         {
             NodeValueSetRule n = this.info.GetCode<NodeValueSetRule>("valueSetRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -260,7 +260,7 @@ namespace FSHpp
         {
             NodeFixedValueRule n = this.info.GetCode<NodeFixedValueRule>("fixedValueRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -268,7 +268,7 @@ namespace FSHpp
         {
             NodeContainsRule n = this.info.GetCode<NodeContainsRule>("containsRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -276,7 +276,7 @@ namespace FSHpp
         {
             NodeOnlyRule n = this.info.GetCode<NodeOnlyRule>("onlyRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -284,7 +284,7 @@ namespace FSHpp
         {
             NodeObeysRule n = this.info.GetCode<NodeObeysRule>("obeysRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -292,7 +292,7 @@ namespace FSHpp
         {
             NodeCaretValueRule n = this.info.GetCode<NodeCaretValueRule>("caretValueRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -300,7 +300,7 @@ namespace FSHpp
         {
             NodeMappingRule n = this.info.GetCode<NodeMappingRule>("mappingRule", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 
@@ -308,7 +308,7 @@ namespace FSHpp
         {
             NodeMappingRule n = this.info.GetCode<NodeMappingRule>("ruleSetReference", context);
             n.Contents = context.GetText();
-            this.GetCurrent<IRule>().Rules.Add(n);
+            this.GetCurrent<NodeBase>().ChildNodes.Add(n);
             return null;
         }
 

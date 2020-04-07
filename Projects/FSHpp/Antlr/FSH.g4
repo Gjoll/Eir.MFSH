@@ -22,7 +22,7 @@ codeSystem:         KW_CODESYSTEM SEQUENCE csMetadata* (caretValueRule | concept
 csMetadata:         id | title | description;
 
 ruleSet:            KW_RULESET SEQUENCE (sdRule | ruleSetReference)+ ; 
-ruleSetReference:   KW_RULESET SEQUENCE;
+ruleSetMixin:       KW_RULESET SEQUENCE;
 
 mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;
 mappingMetadata:    id | source | target | description | title;
@@ -38,7 +38,7 @@ severity:           KW_SEVERITY CODE;
 instanceOf:         KW_INSTANCEOF SEQUENCE;
 usage:              KW_USAGE CODE;
 mixins:             KW_MIXINS mixin (COMMA mixin)*;
-mixin:              KW_MIXINS SEQUENCE;
+mixin:              SEQUENCE;
 source:             KW_SOURCE SEQUENCE;
 target:             KW_TARGET STRING;
 

@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public class NodeDocument : NodeContainer
+    public class NodeDocument: NodeBase
     {
         public String FileName;
         public String TrailingText;
 
         public override string ToFSH()
         {
-            return base.ToFSH() + this.TrailingText;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(base.ToFSH());
+            foreach (NodeBase n in ChildNodes)
+                sb.Append(n.ToFSH());
+            sb.Append(this.TrailingText);
+            return sb.ToString();
         }
     }
 }

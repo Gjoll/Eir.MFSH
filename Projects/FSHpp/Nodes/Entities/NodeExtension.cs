@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeExtension : NodeBase, IMetadata, IRule
+    class NodeExtension : NodeBase
     {
         public String Name;
-        public List<NodeBase> Metadata { get; } = new List<NodeBase>();
-        public List<NodeBase> Rules { get; } = new List<NodeBase>();
         public NodeExtension() { this.NodeType = "extension"; }
     }
 }
