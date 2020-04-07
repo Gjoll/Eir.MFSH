@@ -36,10 +36,12 @@ namespace FSHpp
         /// Push the indicated substring of the current input as the
         /// new input block.
         /// </summary>
-        public void PushSubString(Int32 index, Int32 length)
+        public void PushSubString(Int32 start,
+            Int32 newIndex,
+            Int32 length)
         {
-            String subString = this.Input.Text.Substring(index, length);
-            this.inputStack.Push(new InputBlock(subString, this.Input.Index));
+            String subString = this.Input.Text.Substring(start, length);
+            this.inputStack.Push(new InputBlock(subString, newIndex));
         }
 
         public void PopSubString()

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeCodeSystem : NodeBase
+    class NodeCodeSystem : NodeEntity
     {
-        public String Name;
         public NodeCodeSystem() { this.NodeType = "codeSystem"; }
     }
 }

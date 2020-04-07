@@ -228,17 +228,17 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRuleSet([NotNull] FSHParser.RuleSetContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.ruleSetReference"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRuleSetReference([NotNull] FSHParser.RuleSetReferenceContext context) { }
+	public virtual void EnterRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.ruleSetReference"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRuleSetReference([NotNull] FSHParser.RuleSetReferenceContext context) { }
+	public virtual void ExitRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -419,6 +419,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTarget([NotNull] FSHParser.TargetContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSequence([NotNull] FSHParser.SequenceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSequence([NotNull] FSHParser.SequenceContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.cardRule"/>.
 	/// <para>The default implementation does nothing.</para>

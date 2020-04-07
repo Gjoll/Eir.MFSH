@@ -129,11 +129,11 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRuleSet([NotNull] FSHParser.RuleSetContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.ruleSetReference"/>.
+	/// Visit a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitRuleSetReference([NotNull] FSHParser.RuleSetReferenceContext context);
+	Result VisitRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// </summary>
@@ -224,6 +224,12 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTarget([NotNull] FSHParser.TargetContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSequence([NotNull] FSHParser.SequenceContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.cardRule"/>.
 	/// </summary>

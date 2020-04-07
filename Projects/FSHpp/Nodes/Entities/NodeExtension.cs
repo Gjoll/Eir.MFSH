@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeExtension : NodeBase
+    class NodeExtension : NodeEntity
     {
-        public String Name;
         public NodeExtension() { this.NodeType = "extension"; }
     }
 }

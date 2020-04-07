@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeValueSet : NodeBase
+    class NodeValueSet : NodeEntity
     {
-        public String Name;
         public NodeValueSet() { this.NodeType = "valueSet"; }
     }
 }

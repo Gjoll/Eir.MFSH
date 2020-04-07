@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeAlias : NodeBase
+    class NodeAlias : NodeEntity
     {
-        public String Name;
-        public String Value;
-
         public NodeAlias() {this.NodeType = "alias"; }
+        public String Value;
     }
 }

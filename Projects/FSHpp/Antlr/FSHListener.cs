@@ -192,15 +192,15 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitRuleSet([NotNull] FSHParser.RuleSetContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.ruleSetReference"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterRuleSetReference([NotNull] FSHParser.RuleSetReferenceContext context);
+	void EnterRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.ruleSetReference"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitRuleSetReference([NotNull] FSHParser.RuleSetReferenceContext context);
+	void ExitRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// </summary>
@@ -351,6 +351,16 @@ public interface IFSHListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitTarget([NotNull] FSHParser.TargetContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSequence([NotNull] FSHParser.SequenceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSequence([NotNull] FSHParser.SequenceContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.cardRule"/>.
 	/// </summary>

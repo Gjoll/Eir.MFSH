@@ -52,6 +52,7 @@
     <Compile Include="Antlr\FSHVisitor.cs" />
     <Compile Include="FSHpp.cs" />
     <Compile Include="FSHVisitor.cs" />
+    <Compile Include="Nodes\Entities\NodeEntity.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeITarget.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeISource.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeIUsage.cs" />

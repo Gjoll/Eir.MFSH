@@ -3,28 +3,28 @@ grammar FSH;
 doc:                entity* EOF;
 entity:             alias | profile | extension | invariant | instance | valueSet | codeSystem | ruleSet | mapping;
 
-alias:              KW_ALIAS SEQUENCE EQUAL SEQUENCE;
+alias:              KW_ALIAS sequence EQUAL sequence;
 
-profile:            KW_PROFILE SEQUENCE sdMetadata+ sdRule*;
-extension:          KW_EXTENSION SEQUENCE sdMetadata* sdRule*;
+profile:            KW_PROFILE sequence sdMetadata+ sdRule*;
+extension:          KW_EXTENSION sequence sdMetadata* sdRule*;
 sdMetadata:         parent | id | title | description | mixins;
 sdRule:             cardRule | flagRule | valueSetRule | fixedValueRule | containsRule | onlyRule | obeysRule | caretValueRule;
 
-instance:           KW_INSTANCE SEQUENCE instanceMetadata* fixedValueRule*;
+instance:           KW_INSTANCE sequence instanceMetadata* fixedValueRule*;
 instanceMetadata:   instanceOf | title | description | usage | mixins;
 
-invariant:          KW_INVARIANT SEQUENCE invariantMetadata+;
+invariant:          KW_INVARIANT sequence invariantMetadata+;
 invariantMetadata:  description | expression | xpath | severity;
 
-valueSet:           KW_VALUESET SEQUENCE vsMetadata* (caretValueRule | vsComponent)*;
+valueSet:           KW_VALUESET sequence vsMetadata* (caretValueRule | vsComponent)*;
 vsMetadata:         id | title | description;
-codeSystem:         KW_CODESYSTEM SEQUENCE csMetadata* (caretValueRule | concept)*;
+codeSystem:         KW_CODESYSTEM sequence csMetadata* (caretValueRule | concept)*;
 csMetadata:         id | title | description;
 
-ruleSet:            KW_RULESET SEQUENCE (sdRule | ruleSetReference)+ ; 
-ruleSetMixin:       KW_RULESET SEQUENCE;
+ruleSet:            KW_RULESET sequence (sdRule | ruleSetMixin)+ ; 
+ruleSetMixin:       KW_RULESET sequence;
 
-mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;
+mapping:            KW_MAPPING sequence mappingMetadata* mappingRule*;
 mappingMetadata:    id | source | target | description | title;
 
 // METADATA FIELDS
@@ -41,7 +41,7 @@ mixins:             KW_MIXINS mixin (COMMA mixin)*;
 mixin:              SEQUENCE;
 source:             KW_SOURCE SEQUENCE;
 target:             KW_TARGET STRING;
-
+sequence:           SEQUENCE ;
 
 // RULES
 cardRule:           STAR path CARD flag*;
