@@ -72,6 +72,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAlias([NotNull] FSHParser.AliasContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.aliasName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAliasName([NotNull] FSHParser.AliasNameContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.aliasName"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAliasName([NotNull] FSHParser.AliasNameContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.profile"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -839,6 +851,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTargetType([NotNull] FSHParser.TargetTypeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.equal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEqual([NotNull] FSHParser.EqualContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.equal"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEqual([NotNull] FSHParser.EqualContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

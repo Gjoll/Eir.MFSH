@@ -8,17 +8,11 @@ namespace FSHpp
 {
     public class NodeDocument: NodeBase
     {
+        /// <summary>
+        /// Not read from input text.
+        /// </summary>
         public String FileName;
-        public String TrailingText;
 
-        public override string ToFSH()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(base.ToFSH());
-            foreach (NodeBase n in ChildNodes)
-                sb.Append(n.ToFSH());
-            sb.Append(this.TrailingText);
-            return sb.ToString();
-        }
+        public NodeDocument() => this.NodeType = "document";
     }
 }

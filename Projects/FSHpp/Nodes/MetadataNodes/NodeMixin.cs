@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeMixin : NodeBase
     {
-        public String Name;
         public NodeMixin() { this.NodeType = "mixin"; }
+        public override string ToString() => $"Mixin'";
     }
 }

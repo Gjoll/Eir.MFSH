@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeObeysRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"ObeysRule";
         public NodeObeysRule() { this.NodeType = "obeys"; }
     }
 }

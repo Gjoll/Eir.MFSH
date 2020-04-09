@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeCardRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"CardRule";
         public NodeCardRule() { this.NodeType = "cardRule"; }
     }
 }

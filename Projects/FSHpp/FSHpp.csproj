@@ -50,8 +50,8 @@
     <Compile Include="Antlr\FSHListener.cs" />
     <Compile Include="Antlr\FSHParser.cs" />
     <Compile Include="Antlr\FSHVisitor.cs" />
+    <Compile Include="FSHListener.cs" />
     <Compile Include="FSHpp.cs" />
-    <Compile Include="FSHVisitor.cs" />
     <Compile Include="Nodes\Entities\NodeEntity.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeITarget.cs" />
     <Compile Include="Nodes\MetadataNodes\NodeISource.cs" />
@@ -74,8 +74,13 @@
     <Compile Include="Nodes\Entities\NodeInvariant.cs" />
     <Compile Include="Nodes\Entities\NodeExtension.cs" />
     <Compile Include="Nodes\Entities\NodeAlias.cs" />
+    <Compile Include="Nodes\NodeSequence.cs" />
+    <Compile Include="Nodes\NodeEntityName.cs" />
+    <Compile Include="Nodes\NodeToken.cs" />
+    <Compile Include="Nodes\NodeComment.cs" />
     <Compile Include="Nodes\NodeDocument.cs" />
     <Compile Include="Nodes\NodeBase.cs" />
+    <Compile Include="Nodes\Rules\NodeRuleBase.cs" />
     <Compile Include="Nodes\Rules\NodeCarretValueRule.cs" />
     <Compile Include="Nodes\Rules\NodeMappingRule.cs" />
     <Compile Include="Nodes\Rules\NodeObeysRule.cs" />
@@ -87,9 +92,9 @@
     <Compile Include="Nodes\Rules\NodeCardRule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VisitorInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Antlr\FSH .txt" />
     <None Include="Antlr\FSH.g4" />
     <None Include="App.config" />
   </ItemGroup>

@@ -1,11 +1,5 @@
 grammar FSH;
 
-doc:                entity* EOF;
-entity:             alias | profile | extension | invariant | instance | valueSet | codeSystem | ruleSet | mapping;
-
-alias:              aliasName sequence equal sequence;
-aliasName:          KW_ALIAS;
-
 profile:            KW_PROFILE sequence sdMetadata+ sdRule*;
 extension:          KW_EXTENSION sequence sdMetadata* sdRule*;
 sdMetadata:         parent | id | title | description | mixins;
@@ -84,9 +78,6 @@ reference:          REFERENCE STRING?;
 ratioPart:          NUMBER | quantity;
 bool:               KW_TRUE | KW_FALSE;
 targetType:         SEQUENCE | reference;
-
-equal:              EQUAL;
-
 
 // KEYWORDS
 KW_ALIAS:           'Alias' WS* ':';

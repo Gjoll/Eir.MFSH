@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeContainsRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"ContainsRule";
         public NodeContainsRule() { this.NodeType = "containsRule"; }
     }
 }

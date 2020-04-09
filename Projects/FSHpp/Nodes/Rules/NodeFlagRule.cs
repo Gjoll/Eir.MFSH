@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeFlagRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"FlagRule";
         public NodeFlagRule() { this.NodeType = "flagRule"; }
     }
 }

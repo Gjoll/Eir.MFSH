@@ -51,6 +51,12 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAlias([NotNull] FSHParser.AliasContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.aliasName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAliasName([NotNull] FSHParser.AliasNameContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.profile"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -434,5 +440,11 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTargetType([NotNull] FSHParser.TargetTypeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.equal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEqual([NotNull] FSHParser.EqualContext context);
 }
 } // namespace FSHpp

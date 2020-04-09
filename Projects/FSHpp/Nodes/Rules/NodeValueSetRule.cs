@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeValueSetRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"ValueSetRule";
         public NodeValueSetRule() { this.NodeType = "valueSet"; }
     }
 }

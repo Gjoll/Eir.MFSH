@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeCaretValueRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"CaretValueRule";
         public NodeCaretValueRule() { this.NodeType = "caretValue"; }
     }
 }

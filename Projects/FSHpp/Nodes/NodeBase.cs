@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Permissions;
 using System.Text;
@@ -7,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    public abstract class NodeBase
+
+    [DebuggerDisplay("{ToFSH(false).ToString()}")]
+    public class NodeBase
     {
         public String NodeType;
-        public String Comments;
-        public String Code;
 
         public List<NodeBase> ChildNodes { get; } = new List<NodeBase>();
 
@@ -21,7 +22,10 @@ namespace FSHpp
 
         public virtual String ToFSH()
         {
-            return this.Comments + this.Code;
+            StringBuilder sb = new StringBuilder();
+            foreach (NodeBase child in ChildNodes)
+                sb.Append(child.ToFSH());
+            return sb.ToString();
         }
     }
 }

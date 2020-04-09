@@ -14,7 +14,6 @@ namespace FSHpp
         public override string ToFSH()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(this.Comments);
             sb.Append($"Profile: {this.Name}");
             foreach (NodeBase n in ChildNodes)
                 sb.Append(n.ToFSH());

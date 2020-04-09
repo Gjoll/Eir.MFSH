@@ -25,8 +25,13 @@ namespace FSHpp
             //parser.RemoveErrorListeners();
             //parser.AddErrorListener(new ThrowingErrorListener());
 
-            FSHVisitor fsh = new FSHVisitor(fshText);
-            return (NodeDocument) fsh.VisitDoc(parser.doc());
+            //FSHVisitor fsh = new FSHVisitor(fshText);
+            //return (NodeDocument) fsh.VisitDoc(parser.doc());
+
+            ParseTreeWalker walker = new ParseTreeWalker();
+            FSHListener listener = new FSHListener(fshText);
+            walker.Walk(listener, parser.doc());
+            return listener.Doc;
         }
 
         public void ProcessFile(String path)

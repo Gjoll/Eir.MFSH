@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeMappingRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"MappingRule";
         public NodeMappingRule() { this.NodeType = "mapping"; }
     }
 }

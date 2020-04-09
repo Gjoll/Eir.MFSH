@@ -8,7 +8,7 @@ namespace FSHpp
 {
     class NodeFixedValueRule : NodeBase
     {
-        public String Contents;
+        public override string ToString() => $"FixedValueRule";
         public NodeFixedValueRule() { this.NodeType = "fixedValue"; }
     }
 }

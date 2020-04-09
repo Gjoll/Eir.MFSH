@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    class NodeOnlyRule : NodeBase
+    class NodeRuleBase : NodeBase
     {
-        public override string ToString() => $"OnlyRule";
-        public NodeOnlyRule() { this.NodeType = "only"; }
+        public override string ToFSH()
+        {
+            return base.ToFSH();
+        }
     }
 }

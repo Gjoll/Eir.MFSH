@@ -62,6 +62,16 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitAlias([NotNull] FSHParser.AliasContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.aliasName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAliasName([NotNull] FSHParser.AliasNameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.aliasName"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAliasName([NotNull] FSHParser.AliasNameContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.profile"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -701,5 +711,15 @@ public interface IFSHListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitTargetType([NotNull] FSHParser.TargetTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.equal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEqual([NotNull] FSHParser.EqualContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.equal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEqual([NotNull] FSHParser.EqualContext context);
 }
 } // namespace FSHpp
