@@ -8,24 +8,16 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-
-    [DebuggerDisplay("{ToFSH(false).ToString()}")]
-    public class NodeBase
+    public abstract class NodeBase
     {
-        public String NodeType;
+        public String NodeType { get; set; }
 
-        public List<NodeBase> ChildNodes { get; } = new List<NodeBase>();
-
-        public NodeBase() : base()
+        public NodeBase(String nodeType)
         {
+            this.NodeType = nodeType;
         }
 
-        public virtual String ToFSH()
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (NodeBase child in ChildNodes)
-                sb.Append(child.ToFSH());
-            return sb.ToString();
-        }
+        public abstract String ToFSH();
+        public abstract String Dump(String margin);
     }
 }

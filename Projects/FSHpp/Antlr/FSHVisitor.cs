@@ -51,12 +51,6 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAlias([NotNull] FSHParser.AliasContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.aliasName"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAliasName([NotNull] FSHParser.AliasNameContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.profile"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -135,12 +129,6 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRuleSet([NotNull] FSHParser.RuleSetContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -213,12 +201,6 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMixins([NotNull] FSHParser.MixinsContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.mixin"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMixin([NotNull] FSHParser.MixinContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.source"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -230,12 +212,6 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTarget([NotNull] FSHParser.TargetContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSequence([NotNull] FSHParser.SequenceContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.cardRule"/>.
 	/// </summary>
@@ -290,6 +266,12 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMappingRule([NotNull] FSHParser.MappingRuleContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.macroRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMacroRule([NotNull] FSHParser.MacroRuleContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.vsComponent"/>.
 	/// </summary>
@@ -440,11 +422,5 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTargetType([NotNull] FSHParser.TargetTypeContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.equal"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitEqual([NotNull] FSHParser.EqualContext context);
 }
 } // namespace FSHpp

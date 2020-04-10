@@ -20,6 +20,9 @@ namespace FSHpp.tests
             Int32 PrevIndex(Int32 count)
             {
                 Int32 start = index;
+                if (start >= text.Length)
+                    start = text.Length - 1;
+
                 while (count-- > 0)
                 {
                     start = text.LastIndexOf('\n', start);
@@ -34,11 +37,14 @@ namespace FSHpp.tests
             Int32 NextIndex(Int32 count)
             {
                 Int32 next = index;
+                if (next >= text.Length)
+                    next = text.Length - 1;
+
                 while (count-- > 0)
                 {
                     next = text.IndexOf('\n', next);
                     if (next < 0)
-                        return 0;
+                        return text.Length;
                     next = next + 1;
                 }
 
@@ -56,7 +62,7 @@ namespace FSHpp.tests
             input = input.Replace("\r", "");
 
             FSHpp pp = new FSHpp();
-            NodeDocument d = pp.ProcessInput(input);
+            NodeRule d = pp.Parse(input);
             String output = d.ToFSH();
 
             Int32 i = 0;
@@ -67,6 +73,7 @@ namespace FSHpp.tests
                 i += 1;
             }
 
+            Trace.WriteLine(d.Dump("*  "));
 
             if ((i < input.Length) || (i < output.Length))
             {

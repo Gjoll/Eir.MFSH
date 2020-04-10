@@ -3,29 +3,27 @@ grammar FSH;
 doc:                entity* EOF;
 entity:             alias | profile | extension | invariant | instance | valueSet | codeSystem | ruleSet | mapping;
 
-alias:              aliasName sequence equal sequence;
-aliasName:          KW_ALIAS;
+alias:              KW_ALIAS SEQUENCE EQUAL SEQUENCE;
 
-profile:            KW_PROFILE sequence sdMetadata+ sdRule*;
-extension:          KW_EXTENSION sequence sdMetadata* sdRule*;
+profile:            KW_PROFILE SEQUENCE sdMetadata+ sdRule*;
+extension:          KW_EXTENSION SEQUENCE sdMetadata* sdRule*;
 sdMetadata:         parent | id | title | description | mixins;
-sdRule:             cardRule | flagRule | valueSetRule | fixedValueRule | containsRule | onlyRule | obeysRule | caretValueRule;
+sdRule:             cardRule | flagRule | valueSetRule | fixedValueRule | containsRule | onlyRule | obeysRule | caretValueRule | macroRule;
 
-instance:           KW_INSTANCE sequence instanceMetadata* fixedValueRule*;
+instance:           KW_INSTANCE SEQUENCE instanceMetadata* fixedValueRule*;
 instanceMetadata:   instanceOf | title | description | usage | mixins;
 
-invariant:          KW_INVARIANT sequence invariantMetadata+;
+invariant:          KW_INVARIANT SEQUENCE invariantMetadata+;
 invariantMetadata:  description | expression | xpath | severity;
 
-valueSet:           KW_VALUESET sequence vsMetadata* (caretValueRule | vsComponent)*;
+valueSet:           KW_VALUESET SEQUENCE vsMetadata* (caretValueRule | vsComponent)*;
 vsMetadata:         id | title | description;
-codeSystem:         KW_CODESYSTEM sequence csMetadata* (caretValueRule | concept)*;
+codeSystem:         KW_CODESYSTEM SEQUENCE csMetadata* (caretValueRule | concept)*;
 csMetadata:         id | title | description;
 
-ruleSet:            KW_RULESET sequence (sdRule | ruleSetMixin)+ ; 
-ruleSetMixin:       KW_RULESET sequence;
+ruleSet:            KW_RULESET SEQUENCE sdRule+;
 
-mapping:            KW_MAPPING sequence mappingMetadata* mappingRule*;
+mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;
 mappingMetadata:    id | source | target | description | title;
 
 // METADATA FIELDS
@@ -38,22 +36,22 @@ xpath:              KW_XPATH STRING;
 severity:           KW_SEVERITY CODE;
 instanceOf:         KW_INSTANCEOF SEQUENCE;
 usage:              KW_USAGE CODE;
-mixins:             KW_MIXINS mixin (COMMA mixin)*;
-mixin:              SEQUENCE;
+mixins:             KW_MIXINS (SEQUENCE | COMMA_DELIMITED_SEQUENCES);
 source:             KW_SOURCE SEQUENCE;
 target:             KW_TARGET STRING;
-sequence:           SEQUENCE ;
+
 
 // RULES
 cardRule:           STAR path CARD flag*;
 flagRule:           STAR (path | paths) flag+;
 valueSetRule:       STAR path KW_UNITS? KW_FROM SEQUENCE strength?;
-fixedValueRule:     STAR path KW_UNITS? equal value KW_EXACTLY?;
+fixedValueRule:     STAR path KW_UNITS? EQUAL value KW_EXACTLY?;
 containsRule:       STAR path KW_CONTAINS item (KW_AND item)*;
 onlyRule:           STAR path KW_ONLY targetType (KW_OR targetType)*;
 obeysRule:          STAR path? KW_OBEYS SEQUENCE (KW_AND SEQUENCE)*;
-caretValueRule:     STAR path? caretPath equal value;
+caretValueRule:     STAR path? caretPath EQUAL value;
 mappingRule:        STAR path? ARROW STRING STRING? CODE?;
+macroRule:          KW_MACRO SEQUENCE ( '(' SEQUENCE (COMMA SEQUENCE)* ')' )?;
 
 // VALUESET COMPONENTS
 vsComponent:        STAR KW_EXCLUDE? ( vsConceptComponent | vsFilterComponent );
@@ -65,7 +63,7 @@ vsFromSystem:       KW_SYSTEM SEQUENCE;
 vsFromValueset:     KW_VSREFERENCE (SEQUENCE | COMMA_DELIMITED_SEQUENCES);
 vsFilterList:       (vsFilterDefinition KW_AND)* vsFilterDefinition;
 vsFilterDefinition: SEQUENCE vsFilterOperator vsFilterValue?;
-vsFilterOperator:   equal | SEQUENCE;
+vsFilterOperator:   EQUAL | SEQUENCE;
 vsFilterValue:      code | KW_TRUE | KW_FALSE | REGEX | STRING;
 
 // MISC
@@ -84,9 +82,6 @@ reference:          REFERENCE STRING?;
 ratioPart:          NUMBER | quantity;
 bool:               KW_TRUE | KW_FALSE;
 targetType:         SEQUENCE | reference;
-
-equal:              EQUAL;
-
 
 // KEYWORDS
 KW_ALIAS:           'Alias' WS* ':';
@@ -136,6 +131,7 @@ KW_VSREFERENCE:     'valueset';
 KW_SYSTEM:          'system';
 KW_UNITS:           'units';
 KW_EXACTLY:         '(' WS* 'exactly' WS* ')';
+KW_MACRO:           'macro' ;
 
 // SYMBOLS
 EQUAL:              '=';

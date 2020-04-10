@@ -72,18 +72,6 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAlias([NotNull] FSHParser.AliasContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.aliasName"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAliasName([NotNull] FSHParser.AliasNameContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.aliasName"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAliasName([NotNull] FSHParser.AliasNameContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.profile"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -240,18 +228,6 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRuleSet([NotNull] FSHParser.RuleSetContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.ruleSetMixin"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRuleSetMixin([NotNull] FSHParser.RuleSetMixinContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -396,18 +372,6 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMixins([NotNull] FSHParser.MixinsContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.mixin"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMixin([NotNull] FSHParser.MixinContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.mixin"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMixin([NotNull] FSHParser.MixinContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.source"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -431,18 +395,6 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTarget([NotNull] FSHParser.TargetContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSequence([NotNull] FSHParser.SequenceContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSequence([NotNull] FSHParser.SequenceContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.cardRule"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -551,6 +503,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMappingRule([NotNull] FSHParser.MappingRuleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.macroRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroRule([NotNull] FSHParser.MacroRuleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.macroRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroRule([NotNull] FSHParser.MacroRuleContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.vsComponent"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -851,18 +815,6 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTargetType([NotNull] FSHParser.TargetTypeContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.equal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEqual([NotNull] FSHParser.EqualContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.equal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEqual([NotNull] FSHParser.EqualContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

@@ -10,8 +10,14 @@ namespace FSHpp.Nodes
     class NodeComment : NodeBase
     {
         public String Comment;
-        public NodeComment() => this.NodeType = "comment";
-        public override string ToString() => $"Comment: '{this.Comment.Replace("\n", "\\n")}'";
+
+        public NodeComment(String nodeType) : base(nodeType)
+        {
+        }
+
+        public override string ToString() => Dump("");
         public override string ToFSH() => this.Comment;
+        public override string Dump(String margin) => 
+            $"{margin}Comment: '{this.Comment.Replace("\n", "\\n")}'";
     }
 }

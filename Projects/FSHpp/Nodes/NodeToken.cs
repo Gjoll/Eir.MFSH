@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHpp.Nodes
+namespace FSHpp
 {
-    class NodeToken : NodeBase
+    [DebuggerDisplay("{NodeType}: '{TokenName}' {TokenValue}")]
+    public class NodeToken : NodeBase
     {
-        public String Token;
-        public NodeToken() => this.NodeType = "token";
-        public override string ToString() => $"Token: '{this.Token}'";
-        public override string ToFSH() => this.Token;
+        public String TokenName;
+        public String TokenValue;
+
+        public NodeToken(String nodeType) : base(nodeType)
+        {
+        }
+
+        public override string ToString() => Dump("");
+        public override string Dump(String margin) => $"{margin}{TokenName}: '{this.TokenValue}'";
+        public override string ToFSH() => this.TokenValue;
     }
 }
