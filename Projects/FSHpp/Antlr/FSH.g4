@@ -1,7 +1,7 @@
 grammar FSH;
 
 doc:                entity* EOF;
-entity:             alias | profile | extension | invariant | instance | valueSet | codeSystem | ruleSet | mapping;
+entity:             alias | profile | extension | invariant | instance | valueSet | codeSystem | ruleSet | mapping | macroDef;
 
 alias:              KW_ALIAS SEQUENCE EQUAL SEQUENCE;
 
@@ -22,6 +22,7 @@ codeSystem:         KW_CODESYSTEM SEQUENCE csMetadata* (caretValueRule | concept
 csMetadata:         id | title | description;
 
 ruleSet:            KW_RULESET SEQUENCE sdRule+;
+macroDef:           KW_MACRODEF SEQUENCE sdRule+;
 
 mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;
 mappingMetadata:    id | source | target | description | title;
@@ -131,7 +132,8 @@ KW_VSREFERENCE:     'valueset';
 KW_SYSTEM:          'system';
 KW_UNITS:           'units';
 KW_EXACTLY:         '(' WS* 'exactly' WS* ')';
-KW_MACRO:           'macro' ;
+KW_MACRO:           'Macro' ;
+KW_MACRODEF:        'MacroDef' WS* ':';
 
 // SYMBOLS
 EQUAL:              '=';

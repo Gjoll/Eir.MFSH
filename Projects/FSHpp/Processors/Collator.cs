@@ -36,41 +36,45 @@ namespace FSHpp.Processors
                     throw new Exception($"Invalid child nodes in entity record");
                 NodeRule rule = (NodeRule)entity.ChildNodes.First();
                 String entityName = rule.Name;
-                switch (rule.RuleName.ToLower())
+                switch (rule.RuleName)
                 {
-                    case "alias":
+                    case "Alias":
                         this.FSHpp.AliasDict.Add(entityName, rule);
                         break;
 
-                    case "profile":
+                    case "Profile":
                         this.FSHpp.ProfileDict.Add(entityName, rule);
                         break;
 
-                    case "extension":
+                    case "Extension":
                         this.FSHpp.ExtensionDict.Add(entityName, rule);
                         break;
 
-                    case "invariant":
+                    case "Invariant":
                         this.FSHpp.InvariantDict.Add(entityName, rule);
                         break;
 
-                    case "instance":
+                    case "Instance":
                         this.FSHpp.InstanceDict.Add(entityName, rule);
                         break;
 
-                    case "valueset":
+                    case "ValueSet":
                         this.FSHpp.ValueSetDict.Add(entityName, rule);
                         break;
 
-                    case "codesystem":
+                    case "CodeSystem":
                         this.FSHpp.CodeSystemDict.Add(entityName, rule);
                         break;
 
-                    case "ruleset":
+                    case "RuleSet":
                         this.FSHpp.RuleSetDict.Add(entityName, rule);
                         break;
 
-                    case "mapping":
+                    case "MacroDef":
+                        this.FSHpp.MacroDict.Add(entityName, rule);
+                        break;
+
+                    case "Mapping":
                         this.FSHpp.MappingDict.Add(entityName, rule);
                         break;
 

@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
+using System.Text;
 using Xunit;
 
 namespace FSHpp.tests
@@ -98,7 +99,7 @@ namespace FSHpp.tests
             String input = GetCleanText(path);
 
             FSHpp pp = new FSHpp();
-            FSHpp.FSHFile f = pp.Parse(input);
+            FSHpp.FSHFile f = pp.Parse(input, Path.GetFileName(path));
             Compare(input, f);
         }
 
@@ -112,12 +113,19 @@ namespace FSHpp.tests
         {
             String input = GetCleanText("MacroTest1.fsh");
             FSHpp pp = new FSHpp();
-            FSHpp.FSHFile f = pp.Parse(input);
-            pp.Process();
+            FSHpp.FSHFile f = pp.Parse(input, "test");
+            if (pp.Process() == false)
+            {
+                StringBuilder sb = new StringBuilder();
+                pp.FormatErrorMessages(sb);
+                Trace.WriteLine(sb.ToString());
+            }
+
+
             String expanded = f.Doc.ToFSH();
             String results = File.ReadAllText(@"MacroTest1.results.txt");
-            Compare(results, f);
-            //File.WriteAllText(@"c:\Temp\scr.txt", expanded);
+            //Compare(results, f);
+            File.WriteAllText(@"c:\Temp\scr.txt", expanded);
         }
 
     }

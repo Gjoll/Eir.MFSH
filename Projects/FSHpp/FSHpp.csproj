@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Antlr\FSHBaseListener.cs" />
     <Compile Include="Antlr\FSHBaseVisitor.cs" />
+    <Compile Include="Antlr\FSHErrorListener.cs" />
     <Compile Include="Antlr\FSHLexer.cs" />
     <Compile Include="Antlr\FSHListener.cs" />
     <Compile Include="Antlr\FSHParser.cs" />

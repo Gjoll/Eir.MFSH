@@ -16,6 +16,7 @@ namespace FSHpp
 
         #region Tokens
         //+ RuleNames
+        public const String BoolStr = "Bool";                                                                                               // Generate.cs:63
         public const String TargetTypeStr = "TargetType";                                                                                   // Generate.cs:63
         public const String DocStr = "Doc";                                                                                                 // Generate.cs:63
         public const String EntityStr = "Entity";                                                                                           // Generate.cs:63
@@ -33,6 +34,7 @@ namespace FSHpp
         public const String CodeSystemStr = "CodeSystem";                                                                                   // Generate.cs:63
         public const String CsMetadataStr = "CsMetadata";                                                                                   // Generate.cs:63
         public const String RuleSetStr = "RuleSet";                                                                                         // Generate.cs:63
+        public const String MacroDefStr = "MacroDef";                                                                                       // Generate.cs:63
         public const String MappingStr = "Mapping";                                                                                         // Generate.cs:63
         public const String MappingMetadataStr = "MappingMetadata";                                                                         // Generate.cs:63
         public const String ParentStr = "Parent";                                                                                           // Generate.cs:63
@@ -80,7 +82,6 @@ namespace FSHpp
         public const String RatioStr = "Ratio";                                                                                             // Generate.cs:63
         public const String ReferenceStr = "Reference";                                                                                     // Generate.cs:63
         public const String RatioPartStr = "RatioPart";                                                                                     // Generate.cs:63
-        public const String BoolStr = "Bool";                                                                                               // Generate.cs:63
         //- RuleNames
 
         //+ TokenNumbers
@@ -134,29 +135,30 @@ namespace FSHpp
         const Int32 KW_UNITSNum = 48;                                                                                                       // Generate.cs:128
         const Int32 KW_EXACTLYNum = 49;                                                                                                     // Generate.cs:128
         const Int32 KW_MACRONum = 50;                                                                                                       // Generate.cs:128
-        const Int32 EQUALNum = 51;                                                                                                          // Generate.cs:128
-        const Int32 STARNum = 52;                                                                                                           // Generate.cs:128
-        const Int32 COLONNum = 53;                                                                                                          // Generate.cs:128
-        const Int32 COMMANum = 54;                                                                                                          // Generate.cs:128
-        const Int32 ARROWNum = 55;                                                                                                          // Generate.cs:128
-        const Int32 STRINGNum = 56;                                                                                                         // Generate.cs:128
-        const Int32 MULTILINE_STRINGNum = 57;                                                                                               // Generate.cs:128
-        const Int32 NUMBERNum = 58;                                                                                                         // Generate.cs:128
-        const Int32 UNITNum = 59;                                                                                                           // Generate.cs:128
-        const Int32 CODENum = 60;                                                                                                           // Generate.cs:128
-        const Int32 CONCEPT_STRINGNum = 61;                                                                                                 // Generate.cs:128
-        const Int32 DATETIMENum = 62;                                                                                                       // Generate.cs:128
-        const Int32 TIMENum = 63;                                                                                                           // Generate.cs:128
-        const Int32 CARDNum = 64;                                                                                                           // Generate.cs:128
-        const Int32 REFERENCENum = 65;                                                                                                      // Generate.cs:128
-        const Int32 CARET_SEQUENCENum = 66;                                                                                                 // Generate.cs:128
-        const Int32 REGEXNum = 67;                                                                                                          // Generate.cs:128
-        const Int32 COMMA_DELIMITED_CODESNum = 68;                                                                                          // Generate.cs:128
-        const Int32 COMMA_DELIMITED_SEQUENCESNum = 69;                                                                                      // Generate.cs:128
-        const Int32 SEQUENCENum = 70;                                                                                                       // Generate.cs:128
-        const Int32 WHITESPACENum = 71;                                                                                                     // Generate.cs:128
-        const Int32 BLOCK_COMMENTNum = 72;                                                                                                  // Generate.cs:128
-        const Int32 LINE_COMMENTNum = 73;                                                                                                   // Generate.cs:128
+        const Int32 KW_MACRODEFNum = 51;                                                                                                    // Generate.cs:128
+        const Int32 EQUALNum = 52;                                                                                                          // Generate.cs:128
+        const Int32 STARNum = 53;                                                                                                           // Generate.cs:128
+        const Int32 COLONNum = 54;                                                                                                          // Generate.cs:128
+        const Int32 COMMANum = 55;                                                                                                          // Generate.cs:128
+        const Int32 ARROWNum = 56;                                                                                                          // Generate.cs:128
+        const Int32 STRINGNum = 57;                                                                                                         // Generate.cs:128
+        const Int32 MULTILINE_STRINGNum = 58;                                                                                               // Generate.cs:128
+        const Int32 NUMBERNum = 59;                                                                                                         // Generate.cs:128
+        const Int32 UNITNum = 60;                                                                                                           // Generate.cs:128
+        const Int32 CODENum = 61;                                                                                                           // Generate.cs:128
+        const Int32 CONCEPT_STRINGNum = 62;                                                                                                 // Generate.cs:128
+        const Int32 DATETIMENum = 63;                                                                                                       // Generate.cs:128
+        const Int32 TIMENum = 64;                                                                                                           // Generate.cs:128
+        const Int32 CARDNum = 65;                                                                                                           // Generate.cs:128
+        const Int32 REFERENCENum = 66;                                                                                                      // Generate.cs:128
+        const Int32 CARET_SEQUENCENum = 67;                                                                                                 // Generate.cs:128
+        const Int32 REGEXNum = 68;                                                                                                          // Generate.cs:128
+        const Int32 COMMA_DELIMITED_CODESNum = 69;                                                                                          // Generate.cs:128
+        const Int32 COMMA_DELIMITED_SEQUENCESNum = 70;                                                                                      // Generate.cs:128
+        const Int32 SEQUENCENum = 71;                                                                                                       // Generate.cs:128
+        const Int32 WHITESPACENum = 72;                                                                                                     // Generate.cs:128
+        const Int32 BLOCK_COMMENTNum = 73;                                                                                                  // Generate.cs:128
+        const Int32 LINE_COMMENTNum = 74;                                                                                                   // Generate.cs:128
         String GetTokenName(Int32 tokenIndex)                                                                                               // Generate.cs:101
         {                                                                                                                                   // Generate.cs:102
             switch (tokenIndex)                                                                                                             // Generate.cs:103
@@ -211,6 +213,7 @@ namespace FSHpp
                 case KW_UNITSNum: return "KW_UNITS";                                                                                        // Generate.cs:132
                 case KW_EXACTLYNum: return "KW_EXACTLY";                                                                                    // Generate.cs:132
                 case KW_MACRONum: return "KW_MACRO";                                                                                        // Generate.cs:132
+                case KW_MACRODEFNum: return "KW_MACRODEF";                                                                                  // Generate.cs:132
                 case EQUALNum: return "EQUAL";                                                                                              // Generate.cs:132
                 case STARNum: return "STAR";                                                                                                // Generate.cs:132
                 case COLONNum: return "COLON";                                                                                              // Generate.cs:132
@@ -341,6 +344,14 @@ namespace FSHpp
         //}
 
         //+ VisitorMethods
+        public override void EnterBool(FSHParser.BoolContext context)                                                                       // Generate.cs:67
+        {                                                                                                                                   // Generate.cs:68
+            this.PushRule(BoolStr, context.Start.StartIndex);                                                                               // Generate.cs:69
+        }                                                                                                                                   // Generate.cs:70
+        public override void ExitBool(FSHParser.BoolContext context)                                                                        // Generate.cs:80
+        {                                                                                                                                   // Generate.cs:81
+            this.PopRule("Bool", context.Stop.StopIndex);                                                                                   // Generate.cs:82
+        }                                                                                                                                   // Generate.cs:83
         public override void EnterTargetType(FSHParser.TargetTypeContext context)                                                           // Generate.cs:67
         {                                                                                                                                   // Generate.cs:68
             this.PushRule(TargetTypeStr, context.Start.StartIndex);                                                                         // Generate.cs:69
@@ -476,6 +487,14 @@ namespace FSHpp
         public override void ExitRuleSet(FSHParser.RuleSetContext context)                                                                  // Generate.cs:80
         {                                                                                                                                   // Generate.cs:81
             this.PopRule("RuleSet", context.Stop.StopIndex);                                                                                // Generate.cs:82
+        }                                                                                                                                   // Generate.cs:83
+        public override void EnterMacroDef(FSHParser.MacroDefContext context)                                                               // Generate.cs:67
+        {                                                                                                                                   // Generate.cs:68
+            this.PushRule(MacroDefStr, context.Start.StartIndex);                                                                           // Generate.cs:69
+        }                                                                                                                                   // Generate.cs:70
+        public override void ExitMacroDef(FSHParser.MacroDefContext context)                                                                // Generate.cs:80
+        {                                                                                                                                   // Generate.cs:81
+            this.PopRule("MacroDef", context.Stop.StopIndex);                                                                               // Generate.cs:82
         }                                                                                                                                   // Generate.cs:83
         public override void EnterMapping(FSHParser.MappingContext context)                                                                 // Generate.cs:67
         {                                                                                                                                   // Generate.cs:68
@@ -852,14 +871,6 @@ namespace FSHpp
         public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:80
         {                                                                                                                                   // Generate.cs:81
             this.PopRule("RatioPart", context.Stop.StopIndex);                                                                              // Generate.cs:82
-        }                                                                                                                                   // Generate.cs:83
-        public override void EnterBool(FSHParser.BoolContext context)                                                                       // Generate.cs:67
-        {                                                                                                                                   // Generate.cs:68
-            this.PushRule(BoolStr, context.Start.StartIndex);                                                                               // Generate.cs:69
-        }                                                                                                                                   // Generate.cs:70
-        public override void ExitBool(FSHParser.BoolContext context)                                                                        // Generate.cs:80
-        {                                                                                                                                   // Generate.cs:81
-            this.PopRule("Bool", context.Stop.StopIndex);                                                                                   // Generate.cs:82
         }                                                                                                                                   // Generate.cs:83
         //- VisitorMethods
 

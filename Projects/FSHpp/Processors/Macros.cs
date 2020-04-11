@@ -9,7 +9,7 @@ using FSHpp.Nodes;
 namespace FSHpp.Processors
 {
     /// <summary>
-    /// Processes Nested RuleSets
+    /// Processes Nested macros
     /// </summary>
     class Macros : ProcessorBase
     {
@@ -31,7 +31,8 @@ namespace FSHpp.Processors
             {
                 this.nodes = new List<NodeBase>();
                 this.profileName = profile.Name;
-                this.Process(profile);
+                this.Process(profile.ChildNodes);
+                profile.ChildNodes = nodes;
             }
         }
 
@@ -43,14 +44,14 @@ namespace FSHpp.Processors
         {
             const String fcn = "ExpandMacro";
 
-            if (this.FSHpp.RuleSetDict.TryGetValue(macroName, out NodeRule ruleSet) == false)
+            if (this.FSHpp.MacroDict.TryGetValue(macroName, out NodeRule macro) == false)
             {
                 this.FSHpp.ConversionError(this.GetType().Name, fcn, $"Profile: {profileName}, macro {macroName} not found.");
                 return false;
             }
 
             this.nodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
-            this.Process(ruleSet);
+            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList());
             this.nodes.Add(new NodeComment($"\n  // End Macro {macroName}"));
             return true;
         }
@@ -77,15 +78,16 @@ namespace FSHpp.Processors
             return true;
         }
 
-        bool Process(NodeRule rule)
+        bool Process<T>(List<T> macroNodes)
+        where T : NodeBase
         {
             const String fcn = "Process";
 
             Int32 i = 0;
 
-            while (i < rule.ChildNodes.Count)
+            while (i < macroNodes.Count)
             {
-                NodeBase child = rule.ChildNodes[i];
+                NodeBase child = macroNodes[i];
                 if (IsMacroCall(child, out String macroName))
                 {
                     this.FSHpp.ConversionInfo(this.GetType().Name, fcn, $"Profile: {profileName}, expanding macro {macroName}");
@@ -101,7 +103,6 @@ namespace FSHpp.Processors
                 i += 1;
             }
 
-            rule.ChildNodes = nodes;
             return true;
         }
     }

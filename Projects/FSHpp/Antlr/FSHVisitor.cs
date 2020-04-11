@@ -129,6 +129,12 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRuleSet([NotNull] FSHParser.RuleSetContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.macroDef"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMacroDef([NotNull] FSHParser.MacroDefContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

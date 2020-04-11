@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace FSHpp
             public NodeRule Doc;
         }
 
+        public String[] InputLines { get; set; }
+
         public List<FSHFile> fshFiles = new List<FSHFile>();
 
         public Dictionary<string, NodeRule> AliasDict = new Dictionary<string, NodeRule>();
@@ -33,26 +36,26 @@ namespace FSHpp
         public Dictionary<string, NodeRule> ValueSetDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> CodeSystemDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> RuleSetDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> MacroDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> MappingDict = new Dictionary<string, NodeRule>();
 
         /// <summary>
         /// Parse input text.
         /// </summary>
-        public FSHFile Parse(String fshText)
+        public FSHFile Parse(String fshText, String fileName)
         {
             fshText = fshText.Replace("\r", "");
+            this.InputLines = fshText.Split('\n');
+
             FSHLexer lexer = new FSHLexer(new AntlrInputStream(fshText));
 
-            //lexer.RemoveErrorListeners();
-            //lexer.AddErrorListener(new ThrowingErrorListener());
+            lexer.RemoveErrorListeners();
+            lexer.AddErrorListener(new FSHErrorListenerLexer(this, fileName));
 
             FSHParser parser = new FSHParser(new CommonTokenStream(lexer));
 
-            //parser.RemoveErrorListeners();
-            //parser.AddErrorListener(new ThrowingErrorListener());
-
-            //FSHVisitor fsh = new FSHVisitor(fshText);
-            //return (NodeDocument) fsh.VisitDoc(parser.doc());
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(new FSHErrorListenerParser(this, fileName));
 
             ParseTreeWalker walker = new ParseTreeWalker();
             FSHListener listener = new FSHListener(fshText);
@@ -76,7 +79,7 @@ namespace FSHpp
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing file {path}");
             String fshText = File.ReadAllText(path);
-            FSHFile f = this.Parse(fshText);
+            FSHFile f = this.Parse(fshText, Path.GetFileName(path));
             f.FilePath = path;
         }
 
@@ -95,10 +98,15 @@ namespace FSHpp
                 ProcessFile(file);
         }
 
-        public void Process()
+        public bool Process()
         {
+            if (this.HasErrors == true)
+                return false;
+
             new Processors.Collator(this).Process();
             new Processors.Macros(this).Process();
+
+            return this.HasErrors == false;
         }
 
         /// <summary>
