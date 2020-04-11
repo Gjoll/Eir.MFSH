@@ -12,6 +12,8 @@ namespace FSHer.Processors
     /// </summary>
     class Collator : ProcessorBase
     {
+        FSHFile fshFile;
+
         public Collator(FSHer fsher) : base(fsher)
         {
         }
@@ -19,12 +21,13 @@ namespace FSHer.Processors
 
         public override void Process()
         {
-            foreach (FSHer.FSHFile f in this.FSHer.fshFiles)
+            foreach (FSHFile f in this.FSHer.fshFiles)
                 Process(f);
         }
 
-        void Process(FSHer.FSHFile f)
+        void Process(FSHFile f)
         {
+            this.fshFile = f;
             CollateFile(f.Doc);
         }
 
@@ -41,7 +44,7 @@ namespace FSHer.Processors
                 switch (rule.RuleName)
                 {
                     case "Alias":
-                        this.FSHer.AliasDict.Add(entityName, rule);
+                        this.fshFile.AliasDict.Add(entityName, rule);
                         childNodes.Add(rule);
                         break;
 

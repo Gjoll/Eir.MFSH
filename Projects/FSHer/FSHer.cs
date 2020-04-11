@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,17 +19,10 @@ namespace FSHer
         private const String FSHSuffix = ".fsh";
         private const String FSHerSuffix = ".fsher";
 
-        public class FSHFile
-        {
-            public String FilePath;
-            public NodeRule Doc;
-        }
-
         public String[] InputLines { get; set; }
 
         public List<FSHFile> fshFiles = new List<FSHFile>();
 
-        public Dictionary<string, NodeRule> AliasDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> ProfileDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> ExtensionDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> InvariantDict = new Dictionary<string, NodeRule>();
@@ -73,29 +67,43 @@ namespace FSHer
         /// <summary>
         /// Process single file.
         /// </summary>
-        public void ProcessFile(String path)
+        public void AddFile(String basePath, String path)
         {
             const String fcn = "ProcessFile";
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing file {path}");
             String fshText = File.ReadAllText(path);
             FSHFile f = this.Parse(fshText, Path.GetFileName(path));
-            f.FilePath = path;
+            if (path.StartsWith(basePath) == false)
+                throw new Exception("Internal error. Path does not start with correct base path");
+            String relativePath = path.Substring(basePath.Length);
+            if (relativePath.StartsWith("\\"))
+                relativePath = relativePath.Substring(1);
+            f.RelativePath = relativePath;
         }
 
         /// <summary>
         /// Process all files in indicated dir and sub dirs.
         /// </summary>
-        public void ProcessDir(String path, String filter = FSHer.FSHSuffix)
+        public void AddDir(String path, String filter = FSHer.FSHerSuffix)
+        {
+            path = Path.GetFullPath(path);
+            AddDir(path, path, filter);
+        }
+
+
+        void AddDir(String basePath,
+            String path,
+            String filter = FSHer.FSHerSuffix)
         {
             const String fcn = "ProcessDir";
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing directory {path}, filter {filter}");
             foreach (String subDir in Directory.GetDirectories(path))
-                ProcessDir(subDir, filter);
+                this.AddDir(basePath, subDir, filter);
 
-            foreach (String file in Directory.GetFiles(path, filter))
-                ProcessFile(file);
+            foreach (String file in Directory.GetFiles(path, $"*{FSHer.FSHerSuffix}"))
+                this.AddFile(basePath, file);
         }
 
         public bool Process()
@@ -112,18 +120,38 @@ namespace FSHer
         /// <summary>
         /// Write all files back to disk.
         /// </summary>
-        public void SaveAll()
+        public void SaveAll(String outputDir)
         {
+            void Save(String outputPath,
+                String text)
+            {
+                text = text.Trim();
+                if (text.Length == 0)
+                {
+                    if (File.Exists(outputPath))
+                        File.Delete(outputPath);
+                    return;
+                }
+
+                String dir = Path.GetDirectoryName(outputPath);
+                if (Directory.Exists(dir) == false)
+                    Directory.CreateDirectory(dir);
+
+                File.WriteAllText(outputPath, text);
+            }
+
             const String fcn = "SaveAll";
 
+            outputDir = Path.GetFullPath(outputDir);
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
             foreach (FSHFile f in this.fshFiles)
             {
-                String outputPath = Path.Combine(
-                    Path.GetDirectoryName(f.FilePath),
-                    $"{Path.GetFileNameWithoutExtension(f.FilePath)}.{FSHer.FSHerSuffix}"
+                String outputPath = Path.Combine(outputDir, f.RelativePath);
+                String dir = Path.GetDirectoryName(outputPath);
+                outputPath = Path.Combine(dir,
+                    $"{Path.GetFileNameWithoutExtension(outputPath)}.{FSHer.FSHSuffix}"
                 );
-                File.WriteAllText(outputPath, f.Doc.ToFSH());
+                Save(outputPath, f.Doc.ToFSH());
             }
         }
     }

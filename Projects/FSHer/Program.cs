@@ -8,7 +8,8 @@ namespace FSHer
 {
     class Program
     {
-        FSHer pp  = new FSHer();
+        FSHer pp = new FSHer();
+        String outputDir = ".";
 
         void ParseArguments(String[] args)
         {
@@ -29,14 +30,18 @@ namespace FSHer
             while (i < args.Length)
             {
                 String arg = GetArg("arg").ToUpper();
-                switch (arg)
+                switch (arg.ToLower())
                 {
                     case "-f":
                         filter = GetArg("-f");
                         break;
 
                     case "-d":
-                        this.pp.ProcessDir(GetArg("-d"), filter);
+                        this.pp.AddDir(GetArg("-d"), filter);
+                        break;
+
+                    case "-o":
+                        this.outputDir = GetArg("-0");
                         break;
 
                     default:
@@ -45,12 +50,28 @@ namespace FSHer
             }
         }
 
+        bool Process()
+        {
+            if (pp.Process() == false)
+            {
+                StringBuilder sb = new StringBuilder();
+                this.pp.FormatMessages(sb);
+                Console.WriteLine(sb.ToString());
+                return false;
+            }
+
+            this.pp.SaveAll(this.outputDir);
+            return true;
+        }
+
         static Int32 Main(string[] args)
         {
             try
             {
                 Program p = new Program();
                 p.ParseArguments(args);
+                if (p.Process() == false)
+                    return -1;
                 return 0;
             }
             catch (Exception e)

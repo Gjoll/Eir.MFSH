@@ -51,6 +51,7 @@
     <Compile Include="Antlr\FSHListener.cs" />
     <Compile Include="Antlr\FSHParser.cs" />
     <Compile Include="Antlr\FSHVisitor.cs" />
+    <Compile Include="FSHFile.cs" />
     <Compile Include="FSHListener.cs" />
     <Compile Include="FSHer.cs" />
     <Compile Include="MacroProcessor.cs" />
