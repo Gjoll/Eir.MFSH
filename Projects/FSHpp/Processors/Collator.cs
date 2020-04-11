@@ -30,6 +30,8 @@ namespace FSHpp.Processors
 
         void CollateFile(NodeRule d)
         {
+            List<NodeBase> childNodes = new List<NodeBase>();
+
             foreach (NodeRule entity in d.ChildNodes.Rules())
             {
                 if (entity.ChildNodes.Count != 1)
@@ -40,22 +42,27 @@ namespace FSHpp.Processors
                 {
                     case "Alias":
                         this.FSHpp.AliasDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     case "Profile":
                         this.FSHpp.ProfileDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     case "Extension":
                         this.FSHpp.ExtensionDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     case "Invariant":
                         this.FSHpp.InvariantDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     case "Instance":
                         this.FSHpp.InstanceDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     case "ValueSet":
@@ -64,10 +71,12 @@ namespace FSHpp.Processors
 
                     case "CodeSystem":
                         this.FSHpp.CodeSystemDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     case "RuleSet":
                         this.FSHpp.RuleSetDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     case "MacroDef":
@@ -76,11 +85,14 @@ namespace FSHpp.Processors
 
                     case "Mapping":
                         this.FSHpp.MappingDict.Add(entityName, rule);
+                        childNodes.Add(rule);
                         break;
 
                     default:
                         throw new NotImplementedException();
                 }
+
+                d.ChildNodes = childNodes;
             }
         }
 

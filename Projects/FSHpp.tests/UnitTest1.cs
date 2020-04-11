@@ -120,13 +120,10 @@ namespace FSHpp.tests
                 pp.FormatErrorMessages(sb);
                 Trace.WriteLine(sb.ToString());
             }
-
-
             String expanded = f.Doc.ToFSH();
             String results = File.ReadAllText(@"MacroTest1.results.txt");
-            //Compare(results, f);
-            File.WriteAllText(@"c:\Temp\scr.txt", expanded);
+            Compare(results, f);
+            //File.WriteAllText(@"c:\Temp\scr.txt", expanded);
         }
-
     }
 }
