@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
+using DevTools;
 
 namespace FSHpp
 {
-    public class FSHpp
+    public class FSHpp : ConverterBase
     {
         private const String FSHSuffix = ".fsh";
         private const String FSHppSuffix = ".fshpp";
@@ -71,6 +72,9 @@ namespace FSHpp
         /// </summary>
         public void ProcessFile(String path)
         {
+            const String fcn = "ProcessFile";
+
+            this.ConversionInfo(this.GetType().Name, fcn, $"Processing file {path}");
             String fshText = File.ReadAllText(path);
             FSHFile f = this.Parse(fshText);
             f.FilePath = path;
@@ -81,6 +85,9 @@ namespace FSHpp
         /// </summary>
         public void ProcessDir(String path, String filter = FSHpp.FSHSuffix)
         {
+            const String fcn = "ProcessDir";
+
+            this.ConversionInfo(this.GetType().Name, fcn, $"Processing directory {path}, filter {filter}");
             foreach (String subDir in Directory.GetDirectories(path))
                 ProcessDir(subDir, filter);
 
@@ -91,7 +98,7 @@ namespace FSHpp
         public void Process()
         {
             new Processors.Collator(this).Process();
-            new Processors.NestedRuleSets(this).Process();
+            new Processors.Macros(this).Process();
         }
 
         /// <summary>
@@ -99,6 +106,9 @@ namespace FSHpp
         /// </summary>
         public void SaveAll()
         {
+            const String fcn = "SaveAll";
+
+            this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
             foreach (FSHFile f in this.fshFiles)
             {
                 String outputPath = Path.Combine(

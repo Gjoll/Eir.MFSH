@@ -6,3 +6,12 @@ RuleSet: ObservationFragment
   * interpretation 0..0
     macro HeaderFragment
   * referenceRange 0..0
+
+Profile: Test
+Parent: Observation
+Id: test
+Title: "Test"
+  * bodySite 1..1
+  * bodySite = SNOMED#80248007 "Left breast structure (body structure)"
+  macro ObservationFragment
+  * code = ObservationCodesCS#findingsLeftBreastObservation
