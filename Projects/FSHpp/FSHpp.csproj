@@ -58,6 +58,10 @@
     <Compile Include="Nodes\NodeRule.cs" />
     <Compile Include="Nodes\NodeToken.cs" />
     <Compile Include="Nodes\NodeBase.cs" />
+    <Compile Include="Processors\NestedRuleSets.cs" />
+    <Compile Include="Processors\Macros.cs" />
+    <Compile Include="Processors\Collator.cs" />
+    <Compile Include="Processors\ProcessorBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -9,6 +9,20 @@ namespace FSHpp
     public static class NodeListExtensions
     {
         /// <summary>
+        /// Return only the NodeTokens in list with the NodeType.
+        /// </summary>
+        public static IEnumerable<T> WithNodeType<T>(this IEnumerable<T> items,
+            String nodeType)
+        where T : NodeBase
+        {
+            foreach (T item in items)
+            {
+                if (item.NodeType == nodeType)
+                    yield return item;
+            }
+        }
+
+        /// <summary>
         /// Return only the NodeTokens in list with the TokenName.
         /// </summary>
         public static IEnumerable<NodeToken> WithTokenName(this IEnumerable<NodeToken> items,
@@ -44,6 +58,19 @@ namespace FSHpp
                 NodeRule r = item as NodeRule;
                 if (r != null)
                     yield return r;
+            }
+        }
+
+        /// <summary>
+        /// Return only the NodeRules in list.
+        /// </summary>
+        public static IEnumerable<NodeRule> HasChildOfType(this IEnumerable<NodeRule> items,
+            String nodeType)
+        {
+            foreach (NodeRule item in items)
+            {
+                if (item.ChildNodes.WithNodeType(nodeType).Any())
+                    yield return item;
             }
         }
     }

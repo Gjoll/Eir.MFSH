@@ -24,20 +24,20 @@ namespace FSHpp
 
         public List<FSHFile> fshFiles = new List<FSHFile>();
 
-        public Dictionary<string, NodeRule> aliasDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> profileDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> extensionDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> invariantDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> instanceDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> valueSetDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> codeSystemDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> ruleSetDict = new Dictionary<string, NodeRule>();
-        public Dictionary<string, NodeRule> mappingDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> AliasDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> ProfileDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> ExtensionDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> InvariantDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> InstanceDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> ValueSetDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> CodeSystemDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> RuleSetDict = new Dictionary<string, NodeRule>();
+        public Dictionary<string, NodeRule> MappingDict = new Dictionary<string, NodeRule>();
 
         /// <summary>
         /// Parse input text.
         /// </summary>
-        public NodeRule Parse(String fshText)
+        public FSHFile Parse(String fshText)
         {
             fshText = fshText.Replace("\r", "");
             FSHLexer lexer = new FSHLexer(new AntlrInputStream(fshText));
@@ -57,60 +57,13 @@ namespace FSHpp
             FSHListener listener = new FSHListener(fshText);
             walker.Walk(listener, parser.doc());
             NodeRule d = (NodeRule)listener.Head.ChildNodes.First();
-            CollateFile(d);
-            return d;
-        }
 
-        void CollateFile(NodeRule d)
-        {
-            foreach (NodeRule entity in d.ChildNodes.Rules())
+            FSHFile f = new FSHFile
             {
-                if (entity.ChildNodes.Count != 1)
-                    throw new Exception($"Invalid child nodes in entity record");
-                NodeRule rule = (NodeRule)entity.ChildNodes.First();
-                String entityName = rule.Name;
-                switch (rule.NodeType.ToLower())
-                {
-                    case "alias":
-                        aliasDict.Add(entityName, rule);
-                        break;
-
-                    case "profile":
-                        profileDict.Add(entityName, rule);
-                        break;
-
-                    case "extension":
-                        extensionDict.Add(entityName, rule);
-                        break;
-
-                    case "invariant":
-                        invariantDict.Add(entityName, rule);
-                        break;
-
-                    case "instance":
-                        instanceDict.Add(entityName, rule);
-                        break;
-
-                    case "valueset":
-                        valueSetDict.Add(entityName, rule);
-                        break;
-
-                    case "codesystem":
-                        codeSystemDict.Add(entityName, rule);
-                        break;
-
-                    case "ruleset":
-                        ruleSetDict.Add(entityName, rule);
-                        break;
-
-                    case "mapping":
-                        mappingDict.Add(entityName, rule);
-                        break;
-
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
+                Doc = d
+            };
+            this.fshFiles.Add(f);
+            return f;
         }
 
         /// <summary>
@@ -119,13 +72,8 @@ namespace FSHpp
         public void ProcessFile(String path)
         {
             String fshText = File.ReadAllText(path);
-            NodeRule d = this.Parse(fshText);
-            FSHFile f = new FSHFile
-            {
-                FilePath = path,
-                Doc = d
-            };
-            this.fshFiles.Add(f);
+            FSHFile f = this.Parse(fshText);
+            f.FilePath = path;
         }
 
         /// <summary>
@@ -138,6 +86,12 @@ namespace FSHpp
 
             foreach (String file in Directory.GetFiles(path, filter))
                 ProcessFile(file);
+        }
+
+        public void Process()
+        {
+            new Processors.Collator(this).Process();
+            new Processors.NestedRuleSets(this).Process();
         }
 
         /// <summary>

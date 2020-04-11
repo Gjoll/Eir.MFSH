@@ -15,6 +15,17 @@ namespace FSHpp.tests
                 PassThrough(fileName);
         }
 
+        /// <summary>
+        /// Getx text w/o carriage returns. Makes comparisons easier.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        String GetCleanText(String path)
+        {
+            String input = File.ReadAllText(path);
+            input = input.Replace("\r", "");
+            return input;
+        }
         void ShowChunk(String text, Int32 index)
         {
             Int32 PrevIndex(Int32 count)
@@ -58,12 +69,11 @@ namespace FSHpp.tests
 
         void PassThrough(String path)
         {
-            String input = File.ReadAllText(path);
-            input = input.Replace("\r", "");
+            String input = GetCleanText(path);
 
             FSHpp pp = new FSHpp();
-            NodeRule d = pp.Parse(input);
-            String output = d.ToFSH();
+            FSHpp.FSHFile f = pp.Parse(input);
+            String output = f.Doc.ToFSH();
 
             Int32 i = 0;
             while (i < input.Length && i < output.Length)
@@ -73,7 +83,7 @@ namespace FSHpp.tests
                 i += 1;
             }
 
-            Trace.WriteLine(d.Dump("*  "));
+            Trace.WriteLine(f.Doc.Dump("*  "));
 
             if ((i < input.Length) || (i < output.Length))
             {
@@ -92,5 +102,14 @@ namespace FSHpp.tests
         {
             PassThrough("test1.fsh");
         }
+        [Fact]
+        public void Macro1()
+        {
+            String input = GetCleanText("MacroTest1.fsh");
+            FSHpp pp = new FSHpp();
+            FSHpp.FSHFile f = pp.Parse(input);
+            pp.Process();
+        }
+
     }
 }
