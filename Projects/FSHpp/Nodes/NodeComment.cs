@@ -11,7 +11,12 @@ namespace FSHpp.Nodes
     {
         public String Comment;
 
-        public NodeComment(String nodeType) : base(nodeType)
+        public NodeComment(String comment) : base()
+        {
+            this.Comment = comment;
+        }
+
+        public NodeComment() : base()
         {
         }
 

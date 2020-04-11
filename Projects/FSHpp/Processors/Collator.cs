@@ -36,7 +36,7 @@ namespace FSHpp.Processors
                     throw new Exception($"Invalid child nodes in entity record");
                 NodeRule rule = (NodeRule)entity.ChildNodes.First();
                 String entityName = rule.Name;
-                switch (rule.NodeType.ToLower())
+                switch (rule.RuleName.ToLower())
                 {
                     case "alias":
                         this.FSHpp.AliasDict.Add(entityName, rule);

@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 
 namespace FSHpp
 {
-    [DebuggerDisplay("{NodeType} {ChildNodes.Count}")]
+    [DebuggerDisplay("{RuleName} {ChildNodes.Count}")]
     public class NodeRule : NodeBase
     {
         public List<NodeBase> ChildNodes { get; set; } = new List<NodeBase>();
+        public String RuleName { get; }
 
-        public NodeRule(String nodeType) : base(nodeType)
+        public NodeRule(String ruleName) : base()
         {
+            this.RuleName = ruleName;
         }
 
         public String Name => this.ChildNodes
@@ -28,7 +30,7 @@ namespace FSHpp
         public override string Dump(String margin)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{margin}{this.NodeType}");
+            sb.AppendLine($"{margin}{this.RuleName}");
             foreach (NodeBase child in ChildNodes)
             {
                 sb.AppendLine(child.Dump(margin + "    "));

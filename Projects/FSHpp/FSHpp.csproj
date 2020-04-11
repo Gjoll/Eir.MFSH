@@ -53,7 +53,8 @@
     <Compile Include="FSHListener.cs" />
     <Compile Include="FSHpp.cs" />
     <Compile Include="MacroProcessor.cs" />
-    <Compile Include="NodeListExtensions.cs" />
+    <Compile Include="Nodes\NodeExtensions.cs" />
+    <Compile Include="Nodes\NodeListExtensions.cs" />
     <Compile Include="Nodes\NodeComment.cs" />
     <Compile Include="Nodes\NodeRule.cs" />
     <Compile Include="Nodes\NodeToken.cs" />

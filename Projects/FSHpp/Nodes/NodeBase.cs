@@ -10,11 +10,8 @@ namespace FSHpp
 {
     public abstract class NodeBase
     {
-        public String NodeType { get; set; }
-
-        public NodeBase(String nodeType)
+        public NodeBase()
         {
-            this.NodeType = nodeType;
         }
 
         public abstract String ToFSH();

@@ -11,13 +11,12 @@ namespace FSHpp
         /// <summary>
         /// Return only the NodeTokens in list with the NodeType.
         /// </summary>
-        public static IEnumerable<T> WithNodeType<T>(this IEnumerable<T> items,
+        public static IEnumerable<NodeRule> WithRuleName(this IEnumerable<NodeRule> items,
             String nodeType)
-        where T : NodeBase
         {
-            foreach (T item in items)
+            foreach (NodeRule item in items)
             {
-                if (item.NodeType == nodeType)
+                if (item.RuleName == nodeType)
                     yield return item;
             }
         }
@@ -69,7 +68,7 @@ namespace FSHpp
         {
             foreach (NodeRule item in items)
             {
-                if (item.ChildNodes.WithNodeType(nodeType).Any())
+                if (item.ChildNodes.Rules().WithRuleName(nodeType).Any())
                     yield return item;
             }
         }

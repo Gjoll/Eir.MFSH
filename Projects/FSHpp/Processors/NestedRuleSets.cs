@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FSHpp.Nodes;
 
 namespace FSHpp.Processors
 {
@@ -11,30 +13,73 @@ namespace FSHpp.Processors
     /// </summary>
     class NestedRuleSets : ProcessorBase
     {
+        List<NodeRule> ruleSets;
+
         public NestedRuleSets(FSHpp fshPp) : base(fshPp)
         {
         }
 
+        /// <summary>
+        /// Return rule set with indicated name if it has been
+        /// processed (has no unexpanded macros) in it.
+        /// Otherwise return null.
+        NodeRule GetProcessedRuleSet(String macroName)
+        {
+            if (this.FSHpp.RuleSetDict.TryGetValue(macroName, out NodeRule retVal) == false)
+                throw new Exception($"Macro {macroName} not found");
+
+            // If rule set still in list, then it has not been expanded yet.
+            if (this.ruleSets.Contains(retVal) == true)
+                return null;
+            return retVal;
+        }
+
+        bool IsMacroCall(NodeBase node, out String macroName)
+        {
+            macroName = null;
+            NodeRule rule = node as NodeRule;
+            if (rule == null)
+                return false;
+            if (rule.RuleName != FSHListener.SdRuleStr)
+                return false;
+            NodeRule macroNode = rule
+                    .ChildNodes
+                    .Rules()
+                    .WithRuleName(FSHListener.MacroRuleStr)
+                    .FirstOrDefault()
+                    ;
+            
+            if (macroNode == null)
+                return false;
+
+            macroName = macroNode.Name;
+            return true;
+        }
 
         public bool ProcessRuleSet(NodeRule rs)
         {
             List<NodeBase> nodes = new List<NodeBase>();
-            for (Int32 i = 0; i < rs.ChildNodes.Count; i++)
+
+            Int32 i = 0;
+
+            while (i < rs.ChildNodes.Count)
             {
                 NodeBase child = rs.ChildNodes[i];
-                switch (child.NodeType.ToLower())
+                if (IsMacroCall(child, out String macroName))
                 {
-                    case "macro":
-                        NodeRule macroRefNode = (NodeRule)child;
-                        if (this.FSHpp.RuleSetDict.TryGetValue(macroRefNode.Name, out NodeRule macroNode) == false)
-                            return false;
-                        nodes.AddRange(macroNode.ChildNodes);
-                        break;
-
-                    default:
-                        nodes.Add(child);
-                        break;
+                    NodeRule ruleSet = this.GetProcessedRuleSet(macroName);
+                    if (ruleSet == null)
+                        return false;
+                    nodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
+                    nodes.AddRange(ruleSet.ChildNodes.Rules().WithRuleName(FSHListener.SdRuleStr));
+                    nodes.Add(new NodeComment($"\n  // End Macro {macroName}"));
                 }
+                else
+                {
+                    nodes.Add(child);
+                }
+
+                i += 1;
             }
 
             rs.ChildNodes = nodes;
@@ -43,7 +88,7 @@ namespace FSHpp.Processors
 
         public override void Process()
         {
-            List<NodeRule> ruleSets = this.FSHpp.RuleSetDict.Values.ToList();
+            this.ruleSets = this.FSHpp.RuleSetDict.Values.ToList();
 
             while (ruleSets.Count > 0)
             {

@@ -67,34 +67,39 @@ namespace FSHpp.tests
             Trace.WriteLine(text.Substring(startIndex, nextIndex - startIndex));
         }
 
-        void PassThrough(String path)
+        void Compare(String results,
+            FSHpp.FSHFile f)
         {
-            String input = GetCleanText(path);
-
-            FSHpp pp = new FSHpp();
-            FSHpp.FSHFile f = pp.Parse(input);
             String output = f.Doc.ToFSH();
 
             Int32 i = 0;
-            while (i < input.Length && i < output.Length)
+            while (i < results.Length && i < output.Length)
             {
-                if (input[i] != output[i])
+                if (results[i] != output[i])
                     break;
                 i += 1;
             }
 
             Trace.WriteLine(f.Doc.Dump("*  "));
 
-            if ((i < input.Length) || (i < output.Length))
+            if ((i < results.Length) || (i < output.Length))
             {
                 Trace.WriteLine("---------------------------");
-                ShowChunk(input, i);
+                ShowChunk(results, i);
                 Trace.WriteLine("---------------------------");
                 ShowChunk(output, i);
                 Trace.WriteLine("---------------------------");
             }
+            Debug.Assert(String.Compare(results, output) == 0);
+        }
 
-            Debug.Assert(String.Compare(input, output) == 0);
+        void PassThrough(String path)
+        {
+            String input = GetCleanText(path);
+
+            FSHpp pp = new FSHpp();
+            FSHpp.FSHFile f = pp.Parse(input);
+            Compare(input, f);
         }
 
         [Fact]
@@ -109,6 +114,10 @@ namespace FSHpp.tests
             FSHpp pp = new FSHpp();
             FSHpp.FSHFile f = pp.Parse(input);
             pp.Process();
+            String expanded = f.Doc.ToFSH();
+            String results = File.ReadAllText(@"MacroTest1.results.txt");
+            Compare(results, f);
+            //File.WriteAllText(@"c:\Temp\scr.txt", expanded);
         }
 
     }

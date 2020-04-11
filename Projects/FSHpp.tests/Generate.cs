@@ -44,6 +44,9 @@ namespace FSHpp.tests
         /// </summary>
         void ProcessRules()
         {
+            CodeBlockNested ruleNamesBlock = this.code.Blocks.Find("RuleNames");
+            ruleNamesBlock.Clear();
+
             CodeBlockNested methodBlock = this.code.Blocks.Find("VisitorMethods");
             methodBlock.Clear();
 
@@ -55,10 +58,15 @@ namespace FSHpp.tests
                     String ruleName = methodInfo.Name.Substring(5);
                     if (ruleName != "EveryRule")
                     {
+                        String ruleNameStr = $"{ruleName}Str";
+                        ruleNamesBlock
+                            .AppendCode($"public const String {ruleNameStr} = \"{ruleName}\";")
+                            ;
+
                         methodBlock
                             .AppendCode($"public override void Enter{ruleName}(FSHParser.{ruleName}Context context)")
                             .OpenBrace()
-                            .AppendCode($"this.PushRule(\"{ruleName}\", context.Start.StartIndex);")
+                            .AppendCode($"this.PushRule({ruleNameStr}, context.Start.StartIndex);")
                             .CloseBrace()
                             ;
                     }
