@@ -100,6 +100,14 @@ namespace FSHer.tests
 
             FSHer pp = new FSHer();
             FSHFile f = pp.Parse(input, Path.GetFileName(path));
+            if (pp.HasErrors == true)
+            {
+                StringBuilder sb = new StringBuilder();
+                pp.FormatErrorMessages(sb);
+                Trace.WriteLine(sb.ToString());
+                Assert.True(false);
+            }
+
             Compare(input, f);
         }
 
@@ -108,6 +116,7 @@ namespace FSHer.tests
         {
             PassThrough("test1.fsh");
         }
+
         [Fact]
         public void Macro1()
         {
