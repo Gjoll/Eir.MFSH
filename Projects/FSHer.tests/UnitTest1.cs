@@ -49,8 +49,8 @@ namespace FSHer.tests
             Int32 NextIndex(Int32 count)
             {
                 Int32 next = index;
-                if (next >= text.Length)
-                    next = text.Length - 1;
+                if (next < 0)
+                    return text.Length;
 
                 while (count-- > 0)
                 {
@@ -69,7 +69,7 @@ namespace FSHer.tests
         }
 
         void Compare(String results,
-            FSHer.FSHFile f)
+            FSHFile f)
         {
             String output = f.Doc.ToFSH();
 
@@ -99,7 +99,7 @@ namespace FSHer.tests
             String input = GetCleanText(path);
 
             FSHer pp = new FSHer();
-            FSHer.FSHFile f = pp.Parse(input, Path.GetFileName(path));
+            FSHFile f = pp.Parse(input, Path.GetFileName(path));
             Compare(input, f);
         }
 
@@ -113,7 +113,7 @@ namespace FSHer.tests
         {
             String input = GetCleanText("MacroTest1.fsh");
             FSHer pp = new FSHer();
-            FSHer.FSHFile f = pp.Parse(input, "test");
+            FSHFile f = pp.Parse(input, "test");
             if (pp.Process() == false)
             {
                 StringBuilder sb = new StringBuilder();
