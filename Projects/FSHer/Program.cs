@@ -52,6 +52,7 @@ namespace FSHer
 
         bool Process()
         {
+            this.pp.ConsoleLogging();
             if (pp.Process() == false)
             {
                 StringBuilder sb = new StringBuilder();

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
-using DevTools;
+using Eir.DevTools;
 
 namespace FSHer
 {
@@ -122,6 +122,8 @@ namespace FSHer
         /// </summary>
         public void SaveAll(String outputDir)
         {
+            const String fcn = "SaveAll";
+
             void Save(String outputPath,
                 String text)
             {
@@ -137,10 +139,11 @@ namespace FSHer
                 if (Directory.Exists(dir) == false)
                     Directory.CreateDirectory(dir);
 
-                File.WriteAllText(outputPath, text);
+                if (FileTools.WriteModifiedText(outputPath, text) == true)
+                    this.ConversionInfo(this.GetType().Name,
+                        fcn,
+                        $"Saving {Path.GetFileName(outputPath)}");
             }
-
-            const String fcn = "SaveAll";
 
             outputDir = Path.GetFullPath(outputDir);
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
@@ -149,7 +152,7 @@ namespace FSHer
                 String outputPath = Path.Combine(outputDir, f.RelativePath);
                 String dir = Path.GetDirectoryName(outputPath);
                 outputPath = Path.Combine(dir,
-                    $"{Path.GetFileNameWithoutExtension(outputPath)}.{FSHer.FSHSuffix}"
+                    $"{Path.GetFileNameWithoutExtension(outputPath)}{FSHer.FSHSuffix}"
                 );
                 Save(outputPath, f.Doc.ToFSH());
             }

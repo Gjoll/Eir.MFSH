@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Threading;
-using Eir.MiscTools;
 using Xunit;
 
 namespace FSHer.tests
