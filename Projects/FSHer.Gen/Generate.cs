@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Xunit;
 
 namespace FSHerGen
 {
@@ -15,14 +14,12 @@ namespace FSHerGen
         private String antlrDir;
         private CodeEditor code;
 
-        [Fact]
         public void GenerateListener()
         {
             this.code = new CodeEditor();
             antlrDir = Path.Combine(
                 DirHelper.FindParentDir("Projects"),
-                "FSHer",
-                "Antlr");
+                "FSHer.Antlr");
 
             String listenerPath = Path.Combine(
                 DirHelper.FindParentDir("Projects"),

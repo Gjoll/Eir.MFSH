@@ -13,6 +13,8 @@ namespace FSHerGen
         {
             try
             {
+                Generate g = new Generate();
+                g.GenerateListener();
                 return 0;
             }
             catch (Exception e)
