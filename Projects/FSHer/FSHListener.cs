@@ -154,11 +154,10 @@ namespace FSHer
         const Int32 REFERENCENum = 66;                                                                                                      // Generate.cs:127
         const Int32 CARET_SEQUENCENum = 67;                                                                                                 // Generate.cs:127
         const Int32 REGEXNum = 68;                                                                                                          // Generate.cs:127
-        const Int32 COMMA_DELIMITED_CODESNum = 69;                                                                                          // Generate.cs:127
-        const Int32 SEQUENCENum = 70;                                                                                                       // Generate.cs:127
-        const Int32 WHITESPACENum = 71;                                                                                                     // Generate.cs:127
-        const Int32 BLOCK_COMMENTNum = 72;                                                                                                  // Generate.cs:127
-        const Int32 LINE_COMMENTNum = 73;                                                                                                   // Generate.cs:127
+        const Int32 SEQUENCENum = 69;                                                                                                       // Generate.cs:127
+        const Int32 WHITESPACENum = 70;                                                                                                     // Generate.cs:127
+        const Int32 BLOCK_COMMENTNum = 71;                                                                                                  // Generate.cs:127
+        const Int32 LINE_COMMENTNum = 72;                                                                                                   // Generate.cs:127
         String GetTokenName(Int32 tokenIndex)                                                                                               // Generate.cs:100
         {                                                                                                                                   // Generate.cs:101
             switch (tokenIndex)                                                                                                             // Generate.cs:102
@@ -231,7 +230,6 @@ namespace FSHer
                 case REFERENCENum: return "REFERENCE";                                                                                      // Generate.cs:131
                 case CARET_SEQUENCENum: return "CARET_SEQUENCE";                                                                            // Generate.cs:131
                 case REGEXNum: return "REGEX";                                                                                              // Generate.cs:131
-                case COMMA_DELIMITED_CODESNum: return "COMMA_DELIMITED_CODES";                                                              // Generate.cs:131
                 case SEQUENCENum: return "SEQUENCE";                                                                                        // Generate.cs:131
                 case WHITESPACENum: return "WHITESPACE";                                                                                    // Generate.cs:131
                 case BLOCK_COMMENTNum: return "BLOCK_COMMENT";                                                                              // Generate.cs:131

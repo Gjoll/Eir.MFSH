@@ -10,6 +10,13 @@ namespace FSHer.tests
     public class UnitTest1
     {
         [Fact]
+        public void PassThroughMCode()
+        {
+            foreach (String fileName in Directory.GetFiles(@"C:\Development\MITRE\fhir-mCODE-ig\fsh", "*.fsh"))
+                PassThrough(fileName);
+        }
+
+        [Fact]
         public void PassThroughCovid19()
         {
             foreach (String fileName in Directory.GetFiles(@"C:\Development\covid-19\fsh\fsh-source"))
@@ -81,7 +88,7 @@ namespace FSHer.tests
                 i += 1;
             }
 
-            Trace.WriteLine(f.Doc.Dump("*  "));
+            //Trace.WriteLine(f.Doc.Dump("*  "));
 
             if ((i < results.Length) || (i < output.Length))
             {

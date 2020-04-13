@@ -57,7 +57,7 @@ macroRule:          KW_MACRO sequence ( '(' sequence (COMMA sequence)* ')' )?;
 // VALUESET COMPONENTS
 vsComponent:        STAR KW_EXCLUDE? ( vsConceptComponent | vsFilterComponent );
 vsConceptComponent: code vsComponentFrom?
-                    | COMMA_DELIMITED_CODES vsComponentFrom;
+                    | code (COMMA code)+ vsComponentFrom;
 vsFilterComponent:  KW_CODES vsComponentFrom (KW_WHERE vsFilterList)?;
 vsComponentFrom:    KW_FROM (vsFromSystem (KW_AND vsFromValueset)? | vsFromValueset (KW_AND vsFromSystem)?);
 vsFromSystem:       KW_SYSTEM sequence;
@@ -181,11 +181,8 @@ CARET_SEQUENCE:     '^' ~[ \t\r\n\f]+;
                  // '/' EXPRESSION '/'
 REGEX:              '/' ('\\/' | ~[*/\r\n])('\\/' | ~[/\r\n])* '/';
 
-
-COMMA_DELIMITED_CODES: (CODE (WS+ STRING)? WS* COMMA WS+)+ CODE (WS+ STRING)?;
-
                  // NON-WHITESPACE
-SEQUENCE:           ~[ \t\r\n\f]+;
+SEQUENCE:           ~[ ,#\t\r\n\f]+;
 
 
 
