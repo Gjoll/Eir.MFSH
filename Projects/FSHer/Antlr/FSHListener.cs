@@ -691,5 +691,15 @@ public interface IFSHListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitTargetType([NotNull] FSHParser.TargetTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSequence([NotNull] FSHParser.SequenceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSequence([NotNull] FSHParser.SequenceContext context);
 }
 } // namespace FSHer

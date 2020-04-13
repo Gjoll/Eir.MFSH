@@ -428,5 +428,11 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTargetType([NotNull] FSHParser.TargetTypeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSequence([NotNull] FSHParser.SequenceContext context);
 }
 } // namespace FSHer

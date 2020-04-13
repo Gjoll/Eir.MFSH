@@ -827,6 +827,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTargetType([NotNull] FSHParser.TargetTypeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSequence([NotNull] FSHParser.SequenceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSequence([NotNull] FSHParser.SequenceContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>
