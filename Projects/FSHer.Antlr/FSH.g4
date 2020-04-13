@@ -176,10 +176,7 @@ CARET_SEQUENCE:     '^' ~[ \t\r\n\f]+;
 
                  // '/' EXPRESSION '/'
 REGEX:              '/' ('\\/' | ~[*/\r\n])('\\/' | ~[/\r\n])* '/';
-
 SEQUENCE:           [A-Za-z_][A-Za-z0-9_]*;
-
-
 
 // FRAGMENTS
 fragment WS: [ \t\r\n\f];
