@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AutoValidate": {
+      "commandName": "Project",
+      "commandLineArgs": "-n  FSHER -w FSHER -c \"Fisher.bat\" -n FSH -W FSH -c fish.bat",
+      "workingDirectory": "C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects"
+    }
+  }
+}

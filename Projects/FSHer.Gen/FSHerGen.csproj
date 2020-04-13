@@ -10,8 +10,4 @@
     <PackageReference Include="Eir.DevTools" Version="1.10.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\FSHer.Antlr\FSHer.Antlr.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -34,9 +34,9 @@ title:              KW_TITLE STRING;
 description:        KW_DESCRIPTION (STRING | MULTILINE_STRING);
 expression:         KW_EXPRESSION STRING;
 xpath:              KW_XPATH STRING;
-severity:           KW_SEVERITY CODE;
+severity:           KW_SEVERITY code;
 instanceOf:         KW_INSTANCEOF sequence;
-usage:              KW_USAGE CODE;
+usage:              KW_USAGE code;
 mixins:             KW_MIXINS sequence (COMMA sequence)*;
 source:             KW_SOURCE sequence;
 target:             KW_TARGET STRING;
@@ -51,7 +51,7 @@ containsRule:       STAR path KW_CONTAINS item (KW_AND item)*;
 onlyRule:           STAR path KW_ONLY targetType (KW_OR targetType)*;
 obeysRule:          STAR path? KW_OBEYS sequence (KW_AND sequence)*;
 caretValueRule:     STAR path? caretPath EQUAL value;
-mappingRule:        STAR path? ARROW STRING STRING? CODE?;
+mappingRule:        STAR path? ARROW STRING STRING? code?;
 macroRule:          KW_MACRO sequence ( '(' sequence (COMMA sequence)* ')' )?;
 
 // VALUESET COMPONENTS
@@ -75,8 +75,8 @@ flag:               KW_MOD | KW_MS | KW_SU | KW_TU | KW_NORMATIVE | KW_DRAFT;
 strength:           KW_EXAMPLE | KW_PREFERRED | KW_EXTENSIBLE | KW_REQUIRED;
 value:              sequence | STRING | MULTILINE_STRING | NUMBER | DATETIME | TIME | reference | code | quantity | ratio | bool ;
 item:               sequence (KW_NAMED sequence)? CARD flag*;
-code:               CODE STRING?;
-concept:            STAR code STRING?;
+code:               sequence? '#' (sequence | CONCEPT_STRING) STRING?;
+concept:            STAR code;
 quantity:           NUMBER UNIT;
 ratio:              ratioPart COLON ratioPart;
 reference:          REFERENCE STRING?;
@@ -157,10 +157,6 @@ NUMBER:             [+\-]? [0-9]+('.' [0-9]+)?;
                  //   '  UCUM UNIT   '
 UNIT:               '\'' (~[\\'])* '\'';
 
-                 // SYSTEM     #  SYSTEM
-CODE:               SEQUENCE? '#' (SEQUENCE | CONCEPT_STRING);
-
-
 CONCEPT_STRING:      '"' (~[ \t\r\n\f\\"] | '\\"' | '\\\\')+ (WS (~[ \t\r\n\f\\"] | '\\"' | '\\\\')+)* '"';
 
                  //        YEAR         ( -   MONTH   ( -    DAY    ( T TIME )?)?)?
@@ -181,8 +177,7 @@ CARET_SEQUENCE:     '^' ~[ \t\r\n\f]+;
                  // '/' EXPRESSION '/'
 REGEX:              '/' ('\\/' | ~[*/\r\n])('\\/' | ~[/\r\n])* '/';
 
-                 // NON-WHITESPACE
-SEQUENCE:           ~[ ,#\t\r\n\f]+;
+SEQUENCE:           [A-Za-z_][A-Za-z0-9_]*;
 
 
 

@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace FSHerGen
+{
+    class Program
+    {
+       static Int32 Main(string[] args)
+        {
+            try
+            {
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return -1;
+            }
+        }
+    }
+}
