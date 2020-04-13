@@ -660,17 +660,17 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPath([NotNull] FSHParser.PathContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.paths"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.pathPart"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPaths([NotNull] FSHParser.PathsContext context) { }
+	public virtual void EnterPathPart([NotNull] FSHParser.PathPartContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.paths"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.pathPart"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPaths([NotNull] FSHParser.PathsContext context) { }
+	public virtual void ExitPathPart([NotNull] FSHParser.PathPartContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// <para>The default implementation does nothing.</para>

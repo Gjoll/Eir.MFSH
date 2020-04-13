@@ -552,15 +552,15 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPath([NotNull] FSHParser.PathContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.paths"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.pathPart"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterPaths([NotNull] FSHParser.PathsContext context);
+	void EnterPathPart([NotNull] FSHParser.PathPartContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.paths"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.pathPart"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitPaths([NotNull] FSHParser.PathsContext context);
+	void ExitPathPart([NotNull] FSHParser.PathPartContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// </summary>

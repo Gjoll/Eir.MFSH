@@ -44,7 +44,7 @@ target:             KW_TARGET STRING;
 
 // RULES
 cardRule:           STAR path CARD flag*;
-flagRule:           STAR (path | paths) flag+;
+flagRule:           STAR path (COMMA path)* flag+;
 valueSetRule:       STAR path KW_UNITS? KW_FROM sequence strength?;
 fixedValueRule:     STAR path KW_UNITS? EQUAL value KW_EXACTLY?;
 containsRule:       STAR path KW_CONTAINS item (KW_AND item)*;
@@ -68,9 +68,9 @@ vsFilterOperator:   EQUAL | sequence;
 vsFilterValue:      code | KW_TRUE | KW_FALSE | REGEX | STRING;
 
 // MISC
-path:               sequence | KW_SYSTEM;
-paths:              sequence (COMMA sequence)*;
-caretPath:          CARET_SEQUENCE;
+path:               pathPart ('.' pathPart)*;
+pathPart:           sequence | KW_SYSTEM | SqBOpen path SqBClose;
+caretPath:          '^' path;
 flag:               KW_MOD | KW_MS | KW_SU | KW_TU | KW_NORMATIVE | KW_DRAFT;
 strength:           KW_EXAMPLE | KW_PREFERRED | KW_EXTENSIBLE | KW_REQUIRED;
 value:              sequence | STRING | MULTILINE_STRING | NUMBER | DATETIME | TIME | reference | code | quantity | ratio | bool ;
@@ -138,6 +138,8 @@ KW_MACRODEF:        'MacroDef' WS* ':';
 
 // SYMBOLS
 EQUAL:              '=';
+SqBOpen:            '[';
+SqBClose:           ']';
 STAR:               '*'  [0-9]*;
 COLON:              ':';
 COMMA:              ',';
@@ -171,12 +173,9 @@ CARD:               ([0-9]+)? '..' ([0-9]+ | '*')?;
                  //  Reference       (        ITEM         |         ITEM         )
 REFERENCE:          'Reference' WS* '(' WS* SEQUENCE WS* ('|' WS* SEQUENCE WS*)* ')';
 
-                 //  ^  NON-WHITESPACE
-CARET_SEQUENCE:     '^' ~[ \t\r\n\f]+;
-
                  // '/' EXPRESSION '/'
 REGEX:              '/' ('\\/' | ~[*/\r\n])('\\/' | ~[/\r\n])* '/';
-SEQUENCE:           [A-Za-z_][A-Za-z0-9_]*;
+SEQUENCE:           [A-Za-z-][A-Za-z0-9-]*;
 
 // FRAGMENTS
 fragment WS: [ \t\r\n\f];
