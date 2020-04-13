@@ -68,8 +68,10 @@ vsFilterOperator:   EQUAL | sequence;
 vsFilterValue:      code | KW_TRUE | KW_FALSE | REGEX | STRING;
 
 // MISC
-path:               pathPart ('.' pathPart)*;
-pathPart:           sequence | KW_SYSTEM | SqBOpen path SqBClose;
+path:               pathItem ('.' pathItem)*;
+pathItem:           pathPiece+;
+pathPiece:          sequence | KW_SYSTEM | SqBOpen SEQUENCE SqBClose;
+
 caretPath:          '^' path;
 flag:               KW_MOD | KW_MS | KW_SU | KW_TU | KW_NORMATIVE | KW_DRAFT;
 strength:           KW_EXAMPLE | KW_PREFERRED | KW_EXTENSIBLE | KW_REQUIRED;
@@ -175,7 +177,7 @@ REFERENCE:          'Reference' WS* '(' WS* SEQUENCE WS* ('|' WS* SEQUENCE WS*)*
 
                  // '/' EXPRESSION '/'
 REGEX:              '/' ('\\/' | ~[*/\r\n])('\\/' | ~[/\r\n])* '/';
-SEQUENCE:           [A-Za-z-][A-Za-z0-9-]*;
+SEQUENCE:           [A-Za-z0-9\-]+;
 
 // FRAGMENTS
 fragment WS: [ \t\r\n\f];

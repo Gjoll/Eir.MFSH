@@ -660,17 +660,29 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPath([NotNull] FSHParser.PathContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.pathPart"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.pathItem"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPathPart([NotNull] FSHParser.PathPartContext context) { }
+	public virtual void EnterPathItem([NotNull] FSHParser.PathItemContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.pathPart"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.pathItem"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPathPart([NotNull] FSHParser.PathPartContext context) { }
+	public virtual void ExitPathItem([NotNull] FSHParser.PathItemContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.pathPiece"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPathPiece([NotNull] FSHParser.PathPieceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.pathPiece"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPathPiece([NotNull] FSHParser.PathPieceContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// <para>The default implementation does nothing.</para>

@@ -17,6 +17,7 @@ namespace FSHer
 
         #region Tokens
         //+ RuleNames
+        public const String RatioPartStr = "RatioPart";                                                                                     // Generate.cs:56
         public const String BoolStr = "Bool";                                                                                               // Generate.cs:56
         public const String TargetTypeStr = "TargetType";                                                                                   // Generate.cs:56
         public const String SequenceStr = "Sequence";                                                                                       // Generate.cs:56
@@ -72,7 +73,8 @@ namespace FSHer
         public const String VsFilterOperatorStr = "VsFilterOperator";                                                                       // Generate.cs:56
         public const String VsFilterValueStr = "VsFilterValue";                                                                             // Generate.cs:56
         public const String PathStr = "Path";                                                                                               // Generate.cs:56
-        public const String PathPartStr = "PathPart";                                                                                       // Generate.cs:56
+        public const String PathItemStr = "PathItem";                                                                                       // Generate.cs:56
+        public const String PathPieceStr = "PathPiece";                                                                                     // Generate.cs:56
         public const String CaretPathStr = "CaretPath";                                                                                     // Generate.cs:56
         public const String FlagStr = "Flag";                                                                                               // Generate.cs:56
         public const String StrengthStr = "Strength";                                                                                       // Generate.cs:56
@@ -83,7 +85,6 @@ namespace FSHer
         public const String QuantityStr = "Quantity";                                                                                       // Generate.cs:56
         public const String RatioStr = "Ratio";                                                                                             // Generate.cs:56
         public const String ReferenceStr = "Reference";                                                                                     // Generate.cs:56
-        public const String RatioPartStr = "RatioPart";                                                                                     // Generate.cs:56
         //- RuleNames
 
         //+ TokenNumbers
@@ -348,6 +349,14 @@ namespace FSHer
         //}
 
         //+ VisitorMethods
+        public override void EnterRatioPart(FSHParser.RatioPartContext context)                                                             // Generate.cs:60
+        {                                                                                                                                   // Generate.cs:61
+            this.PushRule(RatioPartStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+        }                                                                                                                                   // Generate.cs:63
+        public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:73
+        {                                                                                                                                   // Generate.cs:74
+            this.PopRule("RatioPart", context.Stop.StopIndex);                                                                              // Generate.cs:75
+        }                                                                                                                                   // Generate.cs:76
         public override void EnterBool(FSHParser.BoolContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
             this.PushRule(BoolStr, context.Start.StartIndex);                                                                               // Generate.cs:62
@@ -788,13 +797,21 @@ namespace FSHer
         {                                                                                                                                   // Generate.cs:74
             this.PopRule("Path", context.Stop.StopIndex);                                                                                   // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
-        public override void EnterPathPart(FSHParser.PathPartContext context)                                                               // Generate.cs:60
+        public override void EnterPathItem(FSHParser.PathItemContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(PathPartStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(PathItemStr, context.Start.StartIndex);                                                                           // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
-        public override void ExitPathPart(FSHParser.PathPartContext context)                                                                // Generate.cs:73
+        public override void ExitPathItem(FSHParser.PathItemContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
-            this.PopRule("PathPart", context.Stop.StopIndex);                                                                               // Generate.cs:75
+            this.PopRule("PathItem", context.Stop.StopIndex);                                                                               // Generate.cs:75
+        }                                                                                                                                   // Generate.cs:76
+        public override void EnterPathPiece(FSHParser.PathPieceContext context)                                                             // Generate.cs:60
+        {                                                                                                                                   // Generate.cs:61
+            this.PushRule(PathPieceStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+        }                                                                                                                                   // Generate.cs:63
+        public override void ExitPathPiece(FSHParser.PathPieceContext context)                                                              // Generate.cs:73
+        {                                                                                                                                   // Generate.cs:74
+            this.PopRule("PathPiece", context.Stop.StopIndex);                                                                              // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCaretPath(FSHParser.CaretPathContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
@@ -875,14 +892,6 @@ namespace FSHer
         public override void ExitReference(FSHParser.ReferenceContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
             this.PopRule("Reference", context.Stop.StopIndex);                                                                              // Generate.cs:75
-        }                                                                                                                                   // Generate.cs:76
-        public override void EnterRatioPart(FSHParser.RatioPartContext context)                                                             // Generate.cs:60
-        {                                                                                                                                   // Generate.cs:61
-            this.PushRule(RatioPartStr, context.Start.StartIndex);                                                                          // Generate.cs:62
-        }                                                                                                                                   // Generate.cs:63
-        public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:73
-        {                                                                                                                                   // Generate.cs:74
-            this.PopRule("RatioPart", context.Stop.StopIndex);                                                                              // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
         //- VisitorMethods
 

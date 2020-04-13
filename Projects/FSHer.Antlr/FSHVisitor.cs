@@ -345,11 +345,17 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPath([NotNull] FSHParser.PathContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.pathPart"/>.
+	/// Visit a parse tree produced by <see cref="FSHParser.pathItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitPathPart([NotNull] FSHParser.PathPartContext context);
+	Result VisitPathItem([NotNull] FSHParser.PathItemContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FSHParser.pathPiece"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPathPiece([NotNull] FSHParser.PathPieceContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// </summary>

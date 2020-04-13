@@ -552,15 +552,25 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPath([NotNull] FSHParser.PathContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.pathPart"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.pathItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterPathPart([NotNull] FSHParser.PathPartContext context);
+	void EnterPathItem([NotNull] FSHParser.PathItemContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.pathPart"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.pathItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitPathPart([NotNull] FSHParser.PathPartContext context);
+	void ExitPathItem([NotNull] FSHParser.PathItemContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.pathPiece"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPathPiece([NotNull] FSHParser.PathPieceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.pathPiece"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPathPiece([NotNull] FSHParser.PathPieceContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// </summary>

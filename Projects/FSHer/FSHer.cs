@@ -47,7 +47,7 @@ namespace FSHer
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new FSHErrorListenerLexer(this, fileName));
 
-            FSHParser parser = new FSHParser(new CommonTokenStream(lexer));
+            FSHParser parser = new FSHParserLocal(new CommonTokenStream(lexer));
 
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new FSHErrorListenerParser(this, fileName));
