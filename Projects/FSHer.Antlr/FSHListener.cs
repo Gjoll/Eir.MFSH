@@ -552,15 +552,15 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPath([NotNull] FSHParser.PathContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.paths"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.pathList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterPaths([NotNull] FSHParser.PathsContext context);
+	void EnterPathList([NotNull] FSHParser.PathListContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.paths"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.pathList"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitPaths([NotNull] FSHParser.PathsContext context);
+	void ExitPathList([NotNull] FSHParser.PathListContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// </summary>
@@ -611,16 +611,6 @@ public interface IFSHListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitItem([NotNull] FSHParser.ItemContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.code"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterCode([NotNull] FSHParser.CodeContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.code"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitCode([NotNull] FSHParser.CodeContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.concept"/>.
 	/// </summary>
@@ -691,5 +681,55 @@ public interface IFSHListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitTargetType([NotNull] FSHParser.TargetTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.caretSequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCaretSequence([NotNull] FSHParser.CaretSequenceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.caretSequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCaretSequence([NotNull] FSHParser.CaretSequenceContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSequence([NotNull] FSHParser.SequenceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSequence([NotNull] FSHParser.SequenceContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.sequenceList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSequenceList([NotNull] FSHParser.SequenceListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.sequenceList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSequenceList([NotNull] FSHParser.SequenceListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.code"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCode([NotNull] FSHParser.CodeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.code"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCode([NotNull] FSHParser.CodeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.codeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCodeList([NotNull] FSHParser.CodeListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.codeList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCodeList([NotNull] FSHParser.CodeListContext context);
 }
 } // namespace FSHer.Antlr
