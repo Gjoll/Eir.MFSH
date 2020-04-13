@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace FSHer {
+namespace FSHer.Antlr {
 using System;
 using System.IO;
 using System.Text;
@@ -5383,4 +5383,4 @@ public partial class FSHParser : Parser {
 
 
 }
-} // namespace FSHer
+} // namespace FSHer.Antlr

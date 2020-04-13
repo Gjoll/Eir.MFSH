@@ -1,5 +1,6 @@
 ﻿using Eir.DevTools;
 using FSHer;
+using FSHer.Antlr;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -90,7 +91,7 @@ namespace FSHerGen
 
             tokens
                 .DefineBlock(out CodeBlockNested tokenBlock)
-                .AppendCode($"String GetTokenName(Int32 tokenIndex)")
+                .AppendCode($"public static String GetTokenName(Int32 tokenIndex)")
                 .OpenBrace()
                 .AppendCode("switch (tokenIndex)")
                 .OpenBrace()

@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace FSHer {
+namespace FSHer.Antlr {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -705,4 +705,4 @@ public partial class FSHBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, 
 	/// <return>The visitor result.</return>
 	public virtual Result VisitSequence([NotNull] FSHParser.SequenceContext context) { return VisitChildren(context); }
 }
-} // namespace FSHer
+} // namespace FSHer.Antlr

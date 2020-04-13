@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 using Eir.DevTools;
+using FSHer.Antlr;
 
 namespace FSHer
 {
@@ -41,7 +42,7 @@ namespace FSHer
             fshText = fshText.Replace("\r", "");
             this.InputLines = fshText.Split('\n');
 
-            FSHLexer lexer = new FSHLexer(new AntlrInputStream(fshText));
+            FSHLexer lexer = new FSHLexerLocal(new AntlrInputStream(fshText));
 
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new FSHErrorListenerLexer(this, fileName));
