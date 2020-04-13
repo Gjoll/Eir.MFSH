@@ -10,6 +10,7 @@ namespace FSHer
 {
     public class FSHLexerLocal : FSHLexer
     {
+        public bool DebugFlag { get; set; } = false;
 
         public FSHLexerLocal(ICharStream input) : base(input)
         {
@@ -23,13 +24,16 @@ namespace FSHer
         public override IToken NextToken()
         {
             IToken retVal = base.NextToken();
-            string tokenName;
-            if (retVal.Type == -1)
-                tokenName = "<eof>";
-            else
-                tokenName = FSHListener.GetTokenName(retVal.Type);
+            if (this.DebugFlag)
+            {
+                string tokenName;
+                if (retVal.Type == -1)
+                    tokenName = "<eof>";
+                else
+                    tokenName = FSHListener.GetTokenName(retVal.Type);
+                Trace.WriteLine($"{tokenName}: '{retVal.Text}'");
+            }
 
-            Trace.WriteLine($"{tokenName}: '{retVal.Text}'");
             return retVal;
         }
     }

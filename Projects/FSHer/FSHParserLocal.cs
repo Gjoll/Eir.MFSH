@@ -10,6 +10,7 @@ namespace FSHer
 {
     public class FSHParserLocal : FSHParser
     {
+        public bool DebugFlag { get; set; } = false;
         public FSHParserLocal(ITokenStream input) : base(input)
         {
         }
@@ -22,12 +23,16 @@ namespace FSHer
         Stack<ParserRuleContext> contextStack = new Stack<ParserRuleContext>();
         public override void EnterRule(ParserRuleContext localctx, int state, int ruleIndex)
         {
-            if (ruleIndex > 0)
+            if (this.DebugFlag)
             {
-                String tokenName = FSHListener.GetTokenName(localctx.RuleIndex);
-                System.Diagnostics.Trace.WriteLine($"Entering '{tokenName}'");
+                if (ruleIndex > 0)
+                {
+                    String tokenName = FSHListener.GetTokenName(localctx.RuleIndex);
+                    System.Diagnostics.Trace.WriteLine($"Entering '{tokenName}'");
+                }
+
+                contextStack.Push(localctx);
             }
-            contextStack.Push(localctx);
 
             base.EnterRule(localctx, state, ruleIndex);
         }
@@ -35,11 +40,15 @@ namespace FSHer
         public override void ExitRule()
         {
             base.ExitRule();
-            ParserRuleContext localctx = contextStack.Pop();
-            if (localctx.RuleIndex > 0)
+
+            if (this.DebugFlag)
             {
-                String tokenName = FSHListener.GetTokenName(localctx.RuleIndex);
-                System.Diagnostics.Trace.WriteLine($"Exiting'{tokenName}'");
+                ParserRuleContext localctx = contextStack.Pop();
+                if (localctx.RuleIndex > 0)
+                {
+                    String tokenName = FSHListener.GetTokenName(localctx.RuleIndex);
+                    System.Diagnostics.Trace.WriteLine($"Exiting'{tokenName}'");
+                }
             }
         }
     }

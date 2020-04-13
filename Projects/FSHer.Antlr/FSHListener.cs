@@ -552,25 +552,15 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPath([NotNull] FSHParser.PathContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.pathItem"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.paths"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterPathItem([NotNull] FSHParser.PathItemContext context);
+	void EnterPaths([NotNull] FSHParser.PathsContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.pathItem"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.paths"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitPathItem([NotNull] FSHParser.PathItemContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.pathPiece"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterPathPiece([NotNull] FSHParser.PathPieceContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.pathPiece"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitPathPiece([NotNull] FSHParser.PathPieceContext context);
+	void ExitPaths([NotNull] FSHParser.PathsContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// </summary>
@@ -701,15 +691,5 @@ public interface IFSHListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitTargetType([NotNull] FSHParser.TargetTypeContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterSequence([NotNull] FSHParser.SequenceContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitSequence([NotNull] FSHParser.SequenceContext context);
 }
 } // namespace FSHer.Antlr

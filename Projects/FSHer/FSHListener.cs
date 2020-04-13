@@ -17,10 +17,8 @@ namespace FSHer
 
         #region Tokens
         //+ RuleNames
-        public const String RatioPartStr = "RatioPart";                                                                                     // Generate.cs:56
         public const String BoolStr = "Bool";                                                                                               // Generate.cs:56
         public const String TargetTypeStr = "TargetType";                                                                                   // Generate.cs:56
-        public const String SequenceStr = "Sequence";                                                                                       // Generate.cs:56
         public const String DocStr = "Doc";                                                                                                 // Generate.cs:56
         public const String EntityStr = "Entity";                                                                                           // Generate.cs:56
         public const String AliasStr = "Alias";                                                                                             // Generate.cs:56
@@ -73,8 +71,7 @@ namespace FSHer
         public const String VsFilterOperatorStr = "VsFilterOperator";                                                                       // Generate.cs:56
         public const String VsFilterValueStr = "VsFilterValue";                                                                             // Generate.cs:56
         public const String PathStr = "Path";                                                                                               // Generate.cs:56
-        public const String PathItemStr = "PathItem";                                                                                       // Generate.cs:56
-        public const String PathPieceStr = "PathPiece";                                                                                     // Generate.cs:56
+        public const String PathsStr = "Paths";                                                                                             // Generate.cs:56
         public const String CaretPathStr = "CaretPath";                                                                                     // Generate.cs:56
         public const String FlagStr = "Flag";                                                                                               // Generate.cs:56
         public const String StrengthStr = "Strength";                                                                                       // Generate.cs:56
@@ -85,80 +82,81 @@ namespace FSHer
         public const String QuantityStr = "Quantity";                                                                                       // Generate.cs:56
         public const String RatioStr = "Ratio";                                                                                             // Generate.cs:56
         public const String ReferenceStr = "Reference";                                                                                     // Generate.cs:56
+        public const String RatioPartStr = "RatioPart";                                                                                     // Generate.cs:56
         //- RuleNames
 
         //+ TokenNumbers
         const Int32 T__0Num = 1;                                                                                                            // Generate.cs:121
         const Int32 T__1Num = 2;                                                                                                            // Generate.cs:121
-        const Int32 T__2Num = 3;                                                                                                            // Generate.cs:121
-        const Int32 T__3Num = 4;                                                                                                            // Generate.cs:121
-        const Int32 T__4Num = 5;                                                                                                            // Generate.cs:121
-        const Int32 KW_ALIASNum = 6;                                                                                                        // Generate.cs:121
-        const Int32 KW_PROFILENum = 7;                                                                                                      // Generate.cs:121
-        const Int32 KW_EXTENSIONNum = 8;                                                                                                    // Generate.cs:121
-        const Int32 KW_INSTANCENum = 9;                                                                                                     // Generate.cs:121
-        const Int32 KW_INSTANCEOFNum = 10;                                                                                                  // Generate.cs:121
-        const Int32 KW_INVARIANTNum = 11;                                                                                                   // Generate.cs:121
-        const Int32 KW_VALUESETNum = 12;                                                                                                    // Generate.cs:121
-        const Int32 KW_CODESYSTEMNum = 13;                                                                                                  // Generate.cs:121
-        const Int32 KW_RULESETNum = 14;                                                                                                     // Generate.cs:121
-        const Int32 KW_MAPPINGNum = 15;                                                                                                     // Generate.cs:121
-        const Int32 KW_MIXINSNum = 16;                                                                                                      // Generate.cs:121
-        const Int32 KW_PARENTNum = 17;                                                                                                      // Generate.cs:121
-        const Int32 KW_IDNum = 18;                                                                                                          // Generate.cs:121
-        const Int32 KW_TITLENum = 19;                                                                                                       // Generate.cs:121
-        const Int32 KW_DESCRIPTIONNum = 20;                                                                                                 // Generate.cs:121
-        const Int32 KW_EXPRESSIONNum = 21;                                                                                                  // Generate.cs:121
-        const Int32 KW_XPATHNum = 22;                                                                                                       // Generate.cs:121
-        const Int32 KW_SEVERITYNum = 23;                                                                                                    // Generate.cs:121
-        const Int32 KW_USAGENum = 24;                                                                                                       // Generate.cs:121
-        const Int32 KW_SOURCENum = 25;                                                                                                      // Generate.cs:121
-        const Int32 KW_TARGETNum = 26;                                                                                                      // Generate.cs:121
-        const Int32 KW_MODNum = 27;                                                                                                         // Generate.cs:121
-        const Int32 KW_MSNum = 28;                                                                                                          // Generate.cs:121
-        const Int32 KW_SUNum = 29;                                                                                                          // Generate.cs:121
-        const Int32 KW_TUNum = 30;                                                                                                          // Generate.cs:121
-        const Int32 KW_NORMATIVENum = 31;                                                                                                   // Generate.cs:121
-        const Int32 KW_DRAFTNum = 32;                                                                                                       // Generate.cs:121
-        const Int32 KW_FROMNum = 33;                                                                                                        // Generate.cs:121
-        const Int32 KW_EXAMPLENum = 34;                                                                                                     // Generate.cs:121
-        const Int32 KW_PREFERREDNum = 35;                                                                                                   // Generate.cs:121
-        const Int32 KW_EXTENSIBLENum = 36;                                                                                                  // Generate.cs:121
-        const Int32 KW_REQUIREDNum = 37;                                                                                                    // Generate.cs:121
-        const Int32 KW_CONTAINSNum = 38;                                                                                                    // Generate.cs:121
-        const Int32 KW_NAMEDNum = 39;                                                                                                       // Generate.cs:121
-        const Int32 KW_ANDNum = 40;                                                                                                         // Generate.cs:121
-        const Int32 KW_ONLYNum = 41;                                                                                                        // Generate.cs:121
-        const Int32 KW_ORNum = 42;                                                                                                          // Generate.cs:121
-        const Int32 KW_OBEYSNum = 43;                                                                                                       // Generate.cs:121
-        const Int32 KW_TRUENum = 44;                                                                                                        // Generate.cs:121
-        const Int32 KW_FALSENum = 45;                                                                                                       // Generate.cs:121
-        const Int32 KW_EXCLUDENum = 46;                                                                                                     // Generate.cs:121
-        const Int32 KW_CODESNum = 47;                                                                                                       // Generate.cs:121
-        const Int32 KW_WHERENum = 48;                                                                                                       // Generate.cs:121
-        const Int32 KW_VSREFERENCENum = 49;                                                                                                 // Generate.cs:121
-        const Int32 KW_SYSTEMNum = 50;                                                                                                      // Generate.cs:121
-        const Int32 KW_UNITSNum = 51;                                                                                                       // Generate.cs:121
-        const Int32 KW_EXACTLYNum = 52;                                                                                                     // Generate.cs:121
-        const Int32 KW_MACRONum = 53;                                                                                                       // Generate.cs:121
-        const Int32 KW_MACRODEFNum = 54;                                                                                                    // Generate.cs:121
-        const Int32 EQUALNum = 55;                                                                                                          // Generate.cs:121
-        const Int32 SqBOpenNum = 56;                                                                                                        // Generate.cs:121
-        const Int32 SqBCloseNum = 57;                                                                                                       // Generate.cs:121
-        const Int32 STARNum = 58;                                                                                                           // Generate.cs:121
-        const Int32 COLONNum = 59;                                                                                                          // Generate.cs:121
-        const Int32 COMMANum = 60;                                                                                                          // Generate.cs:121
-        const Int32 ARROWNum = 61;                                                                                                          // Generate.cs:121
-        const Int32 STRINGNum = 62;                                                                                                         // Generate.cs:121
-        const Int32 MULTILINE_STRINGNum = 63;                                                                                               // Generate.cs:121
-        const Int32 NUMBERNum = 64;                                                                                                         // Generate.cs:121
-        const Int32 UNITNum = 65;                                                                                                           // Generate.cs:121
-        const Int32 CONCEPT_STRINGNum = 66;                                                                                                 // Generate.cs:121
-        const Int32 DATETIMENum = 67;                                                                                                       // Generate.cs:121
-        const Int32 TIMENum = 68;                                                                                                           // Generate.cs:121
-        const Int32 CARDNum = 69;                                                                                                           // Generate.cs:121
-        const Int32 REFERENCENum = 70;                                                                                                      // Generate.cs:121
-        const Int32 REGEXNum = 71;                                                                                                          // Generate.cs:121
+        const Int32 KW_ALIASNum = 3;                                                                                                        // Generate.cs:121
+        const Int32 KW_PROFILENum = 4;                                                                                                      // Generate.cs:121
+        const Int32 KW_EXTENSIONNum = 5;                                                                                                    // Generate.cs:121
+        const Int32 KW_INSTANCENum = 6;                                                                                                     // Generate.cs:121
+        const Int32 KW_INSTANCEOFNum = 7;                                                                                                   // Generate.cs:121
+        const Int32 KW_INVARIANTNum = 8;                                                                                                    // Generate.cs:121
+        const Int32 KW_VALUESETNum = 9;                                                                                                     // Generate.cs:121
+        const Int32 KW_CODESYSTEMNum = 10;                                                                                                  // Generate.cs:121
+        const Int32 KW_RULESETNum = 11;                                                                                                     // Generate.cs:121
+        const Int32 KW_MAPPINGNum = 12;                                                                                                     // Generate.cs:121
+        const Int32 KW_MIXINSNum = 13;                                                                                                      // Generate.cs:121
+        const Int32 KW_PARENTNum = 14;                                                                                                      // Generate.cs:121
+        const Int32 KW_IDNum = 15;                                                                                                          // Generate.cs:121
+        const Int32 KW_TITLENum = 16;                                                                                                       // Generate.cs:121
+        const Int32 KW_DESCRIPTIONNum = 17;                                                                                                 // Generate.cs:121
+        const Int32 KW_EXPRESSIONNum = 18;                                                                                                  // Generate.cs:121
+        const Int32 KW_XPATHNum = 19;                                                                                                       // Generate.cs:121
+        const Int32 KW_SEVERITYNum = 20;                                                                                                    // Generate.cs:121
+        const Int32 KW_USAGENum = 21;                                                                                                       // Generate.cs:121
+        const Int32 KW_SOURCENum = 22;                                                                                                      // Generate.cs:121
+        const Int32 KW_TARGETNum = 23;                                                                                                      // Generate.cs:121
+        const Int32 KW_MODNum = 24;                                                                                                         // Generate.cs:121
+        const Int32 KW_MSNum = 25;                                                                                                          // Generate.cs:121
+        const Int32 KW_SUNum = 26;                                                                                                          // Generate.cs:121
+        const Int32 KW_TUNum = 27;                                                                                                          // Generate.cs:121
+        const Int32 KW_NORMATIVENum = 28;                                                                                                   // Generate.cs:121
+        const Int32 KW_DRAFTNum = 29;                                                                                                       // Generate.cs:121
+        const Int32 KW_FROMNum = 30;                                                                                                        // Generate.cs:121
+        const Int32 KW_EXAMPLENum = 31;                                                                                                     // Generate.cs:121
+        const Int32 KW_PREFERREDNum = 32;                                                                                                   // Generate.cs:121
+        const Int32 KW_EXTENSIBLENum = 33;                                                                                                  // Generate.cs:121
+        const Int32 KW_REQUIREDNum = 34;                                                                                                    // Generate.cs:121
+        const Int32 KW_CONTAINSNum = 35;                                                                                                    // Generate.cs:121
+        const Int32 KW_NAMEDNum = 36;                                                                                                       // Generate.cs:121
+        const Int32 KW_ANDNum = 37;                                                                                                         // Generate.cs:121
+        const Int32 KW_ONLYNum = 38;                                                                                                        // Generate.cs:121
+        const Int32 KW_ORNum = 39;                                                                                                          // Generate.cs:121
+        const Int32 KW_OBEYSNum = 40;                                                                                                       // Generate.cs:121
+        const Int32 KW_TRUENum = 41;                                                                                                        // Generate.cs:121
+        const Int32 KW_FALSENum = 42;                                                                                                       // Generate.cs:121
+        const Int32 KW_EXCLUDENum = 43;                                                                                                     // Generate.cs:121
+        const Int32 KW_CODESNum = 44;                                                                                                       // Generate.cs:121
+        const Int32 KW_WHERENum = 45;                                                                                                       // Generate.cs:121
+        const Int32 KW_VSREFERENCENum = 46;                                                                                                 // Generate.cs:121
+        const Int32 KW_SYSTEMNum = 47;                                                                                                      // Generate.cs:121
+        const Int32 KW_UNITSNum = 48;                                                                                                       // Generate.cs:121
+        const Int32 KW_EXACTLYNum = 49;                                                                                                     // Generate.cs:121
+        const Int32 KW_MACRONum = 50;                                                                                                       // Generate.cs:121
+        const Int32 KW_MACRODEFNum = 51;                                                                                                    // Generate.cs:121
+        const Int32 EQUALNum = 52;                                                                                                          // Generate.cs:121
+        const Int32 STARNum = 53;                                                                                                           // Generate.cs:121
+        const Int32 COLONNum = 54;                                                                                                          // Generate.cs:121
+        const Int32 COMMANum = 55;                                                                                                          // Generate.cs:121
+        const Int32 ARROWNum = 56;                                                                                                          // Generate.cs:121
+        const Int32 STRINGNum = 57;                                                                                                         // Generate.cs:121
+        const Int32 MULTILINE_STRINGNum = 58;                                                                                               // Generate.cs:121
+        const Int32 NUMBERNum = 59;                                                                                                         // Generate.cs:121
+        const Int32 UNITNum = 60;                                                                                                           // Generate.cs:121
+        const Int32 CODENum = 61;                                                                                                           // Generate.cs:121
+        const Int32 CONCEPT_STRINGNum = 62;                                                                                                 // Generate.cs:121
+        const Int32 DATETIMENum = 63;                                                                                                       // Generate.cs:121
+        const Int32 TIMENum = 64;                                                                                                           // Generate.cs:121
+        const Int32 CARDNum = 65;                                                                                                           // Generate.cs:121
+        const Int32 REFERENCENum = 66;                                                                                                      // Generate.cs:121
+        const Int32 CARET_SEQUENCENum = 67;                                                                                                 // Generate.cs:121
+        const Int32 REGEXNum = 68;                                                                                                          // Generate.cs:121
+        const Int32 COMMA_DELIMITED_CODESNum = 69;                                                                                          // Generate.cs:121
+        const Int32 COMMA_DELIMITED_SEQUENCESNum = 70;                                                                                      // Generate.cs:121
+        const Int32 MPARAMNum = 71;                                                                                                         // Generate.cs:121
         const Int32 SEQUENCENum = 72;                                                                                                       // Generate.cs:121
         const Int32 WHITESPACENum = 73;                                                                                                     // Generate.cs:121
         const Int32 BLOCK_COMMENTNum = 74;                                                                                                  // Generate.cs:121
@@ -169,9 +167,6 @@ namespace FSHer
             {                                                                                                                               // Generate.cs:97
                 case T__0Num: return "T__0";                                                                                                // Generate.cs:125
                 case T__1Num: return "T__1";                                                                                                // Generate.cs:125
-                case T__2Num: return "T__2";                                                                                                // Generate.cs:125
-                case T__3Num: return "T__3";                                                                                                // Generate.cs:125
-                case T__4Num: return "T__4";                                                                                                // Generate.cs:125
                 case KW_ALIASNum: return "KW_ALIAS";                                                                                        // Generate.cs:125
                 case KW_PROFILENum: return "KW_PROFILE";                                                                                    // Generate.cs:125
                 case KW_EXTENSIONNum: return "KW_EXTENSION";                                                                                // Generate.cs:125
@@ -222,8 +217,6 @@ namespace FSHer
                 case KW_MACRONum: return "KW_MACRO";                                                                                        // Generate.cs:125
                 case KW_MACRODEFNum: return "KW_MACRODEF";                                                                                  // Generate.cs:125
                 case EQUALNum: return "EQUAL";                                                                                              // Generate.cs:125
-                case SqBOpenNum: return "SqBOpen";                                                                                          // Generate.cs:125
-                case SqBCloseNum: return "SqBClose";                                                                                        // Generate.cs:125
                 case STARNum: return "STAR";                                                                                                // Generate.cs:125
                 case COLONNum: return "COLON";                                                                                              // Generate.cs:125
                 case COMMANum: return "COMMA";                                                                                              // Generate.cs:125
@@ -232,12 +225,17 @@ namespace FSHer
                 case MULTILINE_STRINGNum: return "MULTILINE_STRING";                                                                        // Generate.cs:125
                 case NUMBERNum: return "NUMBER";                                                                                            // Generate.cs:125
                 case UNITNum: return "UNIT";                                                                                                // Generate.cs:125
+                case CODENum: return "CODE";                                                                                                // Generate.cs:125
                 case CONCEPT_STRINGNum: return "CONCEPT_STRING";                                                                            // Generate.cs:125
                 case DATETIMENum: return "DATETIME";                                                                                        // Generate.cs:125
                 case TIMENum: return "TIME";                                                                                                // Generate.cs:125
                 case CARDNum: return "CARD";                                                                                                // Generate.cs:125
                 case REFERENCENum: return "REFERENCE";                                                                                      // Generate.cs:125
+                case CARET_SEQUENCENum: return "CARET_SEQUENCE";                                                                            // Generate.cs:125
                 case REGEXNum: return "REGEX";                                                                                              // Generate.cs:125
+                case COMMA_DELIMITED_CODESNum: return "COMMA_DELIMITED_CODES";                                                              // Generate.cs:125
+                case COMMA_DELIMITED_SEQUENCESNum: return "COMMA_DELIMITED_SEQUENCES";                                                      // Generate.cs:125
+                case MPARAMNum: return "MPARAM";                                                                                            // Generate.cs:125
                 case SEQUENCENum: return "SEQUENCE";                                                                                        // Generate.cs:125
                 case WHITESPACENum: return "WHITESPACE";                                                                                    // Generate.cs:125
                 case BLOCK_COMMENTNum: return "BLOCK_COMMENT";                                                                              // Generate.cs:125
@@ -263,7 +261,7 @@ namespace FSHer
 
         NodeRule PushRule(String ruleName, Int32 startIndex)
         {
-            Trace.WriteLine($"Enter {ruleName}");
+            //Trace.WriteLine($"Enter {ruleName}");
             NodeRule retVal = new NodeRule(ruleName);
             this.Current.ChildNodes.Add(retVal);
             this.nodeStack.Push(retVal);
@@ -272,7 +270,7 @@ namespace FSHer
 
         void PopRule(String ruleName, Int32 startIndex)
         {
-            Trace.WriteLine($"Exit {ruleName}");
+            //Trace.WriteLine($"Exit {ruleName}");
             Debug.Assert(this.nodeStack.Peek().RuleName == ruleName);
             this.nodeStack.Pop();
         }
@@ -349,14 +347,6 @@ namespace FSHer
         //}
 
         //+ VisitorMethods
-        public override void EnterRatioPart(FSHParser.RatioPartContext context)                                                             // Generate.cs:60
-        {                                                                                                                                   // Generate.cs:61
-            this.PushRule(RatioPartStr, context.Start.StartIndex);                                                                          // Generate.cs:62
-        }                                                                                                                                   // Generate.cs:63
-        public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:73
-        {                                                                                                                                   // Generate.cs:74
-            this.PopRule("RatioPart", context.Stop.StopIndex);                                                                              // Generate.cs:75
-        }                                                                                                                                   // Generate.cs:76
         public override void EnterBool(FSHParser.BoolContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
             this.PushRule(BoolStr, context.Start.StartIndex);                                                                               // Generate.cs:62
@@ -372,14 +362,6 @@ namespace FSHer
         public override void ExitTargetType(FSHParser.TargetTypeContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
             this.PopRule("TargetType", context.Stop.StopIndex);                                                                             // Generate.cs:75
-        }                                                                                                                                   // Generate.cs:76
-        public override void EnterSequence(FSHParser.SequenceContext context)                                                               // Generate.cs:60
-        {                                                                                                                                   // Generate.cs:61
-            this.PushRule(SequenceStr, context.Start.StartIndex);                                                                           // Generate.cs:62
-        }                                                                                                                                   // Generate.cs:63
-        public override void ExitSequence(FSHParser.SequenceContext context)                                                                // Generate.cs:73
-        {                                                                                                                                   // Generate.cs:74
-            this.PopRule("Sequence", context.Stop.StopIndex);                                                                               // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
         public override void EnterDoc(FSHParser.DocContext context)                                                                         // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
@@ -797,21 +779,13 @@ namespace FSHer
         {                                                                                                                                   // Generate.cs:74
             this.PopRule("Path", context.Stop.StopIndex);                                                                                   // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
-        public override void EnterPathItem(FSHParser.PathItemContext context)                                                               // Generate.cs:60
+        public override void EnterPaths(FSHParser.PathsContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(PathItemStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(PathsStr, context.Start.StartIndex);                                                                              // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
-        public override void ExitPathItem(FSHParser.PathItemContext context)                                                                // Generate.cs:73
+        public override void ExitPaths(FSHParser.PathsContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
-            this.PopRule("PathItem", context.Stop.StopIndex);                                                                               // Generate.cs:75
-        }                                                                                                                                   // Generate.cs:76
-        public override void EnterPathPiece(FSHParser.PathPieceContext context)                                                             // Generate.cs:60
-        {                                                                                                                                   // Generate.cs:61
-            this.PushRule(PathPieceStr, context.Start.StartIndex);                                                                          // Generate.cs:62
-        }                                                                                                                                   // Generate.cs:63
-        public override void ExitPathPiece(FSHParser.PathPieceContext context)                                                              // Generate.cs:73
-        {                                                                                                                                   // Generate.cs:74
-            this.PopRule("PathPiece", context.Stop.StopIndex);                                                                              // Generate.cs:75
+            this.PopRule("Paths", context.Stop.StopIndex);                                                                                  // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCaretPath(FSHParser.CaretPathContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
@@ -892,6 +866,14 @@ namespace FSHer
         public override void ExitReference(FSHParser.ReferenceContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
             this.PopRule("Reference", context.Stop.StopIndex);                                                                              // Generate.cs:75
+        }                                                                                                                                   // Generate.cs:76
+        public override void EnterRatioPart(FSHParser.RatioPartContext context)                                                             // Generate.cs:60
+        {                                                                                                                                   // Generate.cs:61
+            this.PushRule(RatioPartStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+        }                                                                                                                                   // Generate.cs:63
+        public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:73
+        {                                                                                                                                   // Generate.cs:74
+            this.PopRule("RatioPart", context.Stop.StopIndex);                                                                              // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
         //- VisitorMethods
 

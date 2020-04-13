@@ -660,29 +660,17 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPath([NotNull] FSHParser.PathContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.pathItem"/>.
+	/// Enter a parse tree produced by <see cref="FSHParser.paths"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPathItem([NotNull] FSHParser.PathItemContext context) { }
+	public virtual void EnterPaths([NotNull] FSHParser.PathsContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.pathItem"/>.
+	/// Exit a parse tree produced by <see cref="FSHParser.paths"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPathItem([NotNull] FSHParser.PathItemContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.pathPiece"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPathPiece([NotNull] FSHParser.PathPieceContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.pathPiece"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPathPiece([NotNull] FSHParser.PathPieceContext context) { }
+	public virtual void ExitPaths([NotNull] FSHParser.PathsContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -839,18 +827,6 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTargetType([NotNull] FSHParser.TargetTypeContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSequence([NotNull] FSHParser.SequenceContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSequence([NotNull] FSHParser.SequenceContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

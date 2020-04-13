@@ -345,17 +345,11 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPath([NotNull] FSHParser.PathContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.pathItem"/>.
+	/// Visit a parse tree produced by <see cref="FSHParser.paths"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitPathItem([NotNull] FSHParser.PathItemContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.pathPiece"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPathPiece([NotNull] FSHParser.PathPieceContext context);
+	Result VisitPaths([NotNull] FSHParser.PathsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FSHParser.caretPath"/>.
 	/// </summary>
@@ -434,11 +428,5 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTargetType([NotNull] FSHParser.TargetTypeContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="FSHParser.sequence"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSequence([NotNull] FSHParser.SequenceContext context);
 }
 } // namespace FSHer.Antlr
