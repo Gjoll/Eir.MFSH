@@ -14,8 +14,10 @@ namespace FSHer
         public String TokenName;
         public String TokenValue;
 
-        public NodeToken(String nodeType) : base()
+        public NodeToken(String tokenName, String tokenValue) : base()
         {
+            this.TokenName = tokenName;
+            this.TokenValue = tokenValue;
         }
 
         public override string ToString() => Dump("");

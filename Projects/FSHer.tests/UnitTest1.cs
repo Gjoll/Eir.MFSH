@@ -45,7 +45,7 @@ namespace FSHer.tests
                 while (count-- > 0)
                 {
                     start = text.LastIndexOf('\n', start);
-                    if (start < 0)
+                    if (start <= 0)
                         return 0;
                     start = start - 1;
                 }
@@ -78,6 +78,8 @@ namespace FSHer.tests
         void Compare(String results,
             FSHFile f)
         {
+            results = results.Replace("\r", "");
+
             String output = f.Doc.ToFSH();
 
             Int32 i = 0;
@@ -135,11 +137,12 @@ namespace FSHer.tests
                 StringBuilder sb = new StringBuilder();
                 pp.FormatErrorMessages(sb);
                 Trace.WriteLine(sb.ToString());
+                Assert.True(false);
             }
             String expanded = f.Doc.ToFSH();
             String results = File.ReadAllText(@"MacroTest1.results.txt");
             Compare(results, f);
-            //File.WriteAllText(@"c:\Temp\scr.txt", expanded);
+            File.WriteAllText(@"c:\Temp\scr.txt", expanded);
         }
     }
 }

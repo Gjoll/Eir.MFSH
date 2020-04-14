@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FSHer.Nodes;
 
 namespace FSHer.Processors
 {
@@ -13,11 +12,6 @@ namespace FSHer.Processors
     /// </summary>
     class Macros : ProcessorBase
     {
-        /// <summary>
-        /// New profile rule children nodes.
-        /// </summary>
-        List<NodeBase> nodes = new List<NodeBase>();
-
         private String profileName;
 
         public Macros(FSHer fsher) : base(fsher)
@@ -29,9 +23,9 @@ namespace FSHer.Processors
             IEnumerable<NodeRule> profiles = this.FSHer.ProfileDict.Values;
             foreach (NodeRule profile in profiles)
             {
-                this.nodes = new List<NodeBase>();
+                List<NodeBase> nodes = new List<NodeBase>();
                 this.profileName = profile.Name;
-                this.Process(profile.ChildNodes);
+                this.Process(profile.ChildNodes, nodes);
                 profile.ChildNodes = nodes;
             }
         }
@@ -40,7 +34,8 @@ namespace FSHer.Processors
         /// Return rule set with indicated name if it has been
         /// processed (has no unexpanded macros) in it.
         /// Otherwise return null.
-        bool ExpandMacro(String macroName)
+        bool ExpandMacro(String macroName,
+            List<NodeBase> outNodes)
         {
             const String fcn = "ExpandMacro";
 
@@ -50,9 +45,9 @@ namespace FSHer.Processors
                 return false;
             }
 
-            this.nodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
-            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList());
-            this.nodes.Add(new NodeComment($"\n  // End Macro {macroName}"));
+            outNodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
+            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList(), outNodes);
+            outNodes.Add(new NodeComment($"\n  // End Macro {macroName}"));
             return true;
         }
 
@@ -78,7 +73,8 @@ namespace FSHer.Processors
             return true;
         }
 
-        bool Process<T>(List<T> macroNodes)
+        bool Process<T>(List<T> macroNodes,
+            List<NodeBase> outNodes)
         where T : NodeBase
         {
             const String fcn = "Process";
@@ -92,12 +88,12 @@ namespace FSHer.Processors
                 {
                     this.FSHer.ConversionInfo(this.GetType().Name, fcn, $"Profile: {profileName}, expanding macro {macroName}");
 
-                    if (this.ExpandMacro(macroName) == false)
+                    if (this.ExpandMacro(macroName, outNodes) == false)
                         return false;
                 }
                 else
                 {
-                    nodes.Add(child);
+                    outNodes.Add(child);
                 }
 
                 i += 1;

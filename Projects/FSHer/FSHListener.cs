@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using FSHer.Antlr;
-using FSHer.Nodes;
 
 namespace FSHer
 {
@@ -86,86 +86,82 @@ namespace FSHer
         //- RuleNames
 
         //+ TokenNumbers
-        const Int32 T__0Num = 1;                                                                                                            // Generate.cs:121
-        const Int32 T__1Num = 2;                                                                                                            // Generate.cs:121
-        const Int32 KW_ALIASNum = 3;                                                                                                        // Generate.cs:121
-        const Int32 KW_PROFILENum = 4;                                                                                                      // Generate.cs:121
-        const Int32 KW_EXTENSIONNum = 5;                                                                                                    // Generate.cs:121
-        const Int32 KW_INSTANCENum = 6;                                                                                                     // Generate.cs:121
-        const Int32 KW_INSTANCEOFNum = 7;                                                                                                   // Generate.cs:121
-        const Int32 KW_INVARIANTNum = 8;                                                                                                    // Generate.cs:121
-        const Int32 KW_VALUESETNum = 9;                                                                                                     // Generate.cs:121
-        const Int32 KW_CODESYSTEMNum = 10;                                                                                                  // Generate.cs:121
-        const Int32 KW_RULESETNum = 11;                                                                                                     // Generate.cs:121
-        const Int32 KW_MAPPINGNum = 12;                                                                                                     // Generate.cs:121
-        const Int32 KW_MIXINSNum = 13;                                                                                                      // Generate.cs:121
-        const Int32 KW_PARENTNum = 14;                                                                                                      // Generate.cs:121
-        const Int32 KW_IDNum = 15;                                                                                                          // Generate.cs:121
-        const Int32 KW_TITLENum = 16;                                                                                                       // Generate.cs:121
-        const Int32 KW_DESCRIPTIONNum = 17;                                                                                                 // Generate.cs:121
-        const Int32 KW_EXPRESSIONNum = 18;                                                                                                  // Generate.cs:121
-        const Int32 KW_XPATHNum = 19;                                                                                                       // Generate.cs:121
-        const Int32 KW_SEVERITYNum = 20;                                                                                                    // Generate.cs:121
-        const Int32 KW_USAGENum = 21;                                                                                                       // Generate.cs:121
-        const Int32 KW_SOURCENum = 22;                                                                                                      // Generate.cs:121
-        const Int32 KW_TARGETNum = 23;                                                                                                      // Generate.cs:121
-        const Int32 KW_MODNum = 24;                                                                                                         // Generate.cs:121
-        const Int32 KW_MSNum = 25;                                                                                                          // Generate.cs:121
-        const Int32 KW_SUNum = 26;                                                                                                          // Generate.cs:121
-        const Int32 KW_TUNum = 27;                                                                                                          // Generate.cs:121
-        const Int32 KW_NORMATIVENum = 28;                                                                                                   // Generate.cs:121
-        const Int32 KW_DRAFTNum = 29;                                                                                                       // Generate.cs:121
-        const Int32 KW_FROMNum = 30;                                                                                                        // Generate.cs:121
-        const Int32 KW_EXAMPLENum = 31;                                                                                                     // Generate.cs:121
-        const Int32 KW_PREFERREDNum = 32;                                                                                                   // Generate.cs:121
-        const Int32 KW_EXTENSIBLENum = 33;                                                                                                  // Generate.cs:121
-        const Int32 KW_REQUIREDNum = 34;                                                                                                    // Generate.cs:121
-        const Int32 KW_CONTAINSNum = 35;                                                                                                    // Generate.cs:121
-        const Int32 KW_NAMEDNum = 36;                                                                                                       // Generate.cs:121
-        const Int32 KW_ANDNum = 37;                                                                                                         // Generate.cs:121
-        const Int32 KW_ONLYNum = 38;                                                                                                        // Generate.cs:121
-        const Int32 KW_ORNum = 39;                                                                                                          // Generate.cs:121
-        const Int32 KW_OBEYSNum = 40;                                                                                                       // Generate.cs:121
-        const Int32 KW_TRUENum = 41;                                                                                                        // Generate.cs:121
-        const Int32 KW_FALSENum = 42;                                                                                                       // Generate.cs:121
-        const Int32 KW_EXCLUDENum = 43;                                                                                                     // Generate.cs:121
-        const Int32 KW_CODESNum = 44;                                                                                                       // Generate.cs:121
-        const Int32 KW_WHERENum = 45;                                                                                                       // Generate.cs:121
-        const Int32 KW_VSREFERENCENum = 46;                                                                                                 // Generate.cs:121
-        const Int32 KW_SYSTEMNum = 47;                                                                                                      // Generate.cs:121
-        const Int32 KW_UNITSNum = 48;                                                                                                       // Generate.cs:121
-        const Int32 KW_EXACTLYNum = 49;                                                                                                     // Generate.cs:121
-        const Int32 KW_MACRONum = 50;                                                                                                       // Generate.cs:121
-        const Int32 KW_MACRODEFNum = 51;                                                                                                    // Generate.cs:121
-        const Int32 EQUALNum = 52;                                                                                                          // Generate.cs:121
-        const Int32 STARNum = 53;                                                                                                           // Generate.cs:121
-        const Int32 COLONNum = 54;                                                                                                          // Generate.cs:121
-        const Int32 COMMANum = 55;                                                                                                          // Generate.cs:121
-        const Int32 ARROWNum = 56;                                                                                                          // Generate.cs:121
-        const Int32 STRINGNum = 57;                                                                                                         // Generate.cs:121
-        const Int32 MULTILINE_STRINGNum = 58;                                                                                               // Generate.cs:121
-        const Int32 NUMBERNum = 59;                                                                                                         // Generate.cs:121
-        const Int32 UNITNum = 60;                                                                                                           // Generate.cs:121
-        const Int32 CODENum = 61;                                                                                                           // Generate.cs:121
-        const Int32 CONCEPT_STRINGNum = 62;                                                                                                 // Generate.cs:121
-        const Int32 DATETIMENum = 63;                                                                                                       // Generate.cs:121
-        const Int32 TIMENum = 64;                                                                                                           // Generate.cs:121
-        const Int32 CARDNum = 65;                                                                                                           // Generate.cs:121
-        const Int32 REFERENCENum = 66;                                                                                                      // Generate.cs:121
-        const Int32 CARET_SEQUENCENum = 67;                                                                                                 // Generate.cs:121
-        const Int32 REGEXNum = 68;                                                                                                          // Generate.cs:121
-        const Int32 COMMA_DELIMITED_CODESNum = 69;                                                                                          // Generate.cs:121
-        const Int32 COMMA_DELIMITED_SEQUENCESNum = 70;                                                                                      // Generate.cs:121
-        const Int32 SEQUENCENum = 71;                                                                                                       // Generate.cs:121
-        const Int32 WHITESPACENum = 72;                                                                                                     // Generate.cs:121
-        const Int32 BLOCK_COMMENTNum = 73;                                                                                                  // Generate.cs:121
-        const Int32 LINE_COMMENTNum = 74;                                                                                                   // Generate.cs:121
+        const Int32 KW_ALIASNum = 1;                                                                                                        // Generate.cs:121
+        const Int32 KW_PROFILENum = 2;                                                                                                      // Generate.cs:121
+        const Int32 KW_EXTENSIONNum = 3;                                                                                                    // Generate.cs:121
+        const Int32 KW_INSTANCENum = 4;                                                                                                     // Generate.cs:121
+        const Int32 KW_INSTANCEOFNum = 5;                                                                                                   // Generate.cs:121
+        const Int32 KW_INVARIANTNum = 6;                                                                                                    // Generate.cs:121
+        const Int32 KW_VALUESETNum = 7;                                                                                                     // Generate.cs:121
+        const Int32 KW_CODESYSTEMNum = 8;                                                                                                   // Generate.cs:121
+        const Int32 KW_RULESETNum = 9;                                                                                                      // Generate.cs:121
+        const Int32 KW_MAPPINGNum = 10;                                                                                                     // Generate.cs:121
+        const Int32 KW_MIXINSNum = 11;                                                                                                      // Generate.cs:121
+        const Int32 KW_PARENTNum = 12;                                                                                                      // Generate.cs:121
+        const Int32 KW_IDNum = 13;                                                                                                          // Generate.cs:121
+        const Int32 KW_TITLENum = 14;                                                                                                       // Generate.cs:121
+        const Int32 KW_DESCRIPTIONNum = 15;                                                                                                 // Generate.cs:121
+        const Int32 KW_EXPRESSIONNum = 16;                                                                                                  // Generate.cs:121
+        const Int32 KW_XPATHNum = 17;                                                                                                       // Generate.cs:121
+        const Int32 KW_SEVERITYNum = 18;                                                                                                    // Generate.cs:121
+        const Int32 KW_USAGENum = 19;                                                                                                       // Generate.cs:121
+        const Int32 KW_SOURCENum = 20;                                                                                                      // Generate.cs:121
+        const Int32 KW_TARGETNum = 21;                                                                                                      // Generate.cs:121
+        const Int32 KW_MODNum = 22;                                                                                                         // Generate.cs:121
+        const Int32 KW_MSNum = 23;                                                                                                          // Generate.cs:121
+        const Int32 KW_SUNum = 24;                                                                                                          // Generate.cs:121
+        const Int32 KW_TUNum = 25;                                                                                                          // Generate.cs:121
+        const Int32 KW_NORMATIVENum = 26;                                                                                                   // Generate.cs:121
+        const Int32 KW_DRAFTNum = 27;                                                                                                       // Generate.cs:121
+        const Int32 KW_FROMNum = 28;                                                                                                        // Generate.cs:121
+        const Int32 KW_EXAMPLENum = 29;                                                                                                     // Generate.cs:121
+        const Int32 KW_PREFERREDNum = 30;                                                                                                   // Generate.cs:121
+        const Int32 KW_EXTENSIBLENum = 31;                                                                                                  // Generate.cs:121
+        const Int32 KW_REQUIREDNum = 32;                                                                                                    // Generate.cs:121
+        const Int32 KW_CONTAINSNum = 33;                                                                                                    // Generate.cs:121
+        const Int32 KW_NAMEDNum = 34;                                                                                                       // Generate.cs:121
+        const Int32 KW_ANDNum = 35;                                                                                                         // Generate.cs:121
+        const Int32 KW_ONLYNum = 36;                                                                                                        // Generate.cs:121
+        const Int32 KW_ORNum = 37;                                                                                                          // Generate.cs:121
+        const Int32 KW_OBEYSNum = 38;                                                                                                       // Generate.cs:121
+        const Int32 KW_TRUENum = 39;                                                                                                        // Generate.cs:121
+        const Int32 KW_FALSENum = 40;                                                                                                       // Generate.cs:121
+        const Int32 KW_EXCLUDENum = 41;                                                                                                     // Generate.cs:121
+        const Int32 KW_CODESNum = 42;                                                                                                       // Generate.cs:121
+        const Int32 KW_WHERENum = 43;                                                                                                       // Generate.cs:121
+        const Int32 KW_VSREFERENCENum = 44;                                                                                                 // Generate.cs:121
+        const Int32 KW_SYSTEMNum = 45;                                                                                                      // Generate.cs:121
+        const Int32 KW_UNITSNum = 46;                                                                                                       // Generate.cs:121
+        const Int32 KW_EXACTLYNum = 47;                                                                                                     // Generate.cs:121
+        const Int32 KW_MACRONum = 48;                                                                                                       // Generate.cs:121
+        const Int32 KW_MACRODEFNum = 49;                                                                                                    // Generate.cs:121
+        const Int32 EQUALNum = 50;                                                                                                          // Generate.cs:121
+        const Int32 STARNum = 51;                                                                                                           // Generate.cs:121
+        const Int32 COLONNum = 52;                                                                                                          // Generate.cs:121
+        const Int32 COMMANum = 53;                                                                                                          // Generate.cs:121
+        const Int32 ARROWNum = 54;                                                                                                          // Generate.cs:121
+        const Int32 STRINGNum = 55;                                                                                                         // Generate.cs:121
+        const Int32 MULTILINE_STRINGNum = 56;                                                                                               // Generate.cs:121
+        const Int32 NUMBERNum = 57;                                                                                                         // Generate.cs:121
+        const Int32 UNITNum = 58;                                                                                                           // Generate.cs:121
+        const Int32 CODENum = 59;                                                                                                           // Generate.cs:121
+        const Int32 CONCEPT_STRINGNum = 60;                                                                                                 // Generate.cs:121
+        const Int32 DATETIMENum = 61;                                                                                                       // Generate.cs:121
+        const Int32 TIMENum = 62;                                                                                                           // Generate.cs:121
+        const Int32 CARDNum = 63;                                                                                                           // Generate.cs:121
+        const Int32 REFERENCENum = 64;                                                                                                      // Generate.cs:121
+        const Int32 CARET_SEQUENCENum = 65;                                                                                                 // Generate.cs:121
+        const Int32 REGEXNum = 66;                                                                                                          // Generate.cs:121
+        const Int32 COMMA_DELIMITED_CODESNum = 67;                                                                                          // Generate.cs:121
+        const Int32 COMMA_DELIMITED_SEQUENCESNum = 68;                                                                                      // Generate.cs:121
+        const Int32 SEQUENCENum = 69;                                                                                                       // Generate.cs:121
+        const Int32 WHITESPACENum = 70;                                                                                                     // Generate.cs:121
+        const Int32 BLOCK_COMMENTNum = 71;                                                                                                  // Generate.cs:121
+        const Int32 LINE_COMMENTNum = 72;                                                                                                   // Generate.cs:121
         public static String GetTokenName(Int32 tokenIndex)                                                                                 // Generate.cs:94
         {                                                                                                                                   // Generate.cs:95
             switch (tokenIndex)                                                                                                             // Generate.cs:96
             {                                                                                                                               // Generate.cs:97
-                case T__0Num: return "T__0";                                                                                                // Generate.cs:125
-                case T__1Num: return "T__1";                                                                                                // Generate.cs:125
                 case KW_ALIASNum: return "KW_ALIAS";                                                                                        // Generate.cs:125
                 case KW_PROFILENum: return "KW_PROFILE";                                                                                    // Generate.cs:125
                 case KW_EXTENSIONNum: return "KW_EXTENSION";                                                                                // Generate.cs:125
@@ -313,9 +309,11 @@ namespace FSHer
         NodeToken AppendToken(ITerminalNode node)
         {
             this.AppendComment(node.Symbol.StartIndex);
-            NodeToken retVal = new NodeToken("token");
-            retVal.TokenValue = this.Consume(node.Symbol.StopIndex + 1);
-            retVal.TokenName = GetTokenName(node.Symbol.Type);
+            String tokenName = FSHListener.GetTokenName(node.Symbol.Type);
+            NodeToken retVal = new NodeToken(
+                GetTokenName(node.Symbol.Type),
+                this.Consume(node.Symbol.StopIndex + 1)
+                );
             this.Current.ChildNodes.Add(retVal);
             return retVal;
         }

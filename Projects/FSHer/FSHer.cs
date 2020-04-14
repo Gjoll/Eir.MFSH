@@ -34,6 +34,28 @@ namespace FSHer
         public Dictionary<string, NodeRule> MacroDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> MappingDict = new Dictionary<string, NodeRule>();
 
+        public IEnumerable<IEnumerable<NodeRule>> AllGroups()
+        {
+            yield return ProfileDict.Values;
+            yield return ExtensionDict.Values;
+            yield return InvariantDict.Values;
+            yield return InstanceDict.Values;
+            yield return ValueSetDict.Values;
+            yield return CodeSystemDict.Values;
+            yield return RuleSetDict.Values;
+            yield return MacroDict.Values;
+            yield return MappingDict.Values;
+        }
+
+        public IEnumerable<NodeRule> AllItems()
+        {
+            foreach (IEnumerable<NodeRule> group in AllGroups())
+            {
+                foreach (NodeRule item in group)
+                    yield return item;
+            }
+        }
+
         /// <summary>
         /// Parse input text.
         /// </summary>
