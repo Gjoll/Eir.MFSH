@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer.Processors
+namespace Eir.FSHer.Processors
 {
     abstract class ProcessorBase
     {

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer
+namespace Eir.FSHer
 {
     class ErrorListener
     {
@@ -58,8 +58,8 @@ namespace FSHer
                     sb.AppendLine(msgLine);
                 sb.AppendLine(msg);
 
-                this.fsher.ConversionError("Antlr",
-                    "SyntaxError",
+                this.fsher.ConversionError("FSHer",
+                    sourceName,
                     sb.ToString());
             }
         }

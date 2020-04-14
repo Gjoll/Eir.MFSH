@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using FSHer.Antlr;
+using Eir.FSHer.Antlr;
 
-namespace FSHer
+namespace Eir.FSHer
 {
     class FSHListener : FSHBaseListener
     {

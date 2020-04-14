@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer.Processors
+namespace Eir.FSHer.Processors
 {
     /// <summary>
     /// Collates the various fsh entities, storing a reference to each

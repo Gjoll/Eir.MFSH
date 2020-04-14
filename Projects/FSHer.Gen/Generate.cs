@@ -1,12 +1,12 @@
 ﻿using Eir.DevTools;
-using FSHer;
-using FSHer.Antlr;
+using Eir.FSHer;
+using Eir.FSHer.Antlr;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace FSHerGen
+namespace Eir.FSHerGen
 {
     public class Generate
     {

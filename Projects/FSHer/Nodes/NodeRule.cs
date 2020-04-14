@@ -7,7 +7,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer
+namespace Eir.FSHer
 {
     [DebuggerDisplay("{RuleName} {ChildNodes.Count}")]
     public class NodeRule : NodeBase

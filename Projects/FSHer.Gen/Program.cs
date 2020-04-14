@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FSHerGen
+namespace Eir.FSHerGen
 {
     class Program
     {

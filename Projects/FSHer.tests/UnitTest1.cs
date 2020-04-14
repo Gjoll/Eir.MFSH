@@ -5,7 +5,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using Xunit;
 
-namespace FSHer.tests
+namespace Eir.FSHer.tests
 {
     public class UnitTest1
     {
@@ -137,7 +137,7 @@ namespace FSHer.tests
             Compare(output, f);
         }
 
-        public void MacroTest(String inputFile, String resultsFile)
+        void MacroTest(String inputFile, String resultsFile)
         {
             String input = GetCleanText(inputFile);
             FSHer pp = new FSHer();

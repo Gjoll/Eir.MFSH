@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "FSHer": {
+      "commandName": "Project",
+      "commandLineArgs": "-d FSHer -o FSH",
+      "workingDirectory": "C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects"
+    }
+  }
+}

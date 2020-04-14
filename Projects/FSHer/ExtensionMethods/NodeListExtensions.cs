@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer
+namespace Eir.FSHer
 {
     public static class NodeListExtensions
     {
@@ -69,6 +69,19 @@ namespace FSHer
                 NodeRule r = item as NodeRule;
                 if (r != null)
                     yield return r;
+            }
+        }
+
+        /// <summary>
+        /// Return all rule children that are of indicated type.
+        /// </summary>
+        public static IEnumerable<NodeRule> ExcludeRules(this IEnumerable<NodeRule> items,
+            String ruleName)
+        {
+            foreach (NodeRule item in items)
+            {
+                if (item.RuleName != ruleName)
+                    yield return item;
             }
         }
 

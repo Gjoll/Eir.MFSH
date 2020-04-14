@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Antlr4.Runtime;
-using FSHer.Antlr;
+using Eir.FSHer.Antlr;
 
-namespace FSHer
+namespace Eir.FSHer
 {
     public class FSHLexerLocal : FSHLexer
     {

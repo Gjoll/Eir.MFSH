@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace FSHer.Antlr {
+namespace Eir.FSHer.Antlr {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -435,4 +435,4 @@ public interface IFSHVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitTargetType([NotNull] FSHParser.TargetTypeContext context);
 }
-} // namespace FSHer.Antlr
+} // namespace Eir.FSHer.Antlr

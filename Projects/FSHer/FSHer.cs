@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 using Eir.DevTools;
-using FSHer.Antlr;
+using Eir.FSHer.Antlr;
 
-namespace FSHer
+namespace Eir.FSHer
 {
     public class FSHer : ConverterBase
     {

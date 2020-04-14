@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer
+namespace Eir.FSHer
 {
     class NodeComment : NodeBase
     {

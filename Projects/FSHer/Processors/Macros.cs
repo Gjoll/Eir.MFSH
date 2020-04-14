@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer.Processors
+namespace Eir.FSHer.Processors
 {
     /// <summary>
     /// Processes Nested macros
@@ -102,7 +102,11 @@ namespace FSHer.Processors
             }
 
             outNodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
-            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList(),
+            this.Process<NodeRule>(macro
+                    .ChildNodes
+                    .Rules()
+                    .ExcludeRules(FSHListener.MacroDefMetadataStr)
+                    .ToList(),
                 outNodes,
                 parameterNames,
                 parameterValues);
