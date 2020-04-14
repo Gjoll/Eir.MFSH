@@ -22,7 +22,7 @@ codeSystem:         KW_CODESYSTEM SEQUENCE csMetadata* (caretValueRule | concept
 csMetadata:         id | title | description;
 
 ruleSet:            KW_RULESET SEQUENCE sdRule+;
-macroDef:           KW_MACRODEF SEQUENCE+ sdRule+;
+macroDef:           KW_MACRODEF SEQUENCE STRING* sdRule+;
 mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;
 mappingMetadata:    id | source | target | description | title;
 

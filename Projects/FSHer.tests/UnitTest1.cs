@@ -127,11 +127,22 @@ namespace FSHer.tests
         }
 
         [Fact]
-        public void Macro1()
+        public void NodeCloneTest()
         {
             String input = GetCleanText("MacroTest1.fsh");
             FSHer pp = new FSHer();
             FSHFile f = pp.Parse(input, "test");
+            NodeBase b = f.Doc.Clone();
+            String output = b.ToFSH();
+            Compare(output, f);
+        }
+
+        public void MacroTest(String inputFile, String resultsFile)
+        {
+            String input = GetCleanText(inputFile);
+            FSHer pp = new FSHer();
+            FSHFile f = pp.Parse(input, "test");
+            //Trace.WriteLine(f.Doc.Dump("* "));
             if (pp.Process() == false)
             {
                 StringBuilder sb = new StringBuilder();
@@ -139,10 +150,24 @@ namespace FSHer.tests
                 Trace.WriteLine(sb.ToString());
                 Assert.True(false);
             }
+            //Trace.WriteLine(f.Doc.Dump("* "));
             String expanded = f.Doc.ToFSH();
-            String results = File.ReadAllText(@"MacroTest1.results.txt");
+            String results = File.ReadAllText(resultsFile);
             Compare(results, f);
-            File.WriteAllText(@"c:\Temp\scr.txt", expanded);
+            //File.WriteAllText(@"c:\Temp\scr.txt", expanded);
+        }
+
+
+        [Fact]
+        public void Macro1()
+        {
+            MacroTest("MacroTest1.fsh", "MacroTest1.results.txt");
+        }
+
+        [Fact]
+        public void Macro2()
+        {
+            MacroTest("MacroTest2.fsh", "MacroTest2.results.txt");
         }
     }
 }

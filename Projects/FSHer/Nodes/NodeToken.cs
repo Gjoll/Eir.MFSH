@@ -14,6 +14,10 @@ namespace FSHer
         public String TokenName;
         public String TokenValue;
 
+        public NodeToken()
+        {
+        }
+
         public NodeToken(String tokenName, String tokenValue) : base()
         {
             this.TokenName = tokenName;
@@ -23,5 +27,20 @@ namespace FSHer
         public override string ToString() => Dump("");
         public override string Dump(String margin) => $"{margin}{TokenName}: '{this.TokenValue}'";
         public override string ToFSH() => this.TokenValue;
+
+        public override void CopyTo(NodeBase itemBase)
+        {
+            NodeToken item = (NodeToken) itemBase;
+            item.TokenName = this.TokenName;
+            item.TokenValue = this.TokenValue;
+            base.CopyTo(itemBase);
+        }
+
+        public override NodeBase Clone()
+        {
+            NodeToken retVal = new NodeToken();
+            this.CopyTo(retVal);
+            return retVal;
+        }
     }
 }

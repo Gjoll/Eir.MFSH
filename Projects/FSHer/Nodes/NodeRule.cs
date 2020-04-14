@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,11 @@ namespace FSHer
     public class NodeRule : NodeBase
     {
         public List<NodeBase> ChildNodes { get; set; } = new List<NodeBase>();
-        public String RuleName { get; }
+        public String RuleName { get; set;  }
+
+        public NodeRule()
+        {
+        }
 
         public NodeRule(String ruleName) : base()
         {
@@ -26,14 +31,14 @@ namespace FSHer
                 .TokenValue
             ;
 
-        public List<String> Parameters => this.ChildNodes
+        public List<String> Strings => this.ChildNodes
             .Tokens()
-            .WithTokenName("SEQUENCE")
-            .Skip(1)
+            .WithTokenName("STRING")
             .Select(s => s.TokenValue)
+            .RemoveQuotes()
             .ToList()
             ;
-        
+
         public override string ToString() => Dump("");
         public override string Dump(String margin)
         {
@@ -54,6 +59,22 @@ namespace FSHer
             foreach (NodeBase child in ChildNodes)
                 sb.Append(child.ToFSH());
             return sb.ToString();
+        }
+
+        public override NodeBase Clone()
+        {
+            NodeRule retVal = new NodeRule();
+            this.CopyTo(retVal);
+            return retVal;
+        }
+
+        public override void CopyTo(NodeBase itemBase)
+        {
+            NodeRule item = (NodeRule) itemBase;
+            item.RuleName = this.RuleName;
+            item.ChildNodes.Clear();
+            foreach (NodeBase childNode in this.ChildNodes)
+                item.ChildNodes.Add(childNode.Clone());
         }
     }
 }

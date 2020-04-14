@@ -25,7 +25,10 @@ namespace FSHer.Processors
             {
                 List<NodeBase> nodes = new List<NodeBase>();
                 this.profileName = profile.Name;
-                this.Process(profile.ChildNodes, nodes);
+                this.Process(profile.ChildNodes, 
+                    nodes, 
+                    new List<string>(), 
+                    new List<string>());
                 profile.ChildNodes = nodes;
             }
         }
@@ -43,38 +46,42 @@ namespace FSHer.Processors
             if (this.FSHer.MacroDict.TryGetValue(macroName, out NodeRule macro) == false)
             {
                 String msg = $"Profile: {profileName}, macro {macroName} not found.";
-                outNodes.Add(new NodeComment($"Error: {msg}"));
+                outNodes.Add(new NodeComment($"\nError: {msg}"));
                 this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
                 return;
             }
 
-            List<String> parameterNames = macro.Parameters;
+            List<String> parameterNames = macro.Strings;
             if (parameterValues.Count != parameterNames.Count)
             {
                 String msg = $"Macro '{macroName}' expansion failed. Expected {parameterNames.Count} parameters, found {parameterValues.Count}";
-                outNodes.Add(new NodeComment($"Error: {msg}"));
+                outNodes.Add(new NodeComment($"\nError: {msg}"));
                 this.FSHer.ConversionInfo(this.GetType().Name, fcn, msg);
                 return;
             }
 
             outNodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
-            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList(), outNodes);
+            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList(),
+                outNodes,
+                parameterNames,
+                parameterValues);
+
             outNodes.Add(new NodeComment($"\n  // End Macro {macroName}"));
             return;
         }
 
         bool IsMacroCall(NodeBase node,
-            out String macroName, 
+            out String macroName,
             out List<String> parameters)
         {
             macroName = null;
             parameters = null;
 
             NodeRule rule = node as NodeRule;
-            
+
             if (rule == null)
                 return false;
-            
+
             if (rule.RuleName != FSHListener.SdRuleStr)
                 return false;
 
@@ -89,42 +96,82 @@ namespace FSHer.Processors
                 return false;
 
             macroName = macroNode.Name;
-            parameters = macroNode.ChildNodes
-                    .Tokens()
-                    .WithTokenName("STRING")
-                    .Select(s => s.TokenValue)
-                    .ToList()
+            parameters = macroNode.Strings;
                 ;
             return true;
         }
 
         bool Process<T>(List<T> macroNodes,
-            List<NodeBase> outNodes)
-        where T : NodeBase
+            List<NodeBase> outNodes,
+            List<String> parameterNames,
+            List<String> parameterValues)
+            where T : NodeBase
         {
+            String ReplaceParams(String input,
+                List<String> parameterNames,
+                List<String> parameterValues)
+            {
+                if (parameterNames.Count != parameterValues.Count)
+                    throw new Exception($"Invalid parameter list. Sizes do not match.");
+
+                for (Int32 i = 0; i < parameterNames.Count; i++)
+                {
+                    input = input.Replace(parameterNames[i], parameterValues[i]);
+                }
+
+                return input;
+            }
+
             const String fcn = "Process";
 
             Int32 i = 0;
 
             while (i < macroNodes.Count)
             {
-                NodeBase child = macroNodes[i];
-                if (IsMacroCall(child, out String macroName, out List<String> parameters))
+                // We need to clone child because we are modifying it.
+                NodeBase child = macroNodes[i].Clone();
+                switch (child)
                 {
-                    this.FSHer.ConversionInfo(this.GetType().Name, 
-                        fcn, 
-                        $"Profile: {profileName}, expanding macro {macroName}");
+                    case NodeRule rule:
+                        if (IsMacroCall(rule, out String macroName, out List<String> parameters))
+                        {
+                            this.FSHer.ConversionInfo(this.GetType().Name,
+                                fcn,
+                                $"Profile: {profileName}, expanding macro {macroName}");
+                            this.ExpandMacro(macroName, outNodes, parameters);
+                        }
+                        else
+                        {
+                            List<NodeBase> cNodes = new List<NodeBase>();
+                            Process(rule.ChildNodes,
+                                cNodes,
+                                parameterNames,
+                                parameterValues);
+                            rule.ChildNodes = cNodes;
+                            outNodes.Add(rule);
+                        }
+                        break;
+                    
+                    case NodeToken token:
+                        token.TokenValue = ReplaceParams(token.TokenValue, 
+                            parameterNames,
+                            parameterValues);
+                        outNodes.Add(token);
+                        break;
+                    
+                    case NodeComment comment:
+                        comment.Comment = ReplaceParams(comment.Comment, 
+                            parameterNames, 
+                            parameterValues);
+                        outNodes.Add(comment);
+                        break;
 
-                    this.ExpandMacro(macroName, outNodes, parameters);
+                    default:
+                        outNodes.Add(child);
+                        break;
                 }
-                else
-                {
-                    outNodes.Add(child);
-                }
-
                 i += 1;
             }
-
             return true;
         }
     }
