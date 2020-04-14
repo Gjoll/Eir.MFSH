@@ -26,6 +26,14 @@ namespace FSHer
                 .TokenValue
             ;
 
+        public List<String> Parameters => this.ChildNodes
+            .Tokens()
+            .WithTokenName("SEQUENCE")
+            .Skip(1)
+            .Select(s => s.TokenValue)
+            .ToList()
+            ;
+        
         public override string ToString() => Dump("");
         public override string Dump(String margin)
         {
