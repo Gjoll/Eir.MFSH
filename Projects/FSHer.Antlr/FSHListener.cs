@@ -202,6 +202,16 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitMacroDef([NotNull] FSHParser.MacroDefContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

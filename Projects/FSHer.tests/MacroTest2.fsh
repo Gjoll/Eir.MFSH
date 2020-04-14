@@ -3,6 +3,8 @@ MacroDef: HeaderFragment
   * ^contact[0].telecom.value = "http://www.hl7.org/Special/committees/cic"
 
 MacroDef: ObservationFragment1 "%a%" "%b%"
+Parent: Observation
+Usage:  Incompatible#xxyyz
   * %a% 0..0
     Macro HeaderFragment
   * %b% 0..0

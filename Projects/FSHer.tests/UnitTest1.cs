@@ -169,5 +169,18 @@ namespace FSHer.tests
         {
             MacroTest("MacroTest2.fsh", "MacroTest2.results.txt");
         }
+
+        // Macro expansion should fail because parent mismatch.
+        [Fact]
+        public void Macro3()
+        {
+            String input = GetCleanText("MacroTest3.fsh");
+            FSHer pp = new FSHer();
+            FSHFile f = pp.Parse(input, "test");
+            Assert.True(pp.HasErrors == false);
+
+            // shoudl return false cause or parent profile mismatch.
+            Assert.True(pp.Process() == false);
+        }
     }
 }

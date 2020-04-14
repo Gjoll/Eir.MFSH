@@ -17,6 +17,7 @@ namespace FSHer
 
         #region Tokens
         //+ RuleNames
+        public const String RatioPartStr = "RatioPart";                                                                                     // Generate.cs:56
         public const String BoolStr = "Bool";                                                                                               // Generate.cs:56
         public const String TargetTypeStr = "TargetType";                                                                                   // Generate.cs:56
         public const String DocStr = "Doc";                                                                                                 // Generate.cs:56
@@ -36,6 +37,7 @@ namespace FSHer
         public const String CsMetadataStr = "CsMetadata";                                                                                   // Generate.cs:56
         public const String RuleSetStr = "RuleSet";                                                                                         // Generate.cs:56
         public const String MacroDefStr = "MacroDef";                                                                                       // Generate.cs:56
+        public const String MacroDefMetadataStr = "MacroDefMetadata";                                                                       // Generate.cs:56
         public const String MappingStr = "Mapping";                                                                                         // Generate.cs:56
         public const String MappingMetadataStr = "MappingMetadata";                                                                         // Generate.cs:56
         public const String ParentStr = "Parent";                                                                                           // Generate.cs:56
@@ -82,82 +84,153 @@ namespace FSHer
         public const String QuantityStr = "Quantity";                                                                                       // Generate.cs:56
         public const String RatioStr = "Ratio";                                                                                             // Generate.cs:56
         public const String ReferenceStr = "Reference";                                                                                     // Generate.cs:56
-        public const String RatioPartStr = "RatioPart";                                                                                     // Generate.cs:56
         //- RuleNames
 
         //+ TokenNumbers
         const Int32 KW_ALIASNum = 1;                                                                                                        // Generate.cs:121
+        public const String KW_ALIASStr = "KW_ALIAS";                                                                                       // Generate.cs:129
         const Int32 KW_PROFILENum = 2;                                                                                                      // Generate.cs:121
+        public const String KW_PROFILEStr = "KW_PROFILE";                                                                                   // Generate.cs:129
         const Int32 KW_EXTENSIONNum = 3;                                                                                                    // Generate.cs:121
+        public const String KW_EXTENSIONStr = "KW_EXTENSION";                                                                               // Generate.cs:129
         const Int32 KW_INSTANCENum = 4;                                                                                                     // Generate.cs:121
+        public const String KW_INSTANCEStr = "KW_INSTANCE";                                                                                 // Generate.cs:129
         const Int32 KW_INSTANCEOFNum = 5;                                                                                                   // Generate.cs:121
+        public const String KW_INSTANCEOFStr = "KW_INSTANCEOF";                                                                             // Generate.cs:129
         const Int32 KW_INVARIANTNum = 6;                                                                                                    // Generate.cs:121
+        public const String KW_INVARIANTStr = "KW_INVARIANT";                                                                               // Generate.cs:129
         const Int32 KW_VALUESETNum = 7;                                                                                                     // Generate.cs:121
+        public const String KW_VALUESETStr = "KW_VALUESET";                                                                                 // Generate.cs:129
         const Int32 KW_CODESYSTEMNum = 8;                                                                                                   // Generate.cs:121
+        public const String KW_CODESYSTEMStr = "KW_CODESYSTEM";                                                                             // Generate.cs:129
         const Int32 KW_RULESETNum = 9;                                                                                                      // Generate.cs:121
+        public const String KW_RULESETStr = "KW_RULESET";                                                                                   // Generate.cs:129
         const Int32 KW_MAPPINGNum = 10;                                                                                                     // Generate.cs:121
+        public const String KW_MAPPINGStr = "KW_MAPPING";                                                                                   // Generate.cs:129
         const Int32 KW_MIXINSNum = 11;                                                                                                      // Generate.cs:121
+        public const String KW_MIXINSStr = "KW_MIXINS";                                                                                     // Generate.cs:129
         const Int32 KW_PARENTNum = 12;                                                                                                      // Generate.cs:121
+        public const String KW_PARENTStr = "KW_PARENT";                                                                                     // Generate.cs:129
         const Int32 KW_IDNum = 13;                                                                                                          // Generate.cs:121
+        public const String KW_IDStr = "KW_ID";                                                                                             // Generate.cs:129
         const Int32 KW_TITLENum = 14;                                                                                                       // Generate.cs:121
+        public const String KW_TITLEStr = "KW_TITLE";                                                                                       // Generate.cs:129
         const Int32 KW_DESCRIPTIONNum = 15;                                                                                                 // Generate.cs:121
+        public const String KW_DESCRIPTIONStr = "KW_DESCRIPTION";                                                                           // Generate.cs:129
         const Int32 KW_EXPRESSIONNum = 16;                                                                                                  // Generate.cs:121
+        public const String KW_EXPRESSIONStr = "KW_EXPRESSION";                                                                             // Generate.cs:129
         const Int32 KW_XPATHNum = 17;                                                                                                       // Generate.cs:121
+        public const String KW_XPATHStr = "KW_XPATH";                                                                                       // Generate.cs:129
         const Int32 KW_SEVERITYNum = 18;                                                                                                    // Generate.cs:121
+        public const String KW_SEVERITYStr = "KW_SEVERITY";                                                                                 // Generate.cs:129
         const Int32 KW_USAGENum = 19;                                                                                                       // Generate.cs:121
+        public const String KW_USAGEStr = "KW_USAGE";                                                                                       // Generate.cs:129
         const Int32 KW_SOURCENum = 20;                                                                                                      // Generate.cs:121
+        public const String KW_SOURCEStr = "KW_SOURCE";                                                                                     // Generate.cs:129
         const Int32 KW_TARGETNum = 21;                                                                                                      // Generate.cs:121
+        public const String KW_TARGETStr = "KW_TARGET";                                                                                     // Generate.cs:129
         const Int32 KW_MODNum = 22;                                                                                                         // Generate.cs:121
+        public const String KW_MODStr = "KW_MOD";                                                                                           // Generate.cs:129
         const Int32 KW_MSNum = 23;                                                                                                          // Generate.cs:121
+        public const String KW_MSStr = "KW_MS";                                                                                             // Generate.cs:129
         const Int32 KW_SUNum = 24;                                                                                                          // Generate.cs:121
+        public const String KW_SUStr = "KW_SU";                                                                                             // Generate.cs:129
         const Int32 KW_TUNum = 25;                                                                                                          // Generate.cs:121
+        public const String KW_TUStr = "KW_TU";                                                                                             // Generate.cs:129
         const Int32 KW_NORMATIVENum = 26;                                                                                                   // Generate.cs:121
+        public const String KW_NORMATIVEStr = "KW_NORMATIVE";                                                                               // Generate.cs:129
         const Int32 KW_DRAFTNum = 27;                                                                                                       // Generate.cs:121
+        public const String KW_DRAFTStr = "KW_DRAFT";                                                                                       // Generate.cs:129
         const Int32 KW_FROMNum = 28;                                                                                                        // Generate.cs:121
+        public const String KW_FROMStr = "KW_FROM";                                                                                         // Generate.cs:129
         const Int32 KW_EXAMPLENum = 29;                                                                                                     // Generate.cs:121
+        public const String KW_EXAMPLEStr = "KW_EXAMPLE";                                                                                   // Generate.cs:129
         const Int32 KW_PREFERREDNum = 30;                                                                                                   // Generate.cs:121
+        public const String KW_PREFERREDStr = "KW_PREFERRED";                                                                               // Generate.cs:129
         const Int32 KW_EXTENSIBLENum = 31;                                                                                                  // Generate.cs:121
+        public const String KW_EXTENSIBLEStr = "KW_EXTENSIBLE";                                                                             // Generate.cs:129
         const Int32 KW_REQUIREDNum = 32;                                                                                                    // Generate.cs:121
+        public const String KW_REQUIREDStr = "KW_REQUIRED";                                                                                 // Generate.cs:129
         const Int32 KW_CONTAINSNum = 33;                                                                                                    // Generate.cs:121
+        public const String KW_CONTAINSStr = "KW_CONTAINS";                                                                                 // Generate.cs:129
         const Int32 KW_NAMEDNum = 34;                                                                                                       // Generate.cs:121
+        public const String KW_NAMEDStr = "KW_NAMED";                                                                                       // Generate.cs:129
         const Int32 KW_ANDNum = 35;                                                                                                         // Generate.cs:121
+        public const String KW_ANDStr = "KW_AND";                                                                                           // Generate.cs:129
         const Int32 KW_ONLYNum = 36;                                                                                                        // Generate.cs:121
+        public const String KW_ONLYStr = "KW_ONLY";                                                                                         // Generate.cs:129
         const Int32 KW_ORNum = 37;                                                                                                          // Generate.cs:121
+        public const String KW_ORStr = "KW_OR";                                                                                             // Generate.cs:129
         const Int32 KW_OBEYSNum = 38;                                                                                                       // Generate.cs:121
+        public const String KW_OBEYSStr = "KW_OBEYS";                                                                                       // Generate.cs:129
         const Int32 KW_TRUENum = 39;                                                                                                        // Generate.cs:121
+        public const String KW_TRUEStr = "KW_TRUE";                                                                                         // Generate.cs:129
         const Int32 KW_FALSENum = 40;                                                                                                       // Generate.cs:121
+        public const String KW_FALSEStr = "KW_FALSE";                                                                                       // Generate.cs:129
         const Int32 KW_EXCLUDENum = 41;                                                                                                     // Generate.cs:121
+        public const String KW_EXCLUDEStr = "KW_EXCLUDE";                                                                                   // Generate.cs:129
         const Int32 KW_CODESNum = 42;                                                                                                       // Generate.cs:121
+        public const String KW_CODESStr = "KW_CODES";                                                                                       // Generate.cs:129
         const Int32 KW_WHERENum = 43;                                                                                                       // Generate.cs:121
+        public const String KW_WHEREStr = "KW_WHERE";                                                                                       // Generate.cs:129
         const Int32 KW_VSREFERENCENum = 44;                                                                                                 // Generate.cs:121
+        public const String KW_VSREFERENCEStr = "KW_VSREFERENCE";                                                                           // Generate.cs:129
         const Int32 KW_SYSTEMNum = 45;                                                                                                      // Generate.cs:121
+        public const String KW_SYSTEMStr = "KW_SYSTEM";                                                                                     // Generate.cs:129
         const Int32 KW_UNITSNum = 46;                                                                                                       // Generate.cs:121
+        public const String KW_UNITSStr = "KW_UNITS";                                                                                       // Generate.cs:129
         const Int32 KW_EXACTLYNum = 47;                                                                                                     // Generate.cs:121
+        public const String KW_EXACTLYStr = "KW_EXACTLY";                                                                                   // Generate.cs:129
         const Int32 KW_MACRONum = 48;                                                                                                       // Generate.cs:121
+        public const String KW_MACROStr = "KW_MACRO";                                                                                       // Generate.cs:129
         const Int32 KW_MACRODEFNum = 49;                                                                                                    // Generate.cs:121
+        public const String KW_MACRODEFStr = "KW_MACRODEF";                                                                                 // Generate.cs:129
         const Int32 EQUALNum = 50;                                                                                                          // Generate.cs:121
+        public const String EQUALStr = "EQUAL";                                                                                             // Generate.cs:129
         const Int32 STARNum = 51;                                                                                                           // Generate.cs:121
+        public const String STARStr = "STAR";                                                                                               // Generate.cs:129
         const Int32 COLONNum = 52;                                                                                                          // Generate.cs:121
+        public const String COLONStr = "COLON";                                                                                             // Generate.cs:129
         const Int32 COMMANum = 53;                                                                                                          // Generate.cs:121
+        public const String COMMAStr = "COMMA";                                                                                             // Generate.cs:129
         const Int32 ARROWNum = 54;                                                                                                          // Generate.cs:121
+        public const String ARROWStr = "ARROW";                                                                                             // Generate.cs:129
         const Int32 STRINGNum = 55;                                                                                                         // Generate.cs:121
+        public const String STRINGStr = "STRING";                                                                                           // Generate.cs:129
         const Int32 MULTILINE_STRINGNum = 56;                                                                                               // Generate.cs:121
+        public const String MULTILINE_STRINGStr = "MULTILINE_STRING";                                                                       // Generate.cs:129
         const Int32 NUMBERNum = 57;                                                                                                         // Generate.cs:121
+        public const String NUMBERStr = "NUMBER";                                                                                           // Generate.cs:129
         const Int32 UNITNum = 58;                                                                                                           // Generate.cs:121
+        public const String UNITStr = "UNIT";                                                                                               // Generate.cs:129
         const Int32 CODENum = 59;                                                                                                           // Generate.cs:121
+        public const String CODEStr = "CODE";                                                                                               // Generate.cs:129
         const Int32 CONCEPT_STRINGNum = 60;                                                                                                 // Generate.cs:121
+        public const String CONCEPT_STRINGStr = "CONCEPT_STRING";                                                                           // Generate.cs:129
         const Int32 DATETIMENum = 61;                                                                                                       // Generate.cs:121
+        public const String DATETIMEStr = "DATETIME";                                                                                       // Generate.cs:129
         const Int32 TIMENum = 62;                                                                                                           // Generate.cs:121
+        public const String TIMEStr = "TIME";                                                                                               // Generate.cs:129
         const Int32 CARDNum = 63;                                                                                                           // Generate.cs:121
+        public const String CARDStr = "CARD";                                                                                               // Generate.cs:129
         const Int32 REFERENCENum = 64;                                                                                                      // Generate.cs:121
+        public const String REFERENCEStr = "REFERENCE";                                                                                     // Generate.cs:129
         const Int32 CARET_SEQUENCENum = 65;                                                                                                 // Generate.cs:121
+        public const String CARET_SEQUENCEStr = "CARET_SEQUENCE";                                                                           // Generate.cs:129
         const Int32 REGEXNum = 66;                                                                                                          // Generate.cs:121
+        public const String REGEXStr = "REGEX";                                                                                             // Generate.cs:129
         const Int32 COMMA_DELIMITED_CODESNum = 67;                                                                                          // Generate.cs:121
+        public const String COMMA_DELIMITED_CODESStr = "COMMA_DELIMITED_CODES";                                                             // Generate.cs:129
         const Int32 COMMA_DELIMITED_SEQUENCESNum = 68;                                                                                      // Generate.cs:121
+        public const String COMMA_DELIMITED_SEQUENCESStr = "COMMA_DELIMITED_SEQUENCES";                                                     // Generate.cs:129
         const Int32 SEQUENCENum = 69;                                                                                                       // Generate.cs:121
+        public const String SEQUENCEStr = "SEQUENCE";                                                                                       // Generate.cs:129
         const Int32 WHITESPACENum = 70;                                                                                                     // Generate.cs:121
+        public const String WHITESPACEStr = "WHITESPACE";                                                                                   // Generate.cs:129
         const Int32 BLOCK_COMMENTNum = 71;                                                                                                  // Generate.cs:121
+        public const String BLOCK_COMMENTStr = "BLOCK_COMMENT";                                                                             // Generate.cs:129
         const Int32 LINE_COMMENTNum = 72;                                                                                                   // Generate.cs:121
+        public const String LINE_COMMENTStr = "LINE_COMMENT";                                                                               // Generate.cs:129
         public static String GetTokenName(Int32 tokenIndex)                                                                                 // Generate.cs:94
         {                                                                                                                                   // Generate.cs:95
             switch (tokenIndex)                                                                                                             // Generate.cs:96
@@ -343,6 +416,14 @@ namespace FSHer
         //}
 
         //+ VisitorMethods
+        public override void EnterRatioPart(FSHParser.RatioPartContext context)                                                             // Generate.cs:60
+        {                                                                                                                                   // Generate.cs:61
+            this.PushRule(RatioPartStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+        }                                                                                                                                   // Generate.cs:63
+        public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:73
+        {                                                                                                                                   // Generate.cs:74
+            this.PopRule("RatioPart", context.Stop.StopIndex);                                                                              // Generate.cs:75
+        }                                                                                                                                   // Generate.cs:76
         public override void EnterBool(FSHParser.BoolContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
             this.PushRule(BoolStr, context.Start.StartIndex);                                                                               // Generate.cs:62
@@ -494,6 +575,14 @@ namespace FSHer
         public override void ExitMacroDef(FSHParser.MacroDefContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
             this.PopRule("MacroDef", context.Stop.StopIndex);                                                                               // Generate.cs:75
+        }                                                                                                                                   // Generate.cs:76
+        public override void EnterMacroDefMetadata(FSHParser.MacroDefMetadataContext context)                                               // Generate.cs:60
+        {                                                                                                                                   // Generate.cs:61
+            this.PushRule(MacroDefMetadataStr, context.Start.StartIndex);                                                                   // Generate.cs:62
+        }                                                                                                                                   // Generate.cs:63
+        public override void ExitMacroDefMetadata(FSHParser.MacroDefMetadataContext context)                                                // Generate.cs:73
+        {                                                                                                                                   // Generate.cs:74
+            this.PopRule("MacroDefMetadata", context.Stop.StopIndex);                                                                       // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMapping(FSHParser.MappingContext context)                                                                 // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
@@ -862,14 +951,6 @@ namespace FSHer
         public override void ExitReference(FSHParser.ReferenceContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
             this.PopRule("Reference", context.Stop.StopIndex);                                                                              // Generate.cs:75
-        }                                                                                                                                   // Generate.cs:76
-        public override void EnterRatioPart(FSHParser.RatioPartContext context)                                                             // Generate.cs:60
-        {                                                                                                                                   // Generate.cs:61
-            this.PushRule(RatioPartStr, context.Start.StartIndex);                                                                          // Generate.cs:62
-        }                                                                                                                                   // Generate.cs:63
-        public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:73
-        {                                                                                                                                   // Generate.cs:74
-            this.PopRule("RatioPart", context.Stop.StopIndex);                                                                              // Generate.cs:75
         }                                                                                                                                   // Generate.cs:76
         //- VisitorMethods
 

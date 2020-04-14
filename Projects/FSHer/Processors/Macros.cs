@@ -13,9 +13,33 @@ namespace FSHer.Processors
     class Macros : ProcessorBase
     {
         private String profileName;
+        private String profileParent;
 
         public Macros(FSHer fsher) : base(fsher)
         {
+        }
+
+        String FindParent(List<NodeRule> metaData)
+        {
+            return metaData
+                    .Children()
+                    .Rules()
+                    .WithRuleName(FSHListener.ParentStr)
+                    .Children()
+                    .Tokens()
+                    .WithTokenName(FSHListener.SEQUENCEStr)
+                    .FirstOrDefault()
+                    ?.TokenValue
+                ;
+        }
+
+        List<NodeRule> FindMetaData(NodeRule rule, String metaDataName)
+        {
+            return rule
+                .ChildNodes
+                .Rules()
+                .WithRuleName(metaDataName)
+                .ToList();
         }
 
         public override void Process()
@@ -23,8 +47,12 @@ namespace FSHer.Processors
             IEnumerable<NodeRule> profiles = this.FSHer.ProfileDict.Values;
             foreach (NodeRule profile in profiles)
             {
+                List<NodeRule> profileMetaData = FindMetaData(profile, FSHListener.SdMetadataStr);
+
                 List<NodeBase> nodes = new List<NodeBase>();
                 this.profileName = profile.Name;
+                this.profileParent = FindParent(profileMetaData);
+
                 this.Process(profile.ChildNodes, 
                     nodes, 
                     new List<string>(), 
@@ -51,12 +79,25 @@ namespace FSHer.Processors
                 return;
             }
 
+            List<NodeRule> metaData = FindMetaData(macro, FSHListener.MacroDefMetadataStr);
+
+            String parent = this.FindParent(metaData);
+            if (String.IsNullOrEmpty(parent) == false)
+            {
+                if (String.Compare(this.profileParent, parent) != 0)
+                {
+                    String msg = $"Macro '{macroName}' expansion failed. Macro can only be applied to profiles derived from {parent}";
+                    outNodes.Add(new NodeComment($"\nError: {msg}"));
+                    this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
+                    return;
+                }
+            }
             List<String> parameterNames = macro.Strings;
             if (parameterValues.Count != parameterNames.Count)
             {
                 String msg = $"Macro '{macroName}' expansion failed. Expected {parameterNames.Count} parameters, found {parameterValues.Count}";
                 outNodes.Add(new NodeComment($"\nError: {msg}"));
-                this.FSHer.ConversionInfo(this.GetType().Name, fcn, msg);
+                this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
                 return;
             }
 

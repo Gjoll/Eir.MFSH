@@ -125,6 +125,9 @@ namespace FSHerGen
                         .AppendCode($"case {token}Num: return \"{token}\";")
                         ;
 
+                    tokenBlock
+                        .AppendCode($"public const String {token}Str = \"{token}\";")
+                        ;
                 }
             }
         }

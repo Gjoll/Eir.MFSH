@@ -4,4 +4,3 @@ java -jar ..\..\Lib\antlr-4.8-complete.jar -o . -package FSHer.Antlr -visitor -l
 popd
 popd
 
-pause

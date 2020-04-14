@@ -240,6 +240,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMacroDef([NotNull] FSHParser.MacroDefContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

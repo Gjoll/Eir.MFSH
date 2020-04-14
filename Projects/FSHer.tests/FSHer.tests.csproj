@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="MacroTest3.fsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="MacroTest2.results.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
