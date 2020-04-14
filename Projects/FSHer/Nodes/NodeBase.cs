@@ -10,11 +10,13 @@ namespace FSHer
 {
     public abstract class NodeBase
     {
-        public NodeBase()
-        {
-        }
-
         public abstract String ToFSH();
         public abstract String Dump(String margin);
+
+        public abstract NodeBase Clone();
+
+        public virtual void CopyTo(NodeBase item)
+        {
+        }
     }
 }

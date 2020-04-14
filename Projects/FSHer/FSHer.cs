@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 using Eir.DevTools;
+using FSHer.Antlr;
 
 namespace FSHer
 {
@@ -33,6 +34,28 @@ namespace FSHer
         public Dictionary<string, NodeRule> MacroDict = new Dictionary<string, NodeRule>();
         public Dictionary<string, NodeRule> MappingDict = new Dictionary<string, NodeRule>();
 
+        public IEnumerable<IEnumerable<NodeRule>> AllGroups()
+        {
+            yield return ProfileDict.Values;
+            yield return ExtensionDict.Values;
+            yield return InvariantDict.Values;
+            yield return InstanceDict.Values;
+            yield return ValueSetDict.Values;
+            yield return CodeSystemDict.Values;
+            yield return RuleSetDict.Values;
+            yield return MacroDict.Values;
+            yield return MappingDict.Values;
+        }
+
+        public IEnumerable<NodeRule> AllItems()
+        {
+            foreach (IEnumerable<NodeRule> group in AllGroups())
+            {
+                foreach (NodeRule item in group)
+                    yield return item;
+            }
+        }
+
         /// <summary>
         /// Parse input text.
         /// </summary>
@@ -41,12 +64,13 @@ namespace FSHer
             fshText = fshText.Replace("\r", "");
             this.InputLines = fshText.Split('\n');
 
-            FSHLexer lexer = new FSHLexer(new AntlrInputStream(fshText));
+            FSHLexer lexer = new FSHLexerLocal(new AntlrInputStream(fshText));
 
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new FSHErrorListenerLexer(this, fileName));
 
-            FSHParser parser = new FSHParser(new CommonTokenStream(lexer));
+            FSHParser parser = new FSHParserLocal(new CommonTokenStream(lexer));
+            parser.Trace = false;
 
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new FSHErrorListenerParser(this, fileName));

@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace FSHer {
+namespace FSHer.Antlr {
 
 using Antlr4.Runtime.Misc;
 using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
@@ -239,6 +239,18 @@ public partial class FSHBaseListener : IFSHListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitMacroDef([NotNull] FSHParser.MacroDefContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -841,4 +853,4 @@ public partial class FSHBaseListener : IFSHListener {
 	/// <remarks>The default implementation does nothing.</remarks>
 	public virtual void VisitErrorNode([NotNull] IErrorNode node) { }
 }
-} // namespace FSHer
+} // namespace FSHer.Antlr

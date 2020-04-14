@@ -9,6 +9,18 @@ namespace FSHer
     public static class NodeListExtensions
     {
         /// <summary>
+        /// Return the children of the nodes.
+        /// </summary>
+        public static IEnumerable<NodeBase> Children(this IEnumerable<NodeRule> items)
+        {
+            foreach (NodeRule item in items.Rules())
+            {
+                foreach (NodeBase child in item.ChildNodes)
+                    yield return child;
+            }
+        }
+
+        /// <summary>
         /// Return only the NodeTokens in list with the NodeType.
         /// </summary>
         public static IEnumerable<NodeRule> WithRuleName(this IEnumerable<NodeRule> items,
@@ -61,9 +73,9 @@ namespace FSHer
         }
 
         /// <summary>
-        /// Return only the NodeRules in list.
+        /// Return all rule children that are of indicated type.
         /// </summary>
-        public static IEnumerable<NodeRule> HasChildOfType(this IEnumerable<NodeRule> items,
+        public static IEnumerable<NodeRule> HasRuleChildOfType(this IEnumerable<NodeRule> items,
             String nodeType)
         {
             foreach (NodeRule item in items)

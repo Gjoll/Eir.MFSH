@@ -22,7 +22,9 @@ codeSystem:         KW_CODESYSTEM SEQUENCE csMetadata* (caretValueRule | concept
 csMetadata:         id | title | description;
 
 ruleSet:            KW_RULESET SEQUENCE sdRule+;
-macroDef:           KW_MACRODEF SEQUENCE sdRule+;
+
+macroDef:           KW_MACRODEF SEQUENCE STRING* macroDefMetadata* sdRule+;
+macroDefMetadata:   usage | parent;
 
 mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;
 mappingMetadata:    id | source | target | description | title;
@@ -52,7 +54,7 @@ onlyRule:           STAR path KW_ONLY targetType (KW_OR targetType)*;
 obeysRule:          STAR path? KW_OBEYS SEQUENCE (KW_AND SEQUENCE)*;
 caretValueRule:     STAR path? caretPath EQUAL value;
 mappingRule:        STAR path? ARROW STRING STRING? CODE?;
-macroRule:          KW_MACRO SEQUENCE ( '(' SEQUENCE (COMMA SEQUENCE)* ')' )?;
+macroRule:          KW_MACRO SEQUENCE STRING*;
 
 // VALUESET COMPONENTS
 vsComponent:        STAR KW_EXCLUDE? ( vsConceptComponent | vsFilterComponent );
@@ -188,8 +190,6 @@ COMMA_DELIMITED_SEQUENCES: (SEQUENCE WS* COMMA WS*)+ SEQUENCE;
 
                  // NON-WHITESPACE
 SEQUENCE:           ~[ \t\r\n\f]+;
-
-
 
 // FRAGMENTS
 fragment WS: [ \t\r\n\f];

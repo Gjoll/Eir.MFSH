@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace FSHer {
+namespace FSHer.Antlr {
 using Antlr4.Runtime.Misc;
 using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
 using IToken = Antlr4.Runtime.IToken;
@@ -201,6 +201,16 @@ public interface IFSHListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitMacroDef([NotNull] FSHParser.MacroDefContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FSHParser.macroDefMetadata"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMacroDefMetadata([NotNull] FSHParser.MacroDefMetadataContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FSHParser.mapping"/>.
 	/// </summary>
@@ -692,4 +702,4 @@ public interface IFSHListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitTargetType([NotNull] FSHParser.TargetTypeContext context);
 }
-} // namespace FSHer
+} // namespace FSHer.Antlr

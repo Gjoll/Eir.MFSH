@@ -1,17 +1,13 @@
-using Eir.DevTools;
+﻿using Eir.DevTools;
+using FSHer;
+using FSHer.Antlr;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection.Metadata;
-using System.Threading;
-using Xunit;
+using System.Text;
 
-namespace FSHer.tests
+namespace FSHerGen
 {
-    /// <summary>
-    /// Unit tests that generate new user listener.
-    /// </summary>
     public class Generate
     {
         Dictionary<Int32, String> ruleDict = new Dictionary<int, string>();
@@ -19,14 +15,12 @@ namespace FSHer.tests
         private String antlrDir;
         private CodeEditor code;
 
-        [Fact]
         public void GenerateListener()
         {
             this.code = new CodeEditor();
             antlrDir = Path.Combine(
                 DirHelper.FindParentDir("Projects"),
-                "FSHer",
-                "Antlr");
+                "FSHer.Antlr");
 
             String listenerPath = Path.Combine(
                 DirHelper.FindParentDir("Projects"),
@@ -97,7 +91,7 @@ namespace FSHer.tests
 
             tokens
                 .DefineBlock(out CodeBlockNested tokenBlock)
-                .AppendCode($"String GetTokenName(Int32 tokenIndex)")
+                .AppendCode($"public static String GetTokenName(Int32 tokenIndex)")
                 .OpenBrace()
                 .AppendCode("switch (tokenIndex)")
                 .OpenBrace()
@@ -131,6 +125,9 @@ namespace FSHer.tests
                         .AppendCode($"case {token}Num: return \"{token}\";")
                         ;
 
+                    tokenBlock
+                        .AppendCode($"public const String {token}Str = \"{token}\";")
+                        ;
                 }
             }
         }

@@ -1,0 +1,25 @@
+﻿
+
+Profile: Test
+Parent: Observation
+Id: test
+Title: "Test"
+  * bodySite 1..1
+  * bodySite = SNOMED#80248007 "Left breast structure (body structure)"
+  // Start Macro ObservationFragment1
+  * interpretation1 0..0
+  // Start Macro HeaderFragment
+  * ^contact[0].telecom.system = http://hl7.org/fhir/contact-point-system#url
+  * ^contact[0].telecom.value = "http://www.hl7.org/Special/committees/cic"
+  // End Macro HeaderFragment
+  * referenceRange1 0..0
+  // End Macro ObservationFragment1
+  // Start Macro ObservationFragment2
+  * interpretation2 0..0
+  // Start Macro HeaderFragment
+  * ^contact[0].telecom.system = http://hl7.org/fhir/contact-point-system#url
+  * ^contact[0].telecom.value = "http://www.hl7.org/Special/committees/cic"
+  // End Macro HeaderFragment
+  * referenceRange2 0..0
+  // End Macro ObservationFragment2
+  * code = ObservationCodesCS#findingsLeftBreastObservation

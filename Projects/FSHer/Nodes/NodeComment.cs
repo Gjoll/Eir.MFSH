@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSHer.Nodes
+namespace FSHer
 {
     class NodeComment : NodeBase
     {
@@ -24,5 +24,19 @@ namespace FSHer.Nodes
         public override string ToFSH() => this.Comment;
         public override string Dump(String margin) => 
             $"{margin}Comment: '{this.Comment.Replace("\n", "\\n")}'";
+
+        public override NodeBase Clone()
+        {
+            NodeComment retVal = new NodeComment();
+            this.CopyTo(retVal);
+            return retVal;
+        }
+
+        public override void CopyTo(NodeBase itemBase)
+        {
+            NodeComment item = (NodeComment) itemBase;
+            base.CopyTo(item);
+            item.Comment = this.Comment;
+        }
     }
 }

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FSHer.Nodes;
 
 namespace FSHer.Processors
 {
@@ -13,15 +12,34 @@ namespace FSHer.Processors
     /// </summary>
     class Macros : ProcessorBase
     {
-        /// <summary>
-        /// New profile rule children nodes.
-        /// </summary>
-        List<NodeBase> nodes = new List<NodeBase>();
-
         private String profileName;
+        private String profileParent;
 
         public Macros(FSHer fsher) : base(fsher)
         {
+        }
+
+        String FindParent(List<NodeRule> metaData)
+        {
+            return metaData
+                    .Children()
+                    .Rules()
+                    .WithRuleName(FSHListener.ParentStr)
+                    .Children()
+                    .Tokens()
+                    .WithTokenName(FSHListener.SEQUENCEStr)
+                    .FirstOrDefault()
+                    ?.TokenValue
+                ;
+        }
+
+        List<NodeRule> FindMetaData(NodeRule rule, String metaDataName)
+        {
+            return rule
+                .ChildNodes
+                .Rules()
+                .WithRuleName(metaDataName)
+                .ToList();
         }
 
         public override void Process()
@@ -29,9 +47,16 @@ namespace FSHer.Processors
             IEnumerable<NodeRule> profiles = this.FSHer.ProfileDict.Values;
             foreach (NodeRule profile in profiles)
             {
-                this.nodes = new List<NodeBase>();
+                List<NodeRule> profileMetaData = FindMetaData(profile, FSHListener.SdMetadataStr);
+
+                List<NodeBase> nodes = new List<NodeBase>();
                 this.profileName = profile.Name;
-                this.Process(profile.ChildNodes);
+                this.profileParent = FindParent(profileMetaData);
+
+                this.Process(profile.ChildNodes, 
+                    nodes, 
+                    new List<string>(), 
+                    new List<string>());
                 profile.ChildNodes = nodes;
             }
         }
@@ -40,30 +65,67 @@ namespace FSHer.Processors
         /// Return rule set with indicated name if it has been
         /// processed (has no unexpanded macros) in it.
         /// Otherwise return null.
-        bool ExpandMacro(String macroName)
+        void ExpandMacro(String macroName,
+            List<NodeBase> outNodes,
+            List<String> parameterValues)
         {
             const String fcn = "ExpandMacro";
 
             if (this.FSHer.MacroDict.TryGetValue(macroName, out NodeRule macro) == false)
             {
-                this.FSHer.ConversionError(this.GetType().Name, fcn, $"Profile: {profileName}, macro {macroName} not found.");
-                return false;
+                String msg = $"Profile: {profileName}, macro {macroName} not found.";
+                outNodes.Add(new NodeComment($"\nError: {msg}"));
+                this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
+                return;
             }
 
-            this.nodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
-            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList());
-            this.nodes.Add(new NodeComment($"\n  // End Macro {macroName}"));
-            return true;
+            List<NodeRule> metaData = FindMetaData(macro, FSHListener.MacroDefMetadataStr);
+
+            String parent = this.FindParent(metaData);
+            if (String.IsNullOrEmpty(parent) == false)
+            {
+                if (String.Compare(this.profileParent, parent) != 0)
+                {
+                    String msg = $"Macro '{macroName}' expansion failed. Macro can only be applied to profiles derived from {parent}";
+                    outNodes.Add(new NodeComment($"\nError: {msg}"));
+                    this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
+                    return;
+                }
+            }
+            List<String> parameterNames = macro.Strings;
+            if (parameterValues.Count != parameterNames.Count)
+            {
+                String msg = $"Macro '{macroName}' expansion failed. Expected {parameterNames.Count} parameters, found {parameterValues.Count}";
+                outNodes.Add(new NodeComment($"\nError: {msg}"));
+                this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
+                return;
+            }
+
+            outNodes.Add(new NodeComment($"\n  // Start Macro {macroName}"));
+            this.Process<NodeRule>(macro.ChildNodes.Rules().ToList(),
+                outNodes,
+                parameterNames,
+                parameterValues);
+
+            outNodes.Add(new NodeComment($"\n  // End Macro {macroName}"));
+            return;
         }
 
-        bool IsMacroCall(NodeBase node, out String macroName)
+        bool IsMacroCall(NodeBase node,
+            out String macroName,
+            out List<String> parameters)
         {
             macroName = null;
+            parameters = null;
+
             NodeRule rule = node as NodeRule;
+
             if (rule == null)
                 return false;
+
             if (rule.RuleName != FSHListener.SdRuleStr)
                 return false;
+
             NodeRule macroNode = rule
                     .ChildNodes
                     .Rules()
@@ -75,34 +137,82 @@ namespace FSHer.Processors
                 return false;
 
             macroName = macroNode.Name;
+            parameters = macroNode.Strings;
+                ;
             return true;
         }
 
-        bool Process<T>(List<T> macroNodes)
-        where T : NodeBase
+        bool Process<T>(List<T> macroNodes,
+            List<NodeBase> outNodes,
+            List<String> parameterNames,
+            List<String> parameterValues)
+            where T : NodeBase
         {
+            String ReplaceParams(String input,
+                List<String> parameterNames,
+                List<String> parameterValues)
+            {
+                if (parameterNames.Count != parameterValues.Count)
+                    throw new Exception($"Invalid parameter list. Sizes do not match.");
+
+                for (Int32 i = 0; i < parameterNames.Count; i++)
+                {
+                    input = input.Replace(parameterNames[i], parameterValues[i]);
+                }
+
+                return input;
+            }
+
             const String fcn = "Process";
 
             Int32 i = 0;
 
             while (i < macroNodes.Count)
             {
-                NodeBase child = macroNodes[i];
-                if (IsMacroCall(child, out String macroName))
+                // We need to clone child because we are modifying it.
+                NodeBase child = macroNodes[i].Clone();
+                switch (child)
                 {
-                    this.FSHer.ConversionInfo(this.GetType().Name, fcn, $"Profile: {profileName}, expanding macro {macroName}");
+                    case NodeRule rule:
+                        if (IsMacroCall(rule, out String macroName, out List<String> parameters))
+                        {
+                            this.FSHer.ConversionInfo(this.GetType().Name,
+                                fcn,
+                                $"Profile: {profileName}, expanding macro {macroName}");
+                            this.ExpandMacro(macroName, outNodes, parameters);
+                        }
+                        else
+                        {
+                            List<NodeBase> cNodes = new List<NodeBase>();
+                            Process(rule.ChildNodes,
+                                cNodes,
+                                parameterNames,
+                                parameterValues);
+                            rule.ChildNodes = cNodes;
+                            outNodes.Add(rule);
+                        }
+                        break;
+                    
+                    case NodeToken token:
+                        token.TokenValue = ReplaceParams(token.TokenValue, 
+                            parameterNames,
+                            parameterValues);
+                        outNodes.Add(token);
+                        break;
+                    
+                    case NodeComment comment:
+                        comment.Comment = ReplaceParams(comment.Comment, 
+                            parameterNames, 
+                            parameterValues);
+                        outNodes.Add(comment);
+                        break;
 
-                    if (this.ExpandMacro(macroName) == false)
-                        return false;
+                    default:
+                        outNodes.Add(child);
+                        break;
                 }
-                else
-                {
-                    nodes.Add(child);
-                }
-
                 i += 1;
             }
-
             return true;
         }
     }

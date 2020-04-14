@@ -14,4 +14,8 @@
     <ProjectReference Include="..\FSHer.Antlr\FSHer.Antlr.csproj" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="$(SolutionDir)BuildAntlr.bat" />
+  </Target>
+
 </Project>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,9 +29,64 @@ namespace FSHer.Processors
         void Process(FSHFile f)
         {
             this.fshFile = f;
+            CleanFile(f.Doc);
             CollateFile(f.Doc);
         }
 
+        void CleanFile(NodeRule d)
+        {
+            foreach (NodeRule child in d.ChildNodes.Rules())
+                CleanFile(child);
+
+
+            List<NodeBase> childNodes = new List<NodeBase>();
+
+            void CommaTokens(String tokenName, String tokenValue)
+            {
+                tokenValue = tokenValue.Trim();
+                if (String.IsNullOrEmpty(tokenValue) == true)
+                    return;
+                String[] tokenValues = tokenValue.Trim().Split(',');
+
+                childNodes.Add(new NodeToken(tokenName, tokenValues[0].Trim()));
+                foreach (String v in tokenValues.Skip(1))
+                {
+                    childNodes.Add(new NodeComment(", "));
+                    childNodes.Add(new NodeToken(tokenName, v.Trim()));
+                }
+            }
+
+            foreach (NodeBase node in d.ChildNodes)
+            {
+                switch (node)
+                {
+                    case NodeToken token:
+                        ///Convert strings that are concatanations of comma values into
+                        /// seperate comma values.
+                        switch (token.TokenName)
+                        {
+                            case "COMMA_DELIMITED_SEQUENCES":
+                                CommaTokens("SEQUENCE", token.TokenValue);
+                                break;
+
+                            case "COMMA_DELIMITED_CODE":
+                                CommaTokens("CODE", token.TokenValue);
+                                break;
+
+                            default:
+                                childNodes.Add(node);
+                                break;
+                        }
+                        break;
+
+                    default:
+                        childNodes.Add(node);
+                        break;
+                }
+
+                d.ChildNodes = childNodes;
+            }
+        }
         void CollateFile(NodeRule d)
         {
             List<NodeBase> childNodes = new List<NodeBase>();

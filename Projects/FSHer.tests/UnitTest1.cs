@@ -10,6 +10,13 @@ namespace FSHer.tests
     public class UnitTest1
     {
         [Fact]
+        public void PassThroughMCode()
+        {
+            foreach (String fileName in Directory.GetFiles(@"C:\Development\MITRE\fhir-mCODE-ig\fsh", "*.fsh"))
+                PassThrough(fileName);
+        }
+
+        [Fact]
         public void PassThroughCovid19()
         {
             foreach (String fileName in Directory.GetFiles(@"C:\Development\covid-19\fsh\fsh-source"))
@@ -38,7 +45,7 @@ namespace FSHer.tests
                 while (count-- > 0)
                 {
                     start = text.LastIndexOf('\n', start);
-                    if (start < 0)
+                    if (start <= 0)
                         return 0;
                     start = start - 1;
                 }
@@ -71,6 +78,8 @@ namespace FSHer.tests
         void Compare(String results,
             FSHFile f)
         {
+            results = results.Replace("\r", "");
+
             String output = f.Doc.ToFSH();
 
             Int32 i = 0;
@@ -81,7 +90,7 @@ namespace FSHer.tests
                 i += 1;
             }
 
-            Trace.WriteLine(f.Doc.Dump("*  "));
+            //Trace.WriteLine(f.Doc.Dump("*  "));
 
             if ((i < results.Length) || (i < output.Length))
             {
@@ -118,21 +127,60 @@ namespace FSHer.tests
         }
 
         [Fact]
-        public void Macro1()
+        public void NodeCloneTest()
         {
             String input = GetCleanText("MacroTest1.fsh");
             FSHer pp = new FSHer();
             FSHFile f = pp.Parse(input, "test");
+            NodeBase b = f.Doc.Clone();
+            String output = b.ToFSH();
+            Compare(output, f);
+        }
+
+        public void MacroTest(String inputFile, String resultsFile)
+        {
+            String input = GetCleanText(inputFile);
+            FSHer pp = new FSHer();
+            FSHFile f = pp.Parse(input, "test");
+            //Trace.WriteLine(f.Doc.Dump("* "));
             if (pp.Process() == false)
             {
                 StringBuilder sb = new StringBuilder();
                 pp.FormatErrorMessages(sb);
                 Trace.WriteLine(sb.ToString());
+                Assert.True(false);
             }
+            //Trace.WriteLine(f.Doc.Dump("* "));
             String expanded = f.Doc.ToFSH();
-            String results = File.ReadAllText(@"MacroTest1.results.txt");
+            String results = File.ReadAllText(resultsFile);
             Compare(results, f);
             //File.WriteAllText(@"c:\Temp\scr.txt", expanded);
+        }
+
+
+        [Fact]
+        public void Macro1()
+        {
+            MacroTest("MacroTest1.fsh", "MacroTest1.results.txt");
+        }
+
+        [Fact]
+        public void Macro2()
+        {
+            MacroTest("MacroTest2.fsh", "MacroTest2.results.txt");
+        }
+
+        // Macro expansion should fail because parent mismatch.
+        [Fact]
+        public void Macro3()
+        {
+            String input = GetCleanText("MacroTest3.fsh");
+            FSHer pp = new FSHer();
+            FSHFile f = pp.Parse(input, "test");
+            Assert.True(pp.HasErrors == false);
+
+            // shoudl return false cause or parent profile mismatch.
+            Assert.True(pp.Process() == false);
         }
     }
 }
