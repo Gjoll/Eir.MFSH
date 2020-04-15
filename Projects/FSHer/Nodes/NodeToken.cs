@@ -31,9 +31,9 @@ namespace Eir.FSHer
         public override void CopyTo(NodeBase itemBase)
         {
             NodeToken item = (NodeToken) itemBase;
+            base.CopyTo(item);
             item.TokenName = this.TokenName;
             item.TokenValue = this.TokenValue;
-            base.CopyTo(itemBase);
         }
 
         public override NodeBase Clone()

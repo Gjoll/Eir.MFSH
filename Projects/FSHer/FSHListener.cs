@@ -14,6 +14,7 @@ namespace Eir.FSHer
     class FSHListener : FSHBaseListener
     {
         public NodeRule Head;
+        public string FileName;
 
         #region Tokens
         //+ RuleNames
@@ -318,18 +319,23 @@ namespace Eir.FSHer
         readonly Stack<NodeRule> nodeStack = new Stack<NodeRule>();
         NodeRule Current => this.nodeStack.Peek();
 
-        public FSHListener(String text)
+        public FSHListener(String text, string fileName)
         {
             this.text = text;
+            this.FileName = fileName;
             this.textIndex = 0;
             this.Head = new NodeRule("head");
             this.nodeStack.Push(this.Head);
         }
 
-        NodeRule PushRule(String ruleName, Int32 startIndex)
+        NodeRule PushRule(String ruleName, Int32 lineNum, Int32 startIndex)
         {
             //Trace.WriteLine($"Enter {ruleName}");
-            NodeRule retVal = new NodeRule(ruleName);
+            NodeRule retVal = new NodeRule(ruleName)
+            {
+                LineNum = lineNum,
+                FileName = FileName
+            };
             this.Current.ChildNodes.Add(retVal);
             this.nodeStack.Push(retVal);
             return retVal;
@@ -386,39 +392,19 @@ namespace Eir.FSHer
             NodeToken retVal = new NodeToken(
                 GetTokenName(node.Symbol.Type),
                 this.Consume(node.Symbol.StopIndex + 1)
-                );
+                )
+            {
+                FileName = this.FileName,
+                LineNum = node.Symbol.Line
+            };
             this.Current.ChildNodes.Add(retVal);
             return retVal;
         }
 
-        /// <summary>
-        /// Append a comment of all chars up to but not including index.
-        /// then create new node and append it.
-        /// Does not read the value of the node in any way.
-        /// The caller must set that up.
-        /// </summary>
-        //T AppendNode<T>(Int32 index)
-        //    where T : NodeBase, new()
-        //{
-        //    this.AppendComment(index);
-        //    T retVal = new T();
-        //    this.current.ChildNodes.Add(retVal);
-        //    return retVal;
-        //}
-
-        //public override void EnterDoc(FSHParser.DocContext context)
-        //{
-        //    this.AppendComment(context.Start.StartIndex);
-        //}
-
-        //public override void ExitDoc(FSHParser.DocContext context)
-        //{
-        //}
-
         //+ VisitorMethods
         public override void EnterRatioPart(FSHParser.RatioPartContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(RatioPartStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+            this.PushRule(RatioPartStr, context.Start.Line, context.Start.StartIndex);                                                      // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitRatioPart(FSHParser.RatioPartContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -426,7 +412,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterBool(FSHParser.BoolContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(BoolStr, context.Start.StartIndex);                                                                               // Generate.cs:62
+            this.PushRule(BoolStr, context.Start.Line, context.Start.StartIndex);                                                           // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitBool(FSHParser.BoolContext context)                                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -434,7 +420,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterTargetType(FSHParser.TargetTypeContext context)                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(TargetTypeStr, context.Start.StartIndex);                                                                         // Generate.cs:62
+            this.PushRule(TargetTypeStr, context.Start.Line, context.Start.StartIndex);                                                     // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitTargetType(FSHParser.TargetTypeContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -442,7 +428,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterDoc(FSHParser.DocContext context)                                                                         // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(DocStr, context.Start.StartIndex);                                                                                // Generate.cs:62
+            this.PushRule(DocStr, context.Start.Line, context.Start.StartIndex);                                                            // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitDoc(FSHParser.DocContext context)                                                                          // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -450,7 +436,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterEntity(FSHParser.EntityContext context)                                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(EntityStr, context.Start.StartIndex);                                                                             // Generate.cs:62
+            this.PushRule(EntityStr, context.Start.Line, context.Start.StartIndex);                                                         // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitEntity(FSHParser.EntityContext context)                                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -458,7 +444,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterAlias(FSHParser.AliasContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(AliasStr, context.Start.StartIndex);                                                                              // Generate.cs:62
+            this.PushRule(AliasStr, context.Start.Line, context.Start.StartIndex);                                                          // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitAlias(FSHParser.AliasContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -466,7 +452,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterProfile(FSHParser.ProfileContext context)                                                                 // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ProfileStr, context.Start.StartIndex);                                                                            // Generate.cs:62
+            this.PushRule(ProfileStr, context.Start.Line, context.Start.StartIndex);                                                        // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitProfile(FSHParser.ProfileContext context)                                                                  // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -474,7 +460,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterExtension(FSHParser.ExtensionContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ExtensionStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+            this.PushRule(ExtensionStr, context.Start.Line, context.Start.StartIndex);                                                      // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitExtension(FSHParser.ExtensionContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -482,7 +468,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterSdMetadata(FSHParser.SdMetadataContext context)                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(SdMetadataStr, context.Start.StartIndex);                                                                         // Generate.cs:62
+            this.PushRule(SdMetadataStr, context.Start.Line, context.Start.StartIndex);                                                     // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitSdMetadata(FSHParser.SdMetadataContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -490,7 +476,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterSdRule(FSHParser.SdRuleContext context)                                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(SdRuleStr, context.Start.StartIndex);                                                                             // Generate.cs:62
+            this.PushRule(SdRuleStr, context.Start.Line, context.Start.StartIndex);                                                         // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitSdRule(FSHParser.SdRuleContext context)                                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -498,7 +484,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterInstance(FSHParser.InstanceContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(InstanceStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(InstanceStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitInstance(FSHParser.InstanceContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -506,7 +492,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterInstanceMetadata(FSHParser.InstanceMetadataContext context)                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(InstanceMetadataStr, context.Start.StartIndex);                                                                   // Generate.cs:62
+            this.PushRule(InstanceMetadataStr, context.Start.Line, context.Start.StartIndex);                                               // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitInstanceMetadata(FSHParser.InstanceMetadataContext context)                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -514,7 +500,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterInvariant(FSHParser.InvariantContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(InvariantStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+            this.PushRule(InvariantStr, context.Start.Line, context.Start.StartIndex);                                                      // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitInvariant(FSHParser.InvariantContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -522,7 +508,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterInvariantMetadata(FSHParser.InvariantMetadataContext context)                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(InvariantMetadataStr, context.Start.StartIndex);                                                                  // Generate.cs:62
+            this.PushRule(InvariantMetadataStr, context.Start.Line, context.Start.StartIndex);                                              // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitInvariantMetadata(FSHParser.InvariantMetadataContext context)                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -530,7 +516,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterValueSet(FSHParser.ValueSetContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ValueSetStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(ValueSetStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitValueSet(FSHParser.ValueSetContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -538,7 +524,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsMetadata(FSHParser.VsMetadataContext context)                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsMetadataStr, context.Start.StartIndex);                                                                         // Generate.cs:62
+            this.PushRule(VsMetadataStr, context.Start.Line, context.Start.StartIndex);                                                     // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsMetadata(FSHParser.VsMetadataContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -546,7 +532,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCodeSystem(FSHParser.CodeSystemContext context)                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(CodeSystemStr, context.Start.StartIndex);                                                                         // Generate.cs:62
+            this.PushRule(CodeSystemStr, context.Start.Line, context.Start.StartIndex);                                                     // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitCodeSystem(FSHParser.CodeSystemContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -554,7 +540,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCsMetadata(FSHParser.CsMetadataContext context)                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(CsMetadataStr, context.Start.StartIndex);                                                                         // Generate.cs:62
+            this.PushRule(CsMetadataStr, context.Start.Line, context.Start.StartIndex);                                                     // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitCsMetadata(FSHParser.CsMetadataContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -562,7 +548,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterRuleSet(FSHParser.RuleSetContext context)                                                                 // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(RuleSetStr, context.Start.StartIndex);                                                                            // Generate.cs:62
+            this.PushRule(RuleSetStr, context.Start.Line, context.Start.StartIndex);                                                        // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitRuleSet(FSHParser.RuleSetContext context)                                                                  // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -570,7 +556,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMacroDef(FSHParser.MacroDefContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(MacroDefStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(MacroDefStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitMacroDef(FSHParser.MacroDefContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -578,7 +564,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMacroDefMetadata(FSHParser.MacroDefMetadataContext context)                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(MacroDefMetadataStr, context.Start.StartIndex);                                                                   // Generate.cs:62
+            this.PushRule(MacroDefMetadataStr, context.Start.Line, context.Start.StartIndex);                                               // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitMacroDefMetadata(FSHParser.MacroDefMetadataContext context)                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -586,7 +572,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMapping(FSHParser.MappingContext context)                                                                 // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(MappingStr, context.Start.StartIndex);                                                                            // Generate.cs:62
+            this.PushRule(MappingStr, context.Start.Line, context.Start.StartIndex);                                                        // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitMapping(FSHParser.MappingContext context)                                                                  // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -594,7 +580,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMappingMetadata(FSHParser.MappingMetadataContext context)                                                 // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(MappingMetadataStr, context.Start.StartIndex);                                                                    // Generate.cs:62
+            this.PushRule(MappingMetadataStr, context.Start.Line, context.Start.StartIndex);                                                // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitMappingMetadata(FSHParser.MappingMetadataContext context)                                                  // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -602,7 +588,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterParent(FSHParser.ParentContext context)                                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ParentStr, context.Start.StartIndex);                                                                             // Generate.cs:62
+            this.PushRule(ParentStr, context.Start.Line, context.Start.StartIndex);                                                         // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitParent(FSHParser.ParentContext context)                                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -610,7 +596,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterId(FSHParser.IdContext context)                                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(IdStr, context.Start.StartIndex);                                                                                 // Generate.cs:62
+            this.PushRule(IdStr, context.Start.Line, context.Start.StartIndex);                                                             // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitId(FSHParser.IdContext context)                                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -618,7 +604,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterTitle(FSHParser.TitleContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(TitleStr, context.Start.StartIndex);                                                                              // Generate.cs:62
+            this.PushRule(TitleStr, context.Start.Line, context.Start.StartIndex);                                                          // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitTitle(FSHParser.TitleContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -626,7 +612,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterDescription(FSHParser.DescriptionContext context)                                                         // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(DescriptionStr, context.Start.StartIndex);                                                                        // Generate.cs:62
+            this.PushRule(DescriptionStr, context.Start.Line, context.Start.StartIndex);                                                    // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitDescription(FSHParser.DescriptionContext context)                                                          // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -634,7 +620,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterExpression(FSHParser.ExpressionContext context)                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ExpressionStr, context.Start.StartIndex);                                                                         // Generate.cs:62
+            this.PushRule(ExpressionStr, context.Start.Line, context.Start.StartIndex);                                                     // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitExpression(FSHParser.ExpressionContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -642,7 +628,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterXpath(FSHParser.XpathContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(XpathStr, context.Start.StartIndex);                                                                              // Generate.cs:62
+            this.PushRule(XpathStr, context.Start.Line, context.Start.StartIndex);                                                          // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitXpath(FSHParser.XpathContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -650,7 +636,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterSeverity(FSHParser.SeverityContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(SeverityStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(SeverityStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitSeverity(FSHParser.SeverityContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -658,7 +644,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterInstanceOf(FSHParser.InstanceOfContext context)                                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(InstanceOfStr, context.Start.StartIndex);                                                                         // Generate.cs:62
+            this.PushRule(InstanceOfStr, context.Start.Line, context.Start.StartIndex);                                                     // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitInstanceOf(FSHParser.InstanceOfContext context)                                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -666,7 +652,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterUsage(FSHParser.UsageContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(UsageStr, context.Start.StartIndex);                                                                              // Generate.cs:62
+            this.PushRule(UsageStr, context.Start.Line, context.Start.StartIndex);                                                          // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitUsage(FSHParser.UsageContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -674,7 +660,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMixins(FSHParser.MixinsContext context)                                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(MixinsStr, context.Start.StartIndex);                                                                             // Generate.cs:62
+            this.PushRule(MixinsStr, context.Start.Line, context.Start.StartIndex);                                                         // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitMixins(FSHParser.MixinsContext context)                                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -682,7 +668,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterSource(FSHParser.SourceContext context)                                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(SourceStr, context.Start.StartIndex);                                                                             // Generate.cs:62
+            this.PushRule(SourceStr, context.Start.Line, context.Start.StartIndex);                                                         // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitSource(FSHParser.SourceContext context)                                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -690,7 +676,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterTarget(FSHParser.TargetContext context)                                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(TargetStr, context.Start.StartIndex);                                                                             // Generate.cs:62
+            this.PushRule(TargetStr, context.Start.Line, context.Start.StartIndex);                                                         // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitTarget(FSHParser.TargetContext context)                                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -698,7 +684,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCardRule(FSHParser.CardRuleContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(CardRuleStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(CardRuleStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitCardRule(FSHParser.CardRuleContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -706,7 +692,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterFlagRule(FSHParser.FlagRuleContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(FlagRuleStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(FlagRuleStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitFlagRule(FSHParser.FlagRuleContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -714,7 +700,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterValueSetRule(FSHParser.ValueSetRuleContext context)                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ValueSetRuleStr, context.Start.StartIndex);                                                                       // Generate.cs:62
+            this.PushRule(ValueSetRuleStr, context.Start.Line, context.Start.StartIndex);                                                   // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitValueSetRule(FSHParser.ValueSetRuleContext context)                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -722,7 +708,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterFixedValueRule(FSHParser.FixedValueRuleContext context)                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(FixedValueRuleStr, context.Start.StartIndex);                                                                     // Generate.cs:62
+            this.PushRule(FixedValueRuleStr, context.Start.Line, context.Start.StartIndex);                                                 // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitFixedValueRule(FSHParser.FixedValueRuleContext context)                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -730,7 +716,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterContainsRule(FSHParser.ContainsRuleContext context)                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ContainsRuleStr, context.Start.StartIndex);                                                                       // Generate.cs:62
+            this.PushRule(ContainsRuleStr, context.Start.Line, context.Start.StartIndex);                                                   // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitContainsRule(FSHParser.ContainsRuleContext context)                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -738,7 +724,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterOnlyRule(FSHParser.OnlyRuleContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(OnlyRuleStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(OnlyRuleStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitOnlyRule(FSHParser.OnlyRuleContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -746,7 +732,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterObeysRule(FSHParser.ObeysRuleContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ObeysRuleStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+            this.PushRule(ObeysRuleStr, context.Start.Line, context.Start.StartIndex);                                                      // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitObeysRule(FSHParser.ObeysRuleContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -754,7 +740,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCaretValueRule(FSHParser.CaretValueRuleContext context)                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(CaretValueRuleStr, context.Start.StartIndex);                                                                     // Generate.cs:62
+            this.PushRule(CaretValueRuleStr, context.Start.Line, context.Start.StartIndex);                                                 // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitCaretValueRule(FSHParser.CaretValueRuleContext context)                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -762,7 +748,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMappingRule(FSHParser.MappingRuleContext context)                                                         // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(MappingRuleStr, context.Start.StartIndex);                                                                        // Generate.cs:62
+            this.PushRule(MappingRuleStr, context.Start.Line, context.Start.StartIndex);                                                    // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitMappingRule(FSHParser.MappingRuleContext context)                                                          // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -770,7 +756,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterMacroRule(FSHParser.MacroRuleContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(MacroRuleStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+            this.PushRule(MacroRuleStr, context.Start.Line, context.Start.StartIndex);                                                      // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitMacroRule(FSHParser.MacroRuleContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -778,7 +764,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsComponent(FSHParser.VsComponentContext context)                                                         // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsComponentStr, context.Start.StartIndex);                                                                        // Generate.cs:62
+            this.PushRule(VsComponentStr, context.Start.Line, context.Start.StartIndex);                                                    // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsComponent(FSHParser.VsComponentContext context)                                                          // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -786,7 +772,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsConceptComponent(FSHParser.VsConceptComponentContext context)                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsConceptComponentStr, context.Start.StartIndex);                                                                 // Generate.cs:62
+            this.PushRule(VsConceptComponentStr, context.Start.Line, context.Start.StartIndex);                                             // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsConceptComponent(FSHParser.VsConceptComponentContext context)                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -794,7 +780,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsFilterComponent(FSHParser.VsFilterComponentContext context)                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsFilterComponentStr, context.Start.StartIndex);                                                                  // Generate.cs:62
+            this.PushRule(VsFilterComponentStr, context.Start.Line, context.Start.StartIndex);                                              // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsFilterComponent(FSHParser.VsFilterComponentContext context)                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -802,7 +788,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsComponentFrom(FSHParser.VsComponentFromContext context)                                                 // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsComponentFromStr, context.Start.StartIndex);                                                                    // Generate.cs:62
+            this.PushRule(VsComponentFromStr, context.Start.Line, context.Start.StartIndex);                                                // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsComponentFrom(FSHParser.VsComponentFromContext context)                                                  // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -810,7 +796,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsFromSystem(FSHParser.VsFromSystemContext context)                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsFromSystemStr, context.Start.StartIndex);                                                                       // Generate.cs:62
+            this.PushRule(VsFromSystemStr, context.Start.Line, context.Start.StartIndex);                                                   // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsFromSystem(FSHParser.VsFromSystemContext context)                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -818,7 +804,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsFromValueset(FSHParser.VsFromValuesetContext context)                                                   // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsFromValuesetStr, context.Start.StartIndex);                                                                     // Generate.cs:62
+            this.PushRule(VsFromValuesetStr, context.Start.Line, context.Start.StartIndex);                                                 // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsFromValueset(FSHParser.VsFromValuesetContext context)                                                    // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -826,7 +812,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsFilterList(FSHParser.VsFilterListContext context)                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsFilterListStr, context.Start.StartIndex);                                                                       // Generate.cs:62
+            this.PushRule(VsFilterListStr, context.Start.Line, context.Start.StartIndex);                                                   // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsFilterList(FSHParser.VsFilterListContext context)                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -834,7 +820,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsFilterDefinition(FSHParser.VsFilterDefinitionContext context)                                           // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsFilterDefinitionStr, context.Start.StartIndex);                                                                 // Generate.cs:62
+            this.PushRule(VsFilterDefinitionStr, context.Start.Line, context.Start.StartIndex);                                             // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsFilterDefinition(FSHParser.VsFilterDefinitionContext context)                                            // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -842,7 +828,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsFilterOperator(FSHParser.VsFilterOperatorContext context)                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsFilterOperatorStr, context.Start.StartIndex);                                                                   // Generate.cs:62
+            this.PushRule(VsFilterOperatorStr, context.Start.Line, context.Start.StartIndex);                                               // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsFilterOperator(FSHParser.VsFilterOperatorContext context)                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -850,7 +836,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterVsFilterValue(FSHParser.VsFilterValueContext context)                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(VsFilterValueStr, context.Start.StartIndex);                                                                      // Generate.cs:62
+            this.PushRule(VsFilterValueStr, context.Start.Line, context.Start.StartIndex);                                                  // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitVsFilterValue(FSHParser.VsFilterValueContext context)                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -858,7 +844,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterPath(FSHParser.PathContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(PathStr, context.Start.StartIndex);                                                                               // Generate.cs:62
+            this.PushRule(PathStr, context.Start.Line, context.Start.StartIndex);                                                           // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitPath(FSHParser.PathContext context)                                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -866,7 +852,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterPaths(FSHParser.PathsContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(PathsStr, context.Start.StartIndex);                                                                              // Generate.cs:62
+            this.PushRule(PathsStr, context.Start.Line, context.Start.StartIndex);                                                          // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitPaths(FSHParser.PathsContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -874,7 +860,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCaretPath(FSHParser.CaretPathContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(CaretPathStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+            this.PushRule(CaretPathStr, context.Start.Line, context.Start.StartIndex);                                                      // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitCaretPath(FSHParser.CaretPathContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -882,7 +868,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterFlag(FSHParser.FlagContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(FlagStr, context.Start.StartIndex);                                                                               // Generate.cs:62
+            this.PushRule(FlagStr, context.Start.Line, context.Start.StartIndex);                                                           // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitFlag(FSHParser.FlagContext context)                                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -890,7 +876,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterStrength(FSHParser.StrengthContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(StrengthStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(StrengthStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitStrength(FSHParser.StrengthContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -898,7 +884,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterValue(FSHParser.ValueContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ValueStr, context.Start.StartIndex);                                                                              // Generate.cs:62
+            this.PushRule(ValueStr, context.Start.Line, context.Start.StartIndex);                                                          // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitValue(FSHParser.ValueContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -906,7 +892,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterItem(FSHParser.ItemContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ItemStr, context.Start.StartIndex);                                                                               // Generate.cs:62
+            this.PushRule(ItemStr, context.Start.Line, context.Start.StartIndex);                                                           // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitItem(FSHParser.ItemContext context)                                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -914,7 +900,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterCode(FSHParser.CodeContext context)                                                                       // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(CodeStr, context.Start.StartIndex);                                                                               // Generate.cs:62
+            this.PushRule(CodeStr, context.Start.Line, context.Start.StartIndex);                                                           // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitCode(FSHParser.CodeContext context)                                                                        // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -922,7 +908,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterConcept(FSHParser.ConceptContext context)                                                                 // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ConceptStr, context.Start.StartIndex);                                                                            // Generate.cs:62
+            this.PushRule(ConceptStr, context.Start.Line, context.Start.StartIndex);                                                        // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitConcept(FSHParser.ConceptContext context)                                                                  // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -930,7 +916,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterQuantity(FSHParser.QuantityContext context)                                                               // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(QuantityStr, context.Start.StartIndex);                                                                           // Generate.cs:62
+            this.PushRule(QuantityStr, context.Start.Line, context.Start.StartIndex);                                                       // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitQuantity(FSHParser.QuantityContext context)                                                                // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -938,7 +924,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterRatio(FSHParser.RatioContext context)                                                                     // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(RatioStr, context.Start.StartIndex);                                                                              // Generate.cs:62
+            this.PushRule(RatioStr, context.Start.Line, context.Start.StartIndex);                                                          // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitRatio(FSHParser.RatioContext context)                                                                      // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74
@@ -946,7 +932,7 @@ namespace Eir.FSHer
         }                                                                                                                                   // Generate.cs:76
         public override void EnterReference(FSHParser.ReferenceContext context)                                                             // Generate.cs:60
         {                                                                                                                                   // Generate.cs:61
-            this.PushRule(ReferenceStr, context.Start.StartIndex);                                                                          // Generate.cs:62
+            this.PushRule(ReferenceStr, context.Start.Line, context.Start.StartIndex);                                                      // Generate.cs:62
         }                                                                                                                                   // Generate.cs:63
         public override void ExitReference(FSHParser.ReferenceContext context)                                                              // Generate.cs:73
         {                                                                                                                                   // Generate.cs:74

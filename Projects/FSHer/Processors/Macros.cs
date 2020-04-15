@@ -65,16 +65,23 @@ namespace Eir.FSHer.Processors
         /// Return rule set with indicated name if it has been
         /// processed (has no unexpanded macros) in it.
         /// Otherwise return null.
-        void ExpandMacro(String macroName,
+        void ExpandMacro(NodeRule macroNode,
+            String macroName,
             List<NodeBase> outNodes,
             List<String> parameterValues)
         {
             const String fcn = "ExpandMacro";
 
+            String Error(String msg)
+            {
+                String fullMsg = $"Error: File {macroNode.FileName},  line {macroNode.LineNum}\n{msg}";
+                return fullMsg;
+            }
+
             if (this.FSHer.MacroDict.TryGetValue(macroName, out NodeRule macro) == false)
             {
-                String msg = $"Profile: {profileName}, macro {macroName} not found.";
-                outNodes.Add(new NodeComment($"\nError: {msg}"));
+                String msg = Error($"macro {macroName} not found.");
+                outNodes.Add(new NodeComment($"\n{msg}"));
                 this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
                 return;
             }
@@ -86,8 +93,8 @@ namespace Eir.FSHer.Processors
             {
                 if (String.Compare(this.profileParent, parent) != 0)
                 {
-                    String msg = $"Macro '{macroName}' expansion failed. Macro can only be applied to profiles derived from {parent}";
-                    outNodes.Add(new NodeComment($"\nError: {msg}"));
+                    String msg = Error($"Macro '{macroName}' expansion failed. Macro can only be applied to profiles derived from {parent}");
+                    outNodes.Add(new NodeComment($"\n{msg}"));
                     this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
                     return;
                 }
@@ -95,8 +102,8 @@ namespace Eir.FSHer.Processors
             List<String> parameterNames = macro.Strings;
             if (parameterValues.Count != parameterNames.Count)
             {
-                String msg = $"Macro '{macroName}' expansion failed. Expected {parameterNames.Count} parameters, found {parameterValues.Count}";
-                outNodes.Add(new NodeComment($"\nError: {msg}"));
+                String msg = Error($"Macro '{macroName}' expansion failed. Expected {parameterNames.Count} parameters, found {parameterValues.Count}");
+                outNodes.Add(new NodeComment($"\n{msg}"));
                 this.FSHer.ConversionError(this.GetType().Name, fcn, msg);
                 return;
             }
@@ -183,7 +190,7 @@ namespace Eir.FSHer.Processors
                             this.FSHer.ConversionInfo(this.GetType().Name,
                                 fcn,
                                 $"Profile: {profileName}, expanding macro {macroName}");
-                            this.ExpandMacro(macroName, outNodes, parameters);
+                            this.ExpandMacro(rule, macroName, outNodes, parameters);
                         }
                         else
                         {

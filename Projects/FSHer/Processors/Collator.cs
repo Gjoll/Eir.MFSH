@@ -41,18 +41,28 @@ namespace Eir.FSHer.Processors
 
             List<NodeBase> childNodes = new List<NodeBase>();
 
-            void CommaTokens(String tokenName, String tokenValue)
+            void CommaTokens(NodeToken token,
+                String tokenName, 
+                String tokenValue)
             {
                 tokenValue = tokenValue.Trim();
                 if (String.IsNullOrEmpty(tokenValue) == true)
                     return;
                 String[] tokenValues = tokenValue.Trim().Split(',');
 
-                childNodes.Add(new NodeToken(tokenName, tokenValues[0].Trim()));
+                childNodes.Add(new NodeToken(tokenName, tokenValues[0].Trim())
+                {
+                    FileName = token.FileName,
+                    LineNum =  token.LineNum
+                });
                 foreach (String v in tokenValues.Skip(1))
                 {
                     childNodes.Add(new NodeComment(", "));
-                    childNodes.Add(new NodeToken(tokenName, v.Trim()));
+                    childNodes.Add(new NodeToken(tokenName, v.Trim())
+                    {
+                        FileName = token.FileName,
+                        LineNum = token.LineNum
+                    });
                 }
             }
 
@@ -66,11 +76,11 @@ namespace Eir.FSHer.Processors
                         switch (token.TokenName)
                         {
                             case "COMMA_DELIMITED_SEQUENCES":
-                                CommaTokens("SEQUENCE", token.TokenValue);
+                                CommaTokens(token, "SEQUENCE", token.TokenValue);
                                 break;
 
                             case "COMMA_DELIMITED_CODE":
-                                CommaTokens("CODE", token.TokenValue);
+                                CommaTokens(token, "CODE", token.TokenValue);
                                 break;
 
                             default:

@@ -23,7 +23,7 @@ csMetadata:         id | title | description;
 
 ruleSet:            KW_RULESET SEQUENCE sdRule+;
 
-macroDef:           KW_MACRODEF SEQUENCE STRING* macroDefMetadata* sdRule+;
+macroDef:           KW_MACRODEF SEQUENCE STRING* macroDefMetadata* sdRule*;
 macroDefMetadata:   usage | parent;
 
 mapping:            KW_MAPPING SEQUENCE mappingMetadata* mappingRule*;

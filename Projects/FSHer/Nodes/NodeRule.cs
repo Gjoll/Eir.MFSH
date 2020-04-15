@@ -71,6 +71,7 @@ namespace Eir.FSHer
         public override void CopyTo(NodeBase itemBase)
         {
             NodeRule item = (NodeRule) itemBase;
+            base.CopyTo(item);
             item.RuleName = this.RuleName;
             item.ChildNodes.Clear();
             foreach (NodeBase childNode in this.ChildNodes)

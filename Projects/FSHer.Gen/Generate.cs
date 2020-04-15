@@ -59,7 +59,7 @@ namespace Eir.FSHerGen
                         methodBlock
                             .AppendCode($"public override void Enter{ruleName}(FSHParser.{ruleName}Context context)")
                             .OpenBrace()
-                            .AppendCode($"this.PushRule({ruleNameStr}, context.Start.StartIndex);")
+                            .AppendCode($"this.PushRule({ruleNameStr}, context.Start.Line, context.Start.StartIndex);")
                             .CloseBrace()
                             ;
                     }

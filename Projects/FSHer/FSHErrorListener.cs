@@ -53,7 +53,7 @@ namespace Eir.FSHer
 
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine($"Error in parser at line {line}, column {charPositionInLine}");
+                sb.AppendLine($"Error: Error in parser at line {line}, column {charPositionInLine}");
                 if (msgLine != null)
                     sb.AppendLine(msgLine);
                 sb.AppendLine(msg);

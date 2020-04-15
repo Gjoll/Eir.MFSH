@@ -11,6 +11,11 @@ namespace Eir.FSHer
         FSHer pp = new FSHer();
         String outputDir = ".";
 
+        public Program()
+        {
+            this.pp.ConsoleLogging();
+        }
+
         void ParseArguments(String[] args)
         {
             Int32 i = 0;
@@ -52,14 +57,8 @@ namespace Eir.FSHer
 
         bool Process()
         {
-            this.pp.ConsoleLogging();
             if (pp.Process() == false)
-            {
-                StringBuilder sb = new StringBuilder();
-                this.pp.FormatMessages(sb);
-                Console.WriteLine(sb.ToString());
                 return false;
-            }
 
             this.pp.SaveAll(this.outputDir);
             return true;

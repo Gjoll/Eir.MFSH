@@ -76,7 +76,7 @@ namespace Eir.FSHer
             parser.AddErrorListener(new FSHErrorListenerParser(this, fileName));
 
             ParseTreeWalker walker = new ParseTreeWalker();
-            FSHListener listener = new FSHListener(fshText);
+            FSHListener listener = new FSHListener(fshText, fileName);
             walker.Walk(listener, parser.doc());
             NodeRule d = (NodeRule)listener.Head.ChildNodes.First();
 
