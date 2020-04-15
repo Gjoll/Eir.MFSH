@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FSHer.PreFhir.FSH
+namespace FSHer.Bbl.FSH
 {
     /// <summary>
     /// FSH document

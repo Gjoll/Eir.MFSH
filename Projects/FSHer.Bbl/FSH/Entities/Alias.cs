@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using FSHer.Bbl.FSH;
 
-namespace FSHer.PreFhir.FSH
+namespace FSHer.Bbl.FSH
 {
-    public class Profile : Entity
+    [DebuggerDisplay("Alias: {Name} = {Value}")]
+    public class Alias : Entity
     {
         public String Name { get; set; }
         public String Value { get; set; }
         public override void WriteFSH(StringBuilder sb)
         {
             base.WriteFSH(sb);
-            WriteLine(sb, 1, $"  Profile: {this.Name}");
+            sb.WriteLine(1, $"  Alias: {this.Name} = {this.Value}");
         }
     }
 }
