@@ -1,56 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FSHer.Bbl.FSH
 {
-    public interface ICardRuleContainer : TIEntity<ICardRuleContainer>
-    {
-    }
-
-
     public class CardRule : SDRule
     {
-        public Int32 Min { get; set; } = -1;
-        public Int32 Max { get; set; } = -1;
+        public String Min { get; set; }
+        public String Max { get; set; }
+
 
         public Flags Flags { get; set; }
+
+        internal CardRule(String path,
+            String cardStr,
+            Flags flags = Flags.None)
+        {
+            this.Paths.Add(path);
+            this.Card(cardStr);
+            this.Flags = flags;
+        }
+
+        public CardRule Card(String s)
+        {
+            Int32 index = s.IndexOf(".");
+            if (index > 0)
+                this.Min = s.Substring(0, index);
+
+            index = s.LastIndexOf('.');
+            if (index < s.Length)
+                this.Max = s.Substring(index + 1);
+
+            return this;
+        }
+
         public override void WriteFSH(StringBuilder sb)
         {
-            StringBuilder sbFlag = new StringBuilder();
-            if ((this.Flags & Flags.MOD) == Flags.MOD)
-                sbFlag.Append(" MOD");
-            if ((this.Flags & Flags.MS) == Flags.MS)
-                sbFlag.Append(" MS");
-            if ((this.Flags & Flags.SU) == Flags.SU)
-                sbFlag.Append(" SU");
-            if ((this.Flags & Flags.TU) == Flags.TU)
-                sbFlag.Append(" TU");
-            if ((this.Flags & Flags.NORMATIVE) == Flags.NORMATIVE)
-                sbFlag.Append(" NORMATIVE");
-            if ((this.Flags & Flags.DRAFT) == Flags.DRAFT)
-                sbFlag.Append(" DRAFT");
-
-            String min = Min >= 0 ? Min.ToString() : "";
-            String max = Max >= 0 ? Max.ToString() : "";
-            sb.WriteLine(2, $"* {this.Path.Value} {min}..{max} {sbFlag.ToString()}");
-        }
-    }
-
-    public static class CardRuleExtensions
-    {
-        public static void Cardinality(this ICardRuleContainer container,
-            String path,
-            Int32 min = 0,
-            Int32 max = Int32.MaxValue)
-        {
-            CardRule c = new CardRule()
-            {
-                Min = min,
-                Max = max
-            };
-
-            container.Rules.Add(c);
+            sb.WriteLine(2, $"* {this.Path} {this.Min}..{this.Max} {this.Flags.ToFsh()}");
         }
     }
 }

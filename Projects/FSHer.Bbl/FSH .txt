@@ -2,8 +2,7 @@ entity:             profile | extension | invariant | instance | valueSet | code
 
 profile:            KW_PROFILE SEQUENCE sdMetadata+ sdRule*;
 extension:          KW_EXTENSION SEQUENCE sdMetadata* sdRule*;
-sdMetadata:         parent | id | title | description | mixins;
-sdRule:             cardRule | flagRule | valueSetRule | fixedValueRule | containsRule | onlyRule | obeysRule | caretValueRule | macroRule;
+sdRule:             fixedValueRule | containsRule | onlyRule | obeysRule  | macroRule;
 
 instance:           KW_INSTANCE SEQUENCE instanceMetadata* fixedValueRule*;
 instanceMetadata:   instanceOf | title | description | usage | mixins;
@@ -42,12 +41,10 @@ target:             KW_TARGET STRING;
 // RULES
 cardRule:           STAR path CARD flag*;
 flagRule:           STAR (path | paths) flag+;
-valueSetRule:       STAR path KW_UNITS? KW_FROM SEQUENCE strength?;
 fixedValueRule:     STAR path KW_UNITS? EQUAL value KW_EXACTLY?;
 containsRule:       STAR path KW_CONTAINS item (KW_AND item)*;
 onlyRule:           STAR path KW_ONLY targetType (KW_OR targetType)*;
 obeysRule:          STAR path? KW_OBEYS SEQUENCE (KW_AND SEQUENCE)*;
-caretValueRule:     STAR path? caretPath EQUAL value;
 mappingRule:        STAR path? ARROW STRING STRING? CODE?;
 macroRule:          KW_MACRO SEQUENCE STRING*;
 

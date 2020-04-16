@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace FSHer.Bbl.FSH
@@ -38,12 +39,48 @@ namespace FSHer.Bbl.FSH
             return sb.WriteLine(margin, $"{name}: {value}");
         }
 
-        public static StringBuilder WriteLine(this StringBuilder sb, Int32 margin, String s)
+        public static StringBuilder WriteLine(this StringBuilder sb, 
+            Int32 margin, 
+            String s)
         {
-            for (Int32 i = 0; i < margin; i++)
-                sb.Append("  ");
+            sb.WriteMargin(margin);
+            return sb.WriteLine(s);
+        }
+
+        public static StringBuilder WriteLine(this StringBuilder sb, String s)
+        {
             sb.AppendLine(s);
             return sb;
         }
+
+        public static StringBuilder Write(this StringBuilder sb, String text)
+        {
+            sb.Append(text);
+            return sb;
+        }
+
+        public static StringBuilder WriteMargin(this StringBuilder sb, Int32 margin)
+        {
+            for (Int32 i = 0; i < margin; i++)
+                sb.Append("  ");
+            return sb;
+        }
+
+        public static StringBuilder WritePaths(this StringBuilder sb,
+            IEnumerable<String> strings)
+        {
+            if (strings == null)
+                return sb;
+
+            List<String> strList = strings.ToList();
+            if (strList.Count == 0)
+                return sb;
+
+            sb.Append(strList[0]);
+            for (Int32 i = 1; i < strList.Count; i++)
+                sb.Append($", strList[i]");
+            return sb;
+        }
+
     }
 }

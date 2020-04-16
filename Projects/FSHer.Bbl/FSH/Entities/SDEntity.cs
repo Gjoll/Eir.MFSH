@@ -10,14 +10,12 @@ namespace FSHer.Bbl.FSH
     /// Parent class of either Profile or Extension.
     /// </summary>
     [DebuggerDisplay("{EntityName}: {Name}")]
-    public abstract class SDEntity : Entity,
+    public abstract partial class SDEntity : Entity,
         IParent,
         IId,
         ITitle,
         IDescription,
-        IMixins,
-
-        ICardRuleContainer
+        IMixins
     {
         public String EntityName { get; }
         public String Name { get; set; }
@@ -30,6 +28,15 @@ namespace FSHer.Bbl.FSH
         public SDEntity(String entityName)
         {
             this.EntityName = entityName;
+        }
+
+        public SDPath Path(String path) => new SDPath(this, path);
+        public SDEntity CaretValue(String caretPath,
+            String value)
+        {
+            CaretValueRule c = new CaretValueRule(null, caretPath, value);
+            this.Rules.Add(c);
+            return this;
         }
 
         public override void WriteFSH(StringBuilder sb)
