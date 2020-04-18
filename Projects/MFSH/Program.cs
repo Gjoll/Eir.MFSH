@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,13 +10,14 @@ namespace MFSH
 {
     class Program
     {
-        MFsh pp = new MFsh();
-        String outputDir = ".";
-        List<String> dirs = new List<string>();
+        MFsh mfsh;
 
         public Program()
         {
-            this.pp.ConsoleLogging();
+            this.mfsh = new MFsh();
+            this.mfsh.BaseInputDir = Path.GetFullPath(".");
+            this.mfsh.BaseOutputDir = Path.GetFullPath(".");
+            this.mfsh.ConsoleLogging();
         }
 
         void ParseArguments(String[] args)
@@ -40,19 +42,23 @@ namespace MFSH
                 switch (arg.ToLower())
                 {
                     case "-i":
-                        this.pp.IncludeDirs.Add(GetArg("-d"));
+                        this.mfsh.IncludeDirs.Add(GetArg("-i"));
                         break;
 
-                    case "-f":
-                        filter = GetArg("-f");
+                    case "-t":
+                        filter = GetArg("-t");
                         break;
 
-                    case "-d":
-                        this.dirs.Add(GetArg("-d"));
+                    case "-b":
+                        this.mfsh.BaseInputDir = GetArg("-b");
+                        break;
+
+                    case "-p":
+                        this.mfsh.Paths.Add(GetArg("-d"));
                         break;
 
                     case "-o":
-                        this.outputDir = GetArg("-0");
+                        this.mfsh.BaseOutputDir = GetArg("-o");
                         break;
 
                     default:
@@ -63,10 +69,9 @@ namespace MFSH
 
         bool Process()
         {
-            foreach (String dir in this.dirs)
-                this.pp.ProcessDir(dir);
-            this.pp.SaveAll(this.outputDir);
-            return this.pp.HasErrors;
+            this.mfsh.Process();
+            this.mfsh.SaveAll();
+            return this.mfsh.HasErrors;
         }
 
         static Int32 Main(string[] args)

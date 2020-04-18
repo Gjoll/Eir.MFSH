@@ -19,6 +19,9 @@ namespace MFSH
     public class MFsh : ConverterBase
     {
         public List<String> IncludeDirs;
+        public string BaseInputDir { get; set; }
+        public string BaseOutputDir { get; set; }
+        public List<String> Paths= new List<string>();
 
         public Dictionary<String, DefineInfo> Defines = new Dictionary<string, DefineInfo>();
         public HashSet<String> Includes = new HashSet<string>();
@@ -82,7 +85,7 @@ namespace MFSH
         /// <summary>
         /// Process single file.
         /// </summary>
-        public void AddFile(String basePath, String path)
+        public void ProcessFile(String path)
         {
             const String fcn = "ProcessFile";
 
@@ -93,9 +96,9 @@ namespace MFSH
                 Text = this.Parse(fshText, Path.GetFileName(path)),
             };
 
-            if (path.StartsWith(basePath) == false)
+            if (path.StartsWith(BaseInputDir) == false)
                 throw new Exception("Internal error. Path does not start with correct base path");
-            String relativePath = path.Substring(basePath.Length);
+            String relativePath = path.Substring(BaseInputDir.Length);
             if (relativePath.StartsWith("\\"))
                 relativePath = relativePath.Substring(1);
             f.RelativePath = relativePath;
@@ -105,30 +108,36 @@ namespace MFSH
         /// <summary>
         /// Process all files in indicated dir and sub dirs.
         /// </summary>
-        public void ProcessDir(String path, String filter = MFsh.MFSHSuffix)
+        public void Process()
         {
-            path = Path.GetFullPath(path);
-            this.ProcessDir(path, path, filter);
+            foreach (String path in this.Paths)
+            {
+                if (Directory.Exists(path))
+                    this.ProcessDir(path);
+                else if (File.Exists(path))
+                    this.ProcessFile(path);
+                else
+                    throw new Exception($"Path {path} does not exist");
+            }
         }
 
-        void ProcessDir(String basePath,
-            String path,
+        void ProcessDir(String path,
             String filter = MFsh.MFSHSuffix)
         {
             const String fcn = "AddDir";
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing directory {path}, filter {filter}");
             foreach (String subDir in Directory.GetDirectories(path))
-                this.ProcessDir(basePath, subDir, filter);
+                this.ProcessDir(subDir, filter);
 
             foreach (String file in Directory.GetFiles(path, $"*{MFsh.MFSHSuffix}"))
-                this.AddFile(basePath, file);
+                this.ProcessFile(file);
         }
 
         /// <summary>
         /// Write all files back to disk.
         /// </summary>
-        public void SaveAll(String outputDir)
+        public void SaveAll()
         {
             const String fcn = "SaveAll";
 
@@ -153,11 +162,11 @@ namespace MFSH
                         $"Saving {Path.GetFileName(outputPath)}");
             }
 
-            outputDir = Path.GetFullPath(outputDir);
+            this.BaseOutputDir = Path.GetFullPath(BaseOutputDir);
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
             foreach (FSHFile f in this.fshFiles)
             {
-                String outputPath = Path.Combine(outputDir, f.RelativePath);
+                String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
                 String dir = Path.GetDirectoryName(outputPath);
                 outputPath = Path.Combine(dir,
                     $"{Path.GetFileNameWithoutExtension(outputPath)}{MFsh.FSHSuffix}"
