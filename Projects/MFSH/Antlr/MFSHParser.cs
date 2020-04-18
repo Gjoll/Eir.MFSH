@@ -39,7 +39,7 @@ public partial class MFSHParser : Parser {
 	public const int
 		MSTART=1, LINE=2, BLANKLINE=3, LASTLINE=4, CR=5, Err=6, MINCLUDE=7, MDEFINE=8, 
 		MENDDEF=9, MAPPLY=10, MEND=11, MSTRING=12, MOPAR=13, MCOMMA=14, MCPAR=15, 
-		MPNAME=16, MWS=17, MErr=18;
+		MPNAME=16, MWS=17, MCR=18, MErr=19;
 	public const int
 		RULE_document = 0, RULE_fsh = 1, RULE_macro = 2, RULE_mStart = 3, RULE_mEnd = 4, 
 		RULE_mCommand = 5, RULE_mInclude = 6, RULE_mDefine = 7, RULE_mApply = 8, 
@@ -50,13 +50,13 @@ public partial class MFSHParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, null, null, "'\r'", null, "'include'", "'define'", "'enddef'", 
+		null, null, null, null, null, null, null, "'include'", "'define'", "'enddef'", 
 		"'apply'", null, null, "'('", "','", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "MSTART", "LINE", "BLANKLINE", "LASTLINE", "CR", "Err", "MINCLUDE", 
 		"MDEFINE", "MENDDEF", "MAPPLY", "MEND", "MSTRING", "MOPAR", "MCOMMA", 
-		"MCPAR", "MPNAME", "MWS", "MErr"
+		"MCPAR", "MPNAME", "MWS", "MCR", "MErr"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -650,7 +650,7 @@ public partial class MFSHParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x14', 'Y', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x15', 'Y', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
