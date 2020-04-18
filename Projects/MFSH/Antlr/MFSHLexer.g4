@@ -2,7 +2,7 @@ lexer grammar MFSHLexer;
 
 MSTART: ('\t' | ' ')* '#'                  -> pushMode(MFSH) ;
 LINE: ('\t' | ' ')* ~'#' (~'\n')* '\n';
-
+BLANKLINE: ('\t' | ' ')* '\n';
 LASTLINE: ('\t' | ' ')+ -> skip;
 CR: '\r' -> skip;
 // Any character which does not match one of the above rules will appear in the token stream as

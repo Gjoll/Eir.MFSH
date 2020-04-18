@@ -1,0 +1,12 @@
+// ObservationSectionFragment
+// Constrains a generic observation to be a observation section.
+
+// IncompatibleFragment ObservationLeafFragment
+
+#define ObservationSectionFragment()
+  #apply ObservationFragment()
+  #apply ObservationNoComponentFragment()
+  #apply ObservationNoValueFragment()
+  * interpretation 0..0
+  * method 0..0
+#enddef

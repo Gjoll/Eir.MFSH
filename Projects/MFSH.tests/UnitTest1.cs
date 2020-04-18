@@ -50,5 +50,15 @@ namespace Eir.FSHer.tests
             results = results.Trim().Replace("\r", "");
             Assert.True(String.Compare(results, shouldBe) == 0);
         }
+
+        [Fact]
+        public void Parse1()
+        {
+            String input = GetCleanText("Parse1.mfsh");
+            MFsh pp = new MFsh();
+            pp.TraceLogging(true, true, true);
+            String results = pp.Parse(input, "test");
+            Assert.True(pp.HasErrors == false);
+        }
     }
 }
