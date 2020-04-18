@@ -3,6 +3,7 @@ lexer grammar MFSHLexer;
 MSTART: ('\t' | ' ')* '#'                  -> pushMode(MFSH) ;
 LINE: ('\t' | ' ')* ~'#' (~'\n')* '\n';
 
+LASTLINE: ('\t' | ' ')+ -> skip;
 CR: '\r' -> skip;
 // Any character which does not match one of the above rules will appear in the token stream as
 // an ErrorCharacter token. This ensures the lexer itself will never encounter a syntax error,

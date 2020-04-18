@@ -1,4 +1,4 @@
-#define MacroAlpha
+#define MacroAlpha()
 #enddef
 #define $MacroBeta$($p1$)
 #apply MacroAlpha()
