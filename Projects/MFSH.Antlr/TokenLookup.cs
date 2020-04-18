@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace MFSH.Antlr
@@ -22,7 +23,9 @@ namespace MFSH.Antlr
             {
                 this.tokenDict = new Dictionary<int, string>();
                 this.tokenDict.Add(-1, "<eof>");
-                foreach (String token in File.ReadAllLines(this.tokenFile))
+
+                String exeDir = Assembly.GetExecutingAssembly().Location;
+                foreach (String token in File.ReadAllLines(Path.Combine(exeDir, this.tokenFile)))
                 {
                     String[] parts = token.Split('=');
                     Int32 tNum = Int32.Parse(parts[1]);

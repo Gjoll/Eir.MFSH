@@ -17,6 +17,7 @@ namespace MFSH
 {
     class MFSHVisitor : MFSHParserBaseVisitor<Object>
     {
+        public bool DebugFlag { get; set; } = false;
 
         Stack<ParseInfo> state = new Stack<ParseInfo>();
         ParseInfo Current => this.state.Peek();
@@ -47,15 +48,25 @@ namespace MFSH
 
         public override object VisitDocument(MFSHParser.DocumentContext context)
         {
+            const String fcn = "VisitDocument";
+            if (DebugFlag)
+                Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line}..{context.Start.Line}");
             this.VisitChildren(context);
             return null;
         }
 
         public override object VisitMInclude(MFSHParser.MIncludeContext context)
         {
+            const String fcn = "VisitMInclude";
+            if (DebugFlag)
+                Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line}..{context.Start.Line}");
             String include = context.MSTRING().GetText();
             include = include.Substring(1, include.Length - 2);
             String text = ProcessInclude(include);
+            if (text == null)
+                return null;
+            if (text.Length == 0)
+                return null;
             if (text[^1] != '\n')
                 text += '\n';
             this.ParsedText.Append(text);
@@ -64,6 +75,10 @@ namespace MFSH
 
         public override object VisitMDefine(MFSHParser.MDefineContext context)
         {
+            const String fcn = "VisitMDefine";
+            if (DebugFlag)
+                Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line}..{context.Start.Line}");
+
             DefineInfo s = new DefineInfo();
             this.PushState(s);
             String[] names = context
@@ -78,6 +93,8 @@ namespace MFSH
         public override object VisitMApply(MFSHParser.MApplyContext context)
         {
             const String fcn = "VisitMApply";
+            if (DebugFlag)
+                Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line}..{context.Start.Line}");
 
             String macroName = context.MPNAME().GetText();
             String[] parameters = context
@@ -121,6 +138,10 @@ namespace MFSH
 
         public override object VisitMEndDef(MFSHParser.MEndDefContext context)
         {
+            const String fcn = "VisitMEndDef";
+            if (DebugFlag)
+                Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line}..{context.Start.Line}");
+
             ParseInfo s = this.PopState();
             switch (s)
             {
@@ -129,13 +150,18 @@ namespace MFSH
                     break;
 
                 default:
-                    throw new NotImplementedException($"Unexpected '#enddef'");
+                    Error(context.Start,
+                        $"Unexpected '#enddef'");
+                    break;
             }
             return null;
         }
 
         public override object VisitMEnd(MFSHParser.MEndContext context)
         {
+            const String fcn = "VisitMEnd";
+            if (DebugFlag)
+                Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line}..{context.Start.Line}");
             String s = context.GetText();
             this.ParsedText.Append(s.Substring(1));
             return null;
@@ -143,6 +169,10 @@ namespace MFSH
 
         public override object VisitFsh(MFSHParser.FshContext context)
         {
+            const String fcn = "VisitFsh";
+            if (DebugFlag)
+                Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line}..{context.Start.Line}");
+
             this.ParsedText.Append(context.GetText());
             return null;
         }
@@ -170,6 +200,10 @@ namespace MFSH
         String ProcessInclude(String includeFile)
         {
             String includePath = this.FindInclude(includeFile);
+            if (this.mfsh.Includes.Contains(includeFile))
+                return null;
+
+            this.mfsh.Includes.Add(includeFile);
             String fshText = File.ReadAllText(includePath);
 
             string includeFileText = this.mfsh.Parse(fshText, includeFile);
@@ -227,6 +261,13 @@ namespace MFSH
                     sb.Append(wholeWord);
             }
             return sb.ToString();
+        }
+
+        void Error(IToken start,
+            String msg)
+        {
+            String fullMsg = $"{this.SourceName}, line {start.Line}. {msg}";
+            throw new Exception(msg);
         }
     }
 }

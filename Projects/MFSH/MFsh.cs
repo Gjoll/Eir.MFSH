@@ -19,6 +19,8 @@ namespace MFSH
     public class MFsh : ConverterBase
     {
         public Dictionary<String, DefineInfo> Defines = new Dictionary<string, DefineInfo>();
+        public HashSet<String> Includes = new HashSet<string>();
+
         public List<String> IncludeDirs;
         public String[] InputLines;
         private const String FSHSuffix = ".fsh";
@@ -39,7 +41,7 @@ namespace MFSH
         /// </summary>
         public string Parse(String fshText, String sourceName)
         {
-            const bool DebugFlag = false;
+            const bool DebugFlag = true;
 
             if (this.sources.Contains(sourceName))
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
@@ -64,6 +66,7 @@ namespace MFSH
             //parser.ErrorHandler = new BailErrorStrategy();
 
             MFSHVisitor visitor = new MFSHVisitor(this, sourceName);
+            visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
             this.InputLines = inputLines;
             return visitor.ParsedText.ToString();
