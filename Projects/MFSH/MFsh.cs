@@ -19,8 +19,21 @@ namespace MFSH
     public class MFsh : ConverterBase
     {
         public List<String> IncludeDirs;
-        public string BaseInputDir { get; set; }
-        public string BaseOutputDir { get; set; }
+
+        public string BaseInputDir
+        {
+            get => this.baseInputDir;
+            set => this.baseInputDir = Path.GetFullPath(value);
+        }
+        private string baseInputDir;
+
+        public string BaseOutputDir
+        {
+            get => this.baseOutputDir;
+            set => this.baseOutputDir = Path.GetFullPath(value);
+        }
+        private string baseOutputDir;
+
         public List<String> Paths= new List<string>();
 
         public Dictionary<String, DefineInfo> Defines = new Dictionary<string, DefineInfo>();
@@ -51,7 +64,7 @@ namespace MFSH
         /// </summary>
         public string SubParse(String fshText, String sourceName)
         {
-            const bool DebugFlag = true;
+            const bool DebugFlag = false;
 
             if (this.sources.Contains(sourceName))
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
