@@ -1,0 +1,13 @@
+#define MacroAlpha
+#enddef
+#define $MacroBeta$($p1$)
+#call MacroAlpha()
+$p1$
+#enddef
+#define $MacroDelta$(%p1%,$p2$,p3)
+Line 2
+#call $MacroBeta$("Line 3")
+#enddef
+
+Line 1
+#call $MacroDelta$("", "", "")
