@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FSHer\Eir.FSHer.csproj" />
+    <ProjectReference Include="..\FSHer\FSHer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

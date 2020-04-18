@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FSHer.Antlr\Eir.FSHer.Antlr.csproj" />
+    <ProjectReference Include="..\FSHer.Antlr\FSHer.Antlr.csproj" />
   </ItemGroup>
 
 </Project>
