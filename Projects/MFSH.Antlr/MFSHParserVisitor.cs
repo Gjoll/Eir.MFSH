@@ -81,11 +81,11 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMDefine([NotNull] MFSHParser.MDefineContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mCall"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.mApply"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMCall([NotNull] MFSHParser.MCallContext context);
+	Result VisitMApply([NotNull] MFSHParser.MApplyContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.mEndDef"/>.
 	/// </summary>

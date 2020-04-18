@@ -37,25 +37,25 @@ public partial class MFSHParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		MSTART=1, LINE=2, CR=3, Err=4, MINCLUDE=5, MDEFINE=6, MENDDEF=7, MCALL=8, 
+		MSTART=1, LINE=2, CR=3, Err=4, MINCLUDE=5, MDEFINE=6, MENDDEF=7, MAPPLY=8, 
 		MEND=9, MSTRING=10, MOPAR=11, MCOMMA=12, MCPAR=13, MPNAME=14, MWS=15, 
 		MErr=16;
 	public const int
 		RULE_document = 0, RULE_fsh = 1, RULE_macro = 2, RULE_mStart = 3, RULE_mEnd = 4, 
-		RULE_mCommand = 5, RULE_mInclude = 6, RULE_mDefine = 7, RULE_mCall = 8, 
+		RULE_mCommand = 5, RULE_mInclude = 6, RULE_mDefine = 7, RULE_mApply = 8, 
 		RULE_mEndDef = 9;
 	public static readonly string[] ruleNames = {
 		"document", "fsh", "macro", "mStart", "mEnd", "mCommand", "mInclude", 
-		"mDefine", "mCall", "mEndDef"
+		"mDefine", "mApply", "mEndDef"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, "'\r'", null, "'include'", "'define'", "'enddef'", "'call'", 
+		null, null, null, "'\r'", null, "'include'", "'define'", "'enddef'", "'apply'", 
 		null, null, "'('", "','", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "MSTART", "LINE", "CR", "Err", "MINCLUDE", "MDEFINE", "MENDDEF", 
-		"MCALL", "MEND", "MSTRING", "MOPAR", "MCOMMA", "MCPAR", "MPNAME", "MWS", 
+		"MAPPLY", "MEND", "MSTRING", "MOPAR", "MCOMMA", "MCPAR", "MPNAME", "MWS", 
 		"MErr"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
@@ -246,7 +246,7 @@ public partial class MFSHParser : Parser {
 				State = 35;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINCLUDE) | (1L << MDEFINE) | (1L << MENDDEF) | (1L << MCALL))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MINCLUDE) | (1L << MDEFINE) | (1L << MENDDEF) | (1L << MAPPLY))) != 0) );
 			State = 39;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
@@ -353,8 +353,8 @@ public partial class MFSHParser : Parser {
 		public MDefineContext mDefine() {
 			return GetRuleContext<MDefineContext>(0);
 		}
-		public MCallContext mCall() {
-			return GetRuleContext<MCallContext>(0);
+		public MApplyContext mApply() {
+			return GetRuleContext<MApplyContext>(0);
 		}
 		public MEndDefContext mEndDef() {
 			return GetRuleContext<MEndDefContext>(0);
@@ -391,10 +391,10 @@ public partial class MFSHParser : Parser {
 				State = 46; mDefine();
 				}
 				break;
-			case MCALL:
+			case MAPPLY:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 47; mCall();
+				State = 47; mApply();
 				}
 				break;
 			case MENDDEF:
@@ -527,8 +527,8 @@ public partial class MFSHParser : Parser {
 		return _localctx;
 	}
 
-	public partial class MCallContext : ParserRuleContext {
-		public ITerminalNode MCALL() { return GetToken(MFSHParser.MCALL, 0); }
+	public partial class MApplyContext : ParserRuleContext {
+		public ITerminalNode MAPPLY() { return GetToken(MFSHParser.MAPPLY, 0); }
 		public ITerminalNode MPNAME() { return GetToken(MFSHParser.MPNAME, 0); }
 		public ITerminalNode MOPAR() { return GetToken(MFSHParser.MOPAR, 0); }
 		public ITerminalNode MCPAR() { return GetToken(MFSHParser.MCPAR, 0); }
@@ -540,27 +540,27 @@ public partial class MFSHParser : Parser {
 		public ITerminalNode MCOMMA(int i) {
 			return GetToken(MFSHParser.MCOMMA, i);
 		}
-		public MCallContext(ParserRuleContext parent, int invokingState)
+		public MApplyContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_mCall; } }
+		public override int RuleIndex { get { return RULE_mApply; } }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IMFSHParserVisitor<TResult> typedVisitor = visitor as IMFSHParserVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMCall(this);
+			if (typedVisitor != null) return typedVisitor.VisitMApply(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public MCallContext mCall() {
-		MCallContext _localctx = new MCallContext(Context, State);
-		EnterRule(_localctx, 16, RULE_mCall);
+	public MApplyContext mApply() {
+		MApplyContext _localctx = new MApplyContext(Context, State);
+		EnterRule(_localctx, 16, RULE_mApply);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 68; Match(MCALL);
+			State = 68; Match(MAPPLY);
 			State = 69; Match(MPNAME);
 			State = 70; Match(MOPAR);
 			State = 79;

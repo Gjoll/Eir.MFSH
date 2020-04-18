@@ -13,7 +13,7 @@ mode MFSH;
 MINCLUDE: 'include';
 MDEFINE: 'define';
 MENDDEF: 'enddef';
-MCALL: 'call';
+MAPPLY: 'apply';
 MEND: '\n' ('\t' | ' ')* ~'#'                    -> popMode;
 MSTRING: '"' (~'"')* '"' ;
 MOPAR: '(' ;

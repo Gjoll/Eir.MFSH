@@ -11,6 +11,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Tree;
 using MFSH.Antlr;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace MFSH
 {
@@ -74,8 +75,10 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMCall(MFSHParser.MCallContext context)
+        public override object VisitMApply(MFSHParser.MApplyContext context)
         {
+            const String fcn = "VisitMApply";
+
             String macroName = context.MPNAME().GetText();
             String[] parameters = context
                 .MSTRING()
@@ -89,7 +92,7 @@ namespace MFSH
             if (this.mfsh.Defines.TryGetValue(macroName, out DefineInfo info) == false)
             {
                 this.mfsh.ConversionError("mfsh",
-                    "VisitMCall",
+                    fcn,
                     $"Macro {macroName} not found.");
                 return null;
             }
@@ -97,7 +100,7 @@ namespace MFSH
             if (info.Parameters.Count != parameters.Length)
             {
                 this.mfsh.ConversionError("mfsh",
-                    "VisitMCall",
+                    fcn,
                     $"Macro {macroName} requires {info.Parameters.Count} parameters, but only {parameters.Length} supplied.");
                 return null;
             }
