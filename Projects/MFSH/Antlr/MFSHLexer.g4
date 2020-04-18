@@ -14,10 +14,10 @@ Err: .;
 
 mode MFSH;
 MINCLUDE: 'include';
-MDEFINE: 'define';
-MENDDEF: 'enddef';
+MMACRO: 'macro';
+MENDDEF: 'end';
 MAPPLY: 'apply';
-MEND: '\n' SPACE* ~'#'                    -> popMode;
+MMODEEND: '\n' SPACE* ~'#'                    -> popMode;
 MSTRING: '"' (~'"')* '"' ;
 MOPAR: '(' ;
 MCOMMA: ',' ;

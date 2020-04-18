@@ -38,7 +38,7 @@ public partial class MFSHParser : Parser {
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
 		MSTART=1, LINE=2, BLANKLINE=3, LASTLINE=4, CR=5, Err=6, MINCLUDE=7, MDEFINE=8, 
-		MENDDEF=9, MAPPLY=10, MEND=11, MSTRING=12, MOPAR=13, MCOMMA=14, MCPAR=15, 
+		MENDDEF=9, MAPPLY=10, MMODEEND=11, MSTRING=12, MOPAR=13, MCOMMA=14, MCPAR=15, 
 		MPNAME=16, MWS=17, MCR=18, MErr=19;
 	public const int
 		RULE_document = 0, RULE_fsh = 1, RULE_macro = 2, RULE_mStart = 3, RULE_mEnd = 4, 
@@ -50,12 +50,12 @@ public partial class MFSHParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, null, null, null, null, "'include'", "'define'", "'enddef'", 
+		null, null, null, null, null, null, null, "'include'", "'macro'", "'enddef'", 
 		"'apply'", null, null, "'('", "','", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "MSTART", "LINE", "BLANKLINE", "LASTLINE", "CR", "Err", "MINCLUDE", 
-		"MDEFINE", "MENDDEF", "MAPPLY", "MEND", "MSTRING", "MOPAR", "MCOMMA", 
+		"MDEFINE", "MENDDEF", "MAPPLY", "MMODEEND", "MSTRING", "MOPAR", "MCOMMA", 
 		"MCPAR", "MPNAME", "MWS", "MCR", "MErr"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
@@ -261,7 +261,7 @@ public partial class MFSHParser : Parser {
 			State = 39;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
-			case MEND:
+			case MMODEEND:
 				{
 				State = 37; mEnd();
 				}
@@ -323,7 +323,7 @@ public partial class MFSHParser : Parser {
 	}
 
 	public partial class MEndContext : ParserRuleContext {
-		public ITerminalNode MEND() { return GetToken(MFSHParser.MEND, 0); }
+		public ITerminalNode MMODEEND() { return GetToken(MFSHParser.MMODEEND, 0); }
 		public MEndContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -343,7 +343,7 @@ public partial class MFSHParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 43; Match(MEND);
+			State = 43; Match(MMODEEND);
 			}
 		}
 		catch (RecognitionException re) {
