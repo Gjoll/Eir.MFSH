@@ -16,12 +16,15 @@ namespace MFSH
     {
         String sourceName;
         private MFsh mFsh;
+        private String[] inputLines;
 
         public ErrorListener(MFsh mFsh,
-            String sourceName)
+            String sourceName,
+            String[] inputLines)
         {
             this.sourceName = sourceName;
             this.mFsh = mFsh;
+            this.inputLines = inputLines;
         }
 
         public void Error(IRecognizer recognizer,
@@ -31,9 +34,9 @@ namespace MFSH
             RecognitionException e)
         {
             String msgLine = null;
-            if ((line > 0) && (line <= this.mFsh.InputLines.Length))
+            if ((line > 0) && (line <= this.inputLines.Length))
             {
-                String inputLine = this.mFsh.InputLines[line-1];
+                String inputLine = this.inputLines[line-1];
                 if (charPositionInLine < 0)
                     charPositionInLine = 0;
                 if (charPositionInLine > inputLine.Length)
@@ -66,7 +69,8 @@ namespace MFSH
     class MFSHErrorListenerLexer : ErrorListener, IAntlrErrorListener<Int32>
     {
         public MFSHErrorListenerLexer(MFsh mFsh,
-            String sourceName) : base(mFsh, sourceName)
+            String sourceName,
+            String[] inputLines) : base(mFsh, sourceName, inputLines)
         {
         }
 
@@ -86,7 +90,8 @@ namespace MFSH
     class MFSHErrorListenerParser : ErrorListener, IAntlrErrorListener<IToken>
     {
         public MFSHErrorListenerParser(MFsh mFsh,
-            String sourceName) : base(mFsh, sourceName)
+            String sourceName,
+            String[] inputLines) : base(mFsh, sourceName, inputLines)
         {
         }
 

@@ -25,9 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Parse2.mfsh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Parse1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

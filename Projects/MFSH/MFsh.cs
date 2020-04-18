@@ -18,28 +18,35 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
+        public List<String> IncludeDirs;
+
         public Dictionary<String, DefineInfo> Defines = new Dictionary<string, DefineInfo>();
         public HashSet<String> Includes = new HashSet<string>();
+        // Keep track of include files so we dont end up in recursive loop.
+        List<String> sources = new List<string>();
 
-        public List<String> IncludeDirs;
-        public String[] InputLines;
         private const String FSHSuffix = ".fsh";
         private const String MFSHSuffix = ".mfsh";
         private List<FSHFile> fshFiles = new List<FSHFile>();
-
-        // Keepp track of include files so we dont end up in recursive loop.
-        List<String> sources = new List<string>();
 
         public MFsh()
         {
             this.IncludeDirs = new List<string>();
             this.IncludeDirs.Add(".");
         }
+        public string Parse(String fshText, String sourceName)
+        {
+            this.Includes.Clear();
+            this.Defines.Clear();
+            this.sources.Clear();
+
+            return SubParse(fshText, sourceName);
+        }
 
         /// <summary>
         /// Parse input text.
         /// </summary>
-        public string Parse(String fshText, String sourceName)
+        public string SubParse(String fshText, String sourceName)
         {
             const bool DebugFlag = true;
 
@@ -47,28 +54,28 @@ namespace MFSH
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
             this.sources.Add(sourceName);
 
-            // Parse can be recursively called, so save current input lines and
-            // restore it when complete.
-            String[] inputLines = this.InputLines;
             fshText = fshText.Replace("\r", "");
-            this.InputLines = fshText.Split('\n');
+            String[] inputLines = fshText.Split('\n');
 
             MFSHLexerLocal lexer = new MFSHLexerLocal(new AntlrInputStream(fshText));
             lexer.DebugFlag = DebugFlag;
             lexer.RemoveErrorListeners();
-            lexer.AddErrorListener(new MFSHErrorListenerLexer(this, sourceName));
+            lexer.AddErrorListener(new MFSHErrorListenerLexer(this, sourceName, inputLines));
 
             MFSHParserLocal parser = new MFSHParserLocal(new CommonTokenStream(lexer));
             parser.DebugFlag = DebugFlag;
             parser.Trace = false;
             parser.RemoveErrorListeners();
-            parser.AddErrorListener(new MFSHErrorListenerParser(this, sourceName));
+            parser.AddErrorListener(new MFSHErrorListenerParser(this, sourceName, inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
             MFSHVisitor visitor = new MFSHVisitor(this, sourceName);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
-            this.InputLines = inputLines;
+
+            fshText = fshText.Replace("\r", "");
+            visitor.InputLines = fshText.Split('\n');
+
             return visitor.ParsedText.ToString();
         }
 

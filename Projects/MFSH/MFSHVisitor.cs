@@ -21,6 +21,9 @@ namespace MFSH
 
         Stack<ParseInfo> state = new Stack<ParseInfo>();
         ParseInfo Current => this.state.Peek();
+        public String[] InputLines;
+        public string SourceName;
+        MFsh mfsh;
 
         void PushState(ParseInfo s)
         {
@@ -34,9 +37,6 @@ namespace MFSH
             return s;
         }
         public StringBuilder ParsedText => this.Current.ParsedText;
-
-        public string SourceName;
-        MFsh mfsh;
 
         public MFSHVisitor(MFsh mfsh,
             string sourceName)
@@ -208,7 +208,7 @@ namespace MFSH
             this.mfsh.Includes.Add(includeFile);
             String fshText = File.ReadAllText(includePath);
 
-            string includeFileText = this.mfsh.Parse(fshText, includeFile);
+            string includeFileText = this.mfsh.SubParse(fshText, includeFile);
             return includeFileText;
         }
 

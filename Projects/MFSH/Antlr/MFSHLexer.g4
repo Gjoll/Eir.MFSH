@@ -2,7 +2,7 @@ lexer grammar MFSHLexer;
 
 fragment SPACE: ('\t' | ' ');
 MSTART: SPACE* '#'                  -> pushMode(MFSH) ;
-LINE: SPACE* ~('#' | '\n') (~'\n')* '\n';
+LINE: SPACE* ~('#' | '\n' | ' ' | '\t') (~'\n')* '\n';
 BLANKLINE: SPACE* '\n';
 LASTLINE: SPACE+ -> skip;
 CR: '\r' -> skip;
