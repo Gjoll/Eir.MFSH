@@ -1,0 +1,11 @@
+Alias: LOINC = http://loinc.org 
+Alias: SNOMED = http://snomed.info/sct 
+
+Profile: BreastRadiologyComposition
+Parent: Composition
+Id: breastRadiologyComposition
+Title: "Breast Radiology Composition"
+Description: """
+	"""
+
+  #apply HeaderFragment()

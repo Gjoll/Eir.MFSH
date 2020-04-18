@@ -60,5 +60,15 @@ namespace Eir.FSHer.tests
             String results = pp.Parse(input, "test");
             Assert.True(pp.HasErrors == false);
         }
+        [Fact]
+        public void Parse2()
+        {
+            String input = GetCleanText("Parse2.mfsh");
+            MFsh pp = new MFsh();
+            pp.TraceLogging(true, true, true);
+            String results = pp.Parse(input, "test");
+            Assert.True(pp.HasErrors == false);
+        }
+
     }
 }
