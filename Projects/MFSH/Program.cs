@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace MFSH
 {
@@ -10,6 +11,7 @@ namespace MFSH
     {
         MFsh pp = new MFsh();
         String outputDir = ".";
+        List<String> dirs = new List<string>();
 
         public Program()
         {
@@ -37,12 +39,16 @@ namespace MFSH
                 String arg = GetArg("arg").ToUpper();
                 switch (arg.ToLower())
                 {
+                    case "-i":
+                        this.pp.IncludeDirs.Add(GetArg("-d"));
+                        break;
+
                     case "-f":
                         filter = GetArg("-f");
                         break;
 
                     case "-d":
-                        this.pp.AddDir(GetArg("-d"), filter);
+                        this.dirs.Add(GetArg("-d"));
                         break;
 
                     case "-o":
@@ -57,11 +63,10 @@ namespace MFSH
 
         bool Process()
         {
-            //if (pp.Process() == false)
-            //    return false;
-
-            //this.pp.SaveAll(this.outputDir);
-            return true;
+            foreach (String dir in this.dirs)
+                this.pp.ProcessDir(dir);
+            this.pp.SaveAll(this.outputDir);
+            return this.pp.HasErrors;
         }
 
         static Int32 Main(string[] args)

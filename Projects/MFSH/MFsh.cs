@@ -22,7 +22,7 @@ namespace MFSH
         public List<String> IncludeDirs;
         public String[] InputLines;
         private const String FSHSuffix = ".fsh";
-        private const String FSHerSuffix = ".fsher";
+        private const String MFSHSuffix = ".mfsh";
         private List<FSHFile> fshFiles = new List<FSHFile>();
 
         // Keepp track of include files so we dont end up in recursive loop.
@@ -95,23 +95,23 @@ namespace MFSH
         /// <summary>
         /// Process all files in indicated dir and sub dirs.
         /// </summary>
-        public void AddDir(String path, String filter = MFsh.FSHerSuffix)
+        public void ProcessDir(String path, String filter = MFsh.MFSHSuffix)
         {
             path = Path.GetFullPath(path);
-            AddDir(path, path, filter);
+            this.ProcessDir(path, path, filter);
         }
 
-        void AddDir(String basePath,
+        void ProcessDir(String basePath,
             String path,
-            String filter = MFsh.FSHerSuffix)
+            String filter = MFsh.MFSHSuffix)
         {
             const String fcn = "AddDir";
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing directory {path}, filter {filter}");
             foreach (String subDir in Directory.GetDirectories(path))
-                this.AddDir(basePath, subDir, filter);
+                this.ProcessDir(basePath, subDir, filter);
 
-            foreach (String file in Directory.GetFiles(path, $"*{MFsh.FSHerSuffix}"))
+            foreach (String file in Directory.GetFiles(path, $"*{MFsh.MFSHSuffix}"))
                 this.AddFile(basePath, file);
         }
 
