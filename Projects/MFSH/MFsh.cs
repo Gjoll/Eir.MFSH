@@ -75,7 +75,11 @@ namespace MFSH
             MFSHVisitor visitor = new MFSHVisitor(this, sourceName);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
-
+            if (visitor.state.Count != 1)
+            {
+                String fullMsg = $"Error processing {sourceName}. Unterminated #{{Command}}";
+                this.ConversionError("mfsh", "ProcessInclude", fullMsg);
+            }
             fshText = fshText.Replace("\r", "");
             visitor.InputLines = fshText.Split('\n');
 
@@ -89,6 +93,7 @@ namespace MFSH
         {
             const String fcn = "ProcessFile";
 
+            path = Path.GetFullPath(path);
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing file {path}");
             String fshText = File.ReadAllText(path);
             FSHFile f = new FSHFile

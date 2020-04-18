@@ -38,6 +38,14 @@ namespace MFSH
             String filter = ".mfsh";
             while (i < args.Length)
             {
+                String DirPart(String path)
+                {
+                    if (Directory.Exists(path))
+                        return path;
+                    else
+                        return Path.GetDirectoryName(path);
+                }
+
                 String arg = GetArg("arg").ToUpper();
                 switch (arg.ToLower())
                 {
@@ -54,7 +62,12 @@ namespace MFSH
                         break;
 
                     case "-p":
-                        this.mfsh.Paths.Add(GetArg("-d"));
+                        {
+                            String pathArg = GetArg("-d");
+                            this.mfsh.Paths.Add(pathArg);
+                            if (String.IsNullOrEmpty(this.mfsh.BaseInputDir) == true)
+                                this.mfsh.BaseInputDir = DirPart(pathArg);
+                        }
                         break;
 
                     case "-o":
@@ -71,7 +84,7 @@ namespace MFSH
         {
             this.mfsh.Process();
             this.mfsh.SaveAll();
-            return this.mfsh.HasErrors;
+            return this.mfsh.HasErrors == false;
         }
 
         static Int32 Main(string[] args)

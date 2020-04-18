@@ -14,8 +14,9 @@ Err: .;
 
 mode MFSH;
 MINCLUDE: 'include';
+MUSE: 'use';
 MMACRO: 'macro';
-MENDDEF: 'end';
+MEND: 'end';
 MAPPLY: 'apply';
 MMODEEND: '\n' SPACE* ~'#'                    -> popMode;
 MSTRING: '"' (~'"')* '"' ;

@@ -2,7 +2,7 @@
   "profiles": {
     "FSHer": {
       "commandName": "Project",
-      "commandLineArgs": "-d MFSH -o FSH -i MFSH/Include",
+      "commandLineArgs": "-b C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects\\MFSH -p MFSH\\Profiles -o FSH -i MFSH/Include",
       "workingDirectory": "C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects"
     }
   }

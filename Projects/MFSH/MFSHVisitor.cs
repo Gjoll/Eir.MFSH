@@ -19,7 +19,7 @@ namespace MFSH
     {
         public bool DebugFlag { get; set; } = false;
 
-        Stack<ParseInfo> state = new Stack<ParseInfo>();
+        public Stack<ParseInfo> state = new Stack<ParseInfo>();
         ParseInfo Current => this.state.Peek();
         public String[] InputLines;
         public string SourceName;
@@ -62,6 +62,16 @@ namespace MFSH
             return null;
         }
 
+        public override object VisitMUse(MFSHParser.MUseContext context)
+        {
+            const String fcn = "VisitMuse";
+            TraceMsg(context, fcn);
+            String include = context.MSTRING().GetText();
+            include = include.Substring(1, include.Length - 2);
+            ProcessInclude(include);
+            return null;
+        }
+
         public override object VisitMInclude(MFSHParser.MIncludeContext context)
         {
             const String fcn = "VisitMInclude";
@@ -79,9 +89,9 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMDefine(MFSHParser.MDefineContext context)
+        public override object VisitMMacro(MFSHParser.MMacroContext context)
         {
-            const String fcn = "VisitMDefine";
+            const String fcn = "VisitMMacro";
             TraceMsg(context, fcn);
 
             DefineInfo s = new DefineInfo();
@@ -112,16 +122,16 @@ namespace MFSH
 
             if (this.mfsh.Defines.TryGetValue(macroName, out DefineInfo info) == false)
             {
-                this.mfsh.ConversionError("mfsh",
-                    fcn,
+                this.Error(fcn,
+                    context.Start,
                     $"Macro {macroName} not found.");
                 return null;
             }
 
             if (info.Parameters.Count != parameters.Length)
             {
-                this.mfsh.ConversionError("mfsh",
-                    fcn,
+                this.Error(fcn,
+                    context.Start,
                     $"Macro {macroName} requires {info.Parameters.Count} parameters, but only {parameters.Length} supplied.");
                 return null;
             }
@@ -140,9 +150,9 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMEndDef(MFSHParser.MEndDefContext context)
+        public override object VisitMEnd(MFSHParser.MEndContext context)
         {
-            const String fcn = "VisitMEndDef";
+            const String fcn = "VisitMEnd";
             TraceMsg(context, fcn);
 
             ParseInfo s = this.PopState();
@@ -153,16 +163,17 @@ namespace MFSH
                     break;
 
                 default:
-                    Error(context.Start,
-                        $"Unexpected '#enddef'");
+                    Error(fcn, 
+                        context.Start,
+                        $"Unexpected '#end'");
                     break;
             }
             return null;
         }
 
-        public override object VisitMEnd(MFSHParser.MEndContext context)
+        public override object VisitMModeEnd(MFSHParser.MModeEndContext context)
         {
-            const String fcn = "VisitMEnd";
+            const String fcn = "VisitMModeEnd";
             TraceMsg(context, fcn);
 
             String s = context.GetText();
@@ -265,11 +276,12 @@ namespace MFSH
             return sb.ToString();
         }
 
-        void Error(IToken start,
+        void Error(String fcn,
+            IToken start,
             String msg)
         {
             String fullMsg = $"{this.SourceName}, line {start.Line}. {msg}";
-            throw new Exception(msg);
+            this.mfsh.ConversionError("mfsh", fcn, fullMsg);
         }
     }
 }
