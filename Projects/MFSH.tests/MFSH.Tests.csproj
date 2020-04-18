@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MFSH.Antlr\MFSH.Antlr.csproj" />
     <ProjectReference Include="..\MFSH\MFSH.csproj" />
   </ItemGroup>
 

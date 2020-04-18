@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace MFSH.Antlr
+namespace MFSH
 {
     public class TokenLookup
     {
@@ -24,8 +24,11 @@ namespace MFSH.Antlr
                 this.tokenDict = new Dictionary<int, string>();
                 this.tokenDict.Add(-1, "<eof>");
 
-                String exeDir = Assembly.GetExecutingAssembly().Location;
-                foreach (String token in File.ReadAllLines(Path.Combine(exeDir, this.tokenFile)))
+                String tokenPath = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "Antlr",
+                    this.tokenFile);
+                foreach (String token in File.ReadAllLines(tokenPath))
                 {
                     String[] parts = token.Split('=');
                     Int32 tNum = Int32.Parse(parts[1]);

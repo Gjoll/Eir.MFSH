@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Antlr4.Runtime;
-using MFSH.Antlr;
+using MFSH;
 
 namespace MFSH
 {

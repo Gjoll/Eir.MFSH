@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace MFSH.Antlr {
+namespace MFSH {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -135,4 +135,4 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// <return>The visitor result.</return>
 	public virtual Result VisitMEndDef([NotNull] MFSHParser.MEndDefContext context) { return VisitChildren(context); }
 }
-} // namespace MFSH.Antlr
+} // namespace MFSH

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Tree;
-using MFSH.Antlr;
+using MFSH;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace MFSH

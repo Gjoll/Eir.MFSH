@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace MFSH.Antlr {
+namespace MFSH {
 using System;
 using System.IO;
 using System.Text;
@@ -233,4 +233,4 @@ public partial class MFSHLexer : Lexer {
 
 
 }
-} // namespace MFSH.Antlr
+} // namespace MFSH
