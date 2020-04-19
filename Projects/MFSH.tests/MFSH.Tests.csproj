@@ -52,6 +52,9 @@
     <None Update="MacroTest1.results.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ParseMultiLine.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Test1.fsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

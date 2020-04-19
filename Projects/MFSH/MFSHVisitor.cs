@@ -112,7 +112,7 @@ namespace MFSH
 
             String macroName = context.MPNAME().GetText();
             String[] parameters = context
-                .MSTRING()
+                .mString()
                 .Select((a) =>
                 {
                     String s = a.GetText();

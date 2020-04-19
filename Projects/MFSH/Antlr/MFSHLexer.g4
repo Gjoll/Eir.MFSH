@@ -19,9 +19,11 @@ MUSE: 'use';
 MMACRO: 'macro';
 MEND: 'end';
 MAPPLY: 'apply';
-MMODEEND: '\n' SPACE* ~'#'                    -> popMode;
-MMODECONT: '\n' SPACE* '#'                    -> skip;
+MMODEEND: '\n' SPACE* ~'#'						-> popMode;
+MMODECONT: '\n' SPACE* '#'						-> skip;
 MSTRING: '"' (~'"')* '"' ;
+MSTARTMLSTRING: '"' '"' '"' 					-> pushMode(MLSTRING);
+
 MOPAR: '(' ;
 MCOMMA: ',' ;
 MCPAR: ')' ;
@@ -33,3 +35,10 @@ MCR: '\r' -> skip;
 // an ErrorCharacter token. This ensures the lexer itself will never encounter a syntax error,
 // so all error handling may be performed by the parser.
 MErr: .;
+
+mode MLSTRING;
+
+MLSTRMODECONT: '\n' SPACE* '#'                  -> skip;
+MLSTRMODEEND: '\n' SPACE* ~'#'                  -> popMode;
+MLSTRLINE: ~('\n')+ ;
+MMLENDSTRING: ~('\n')* '"' '"' '"'				-> popMode;

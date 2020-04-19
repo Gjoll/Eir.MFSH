@@ -98,5 +98,17 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMEnd([NotNull] MFSHParser.MEndContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.mString"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMString([NotNull] MFSHParser.MStringContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.mlString"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMlString([NotNull] MFSHParser.MlStringContext context);
 }
 } // namespace MFSH

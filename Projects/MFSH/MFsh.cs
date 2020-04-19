@@ -18,6 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
+        public bool DebugFlag { get; set; }  = false;
         public List<String> IncludeDirs;
 
         public string BaseInputDir
@@ -64,8 +65,6 @@ namespace MFSH
         /// </summary>
         public string SubParse(String fshText, String sourceName)
         {
-            const bool DebugFlag = false;
-
             if (this.sources.Contains(sourceName))
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
             this.sources.Add(sourceName);

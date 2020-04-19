@@ -60,5 +60,17 @@ namespace Eir.FSHer.tests
             String results = pp.Parse(input, "test");
             Assert.True(pp.HasErrors == false);
         }
+
+        [Fact]
+        public void ParseMultiLine()
+        {
+            String input = GetCleanText("ParseMultiLine.mfsh");
+            MFsh pp = new MFsh();
+            pp.DebugFlag = true;
+            pp.TraceLogging(true, true, true);
+            String results = pp.Parse(input, "test");
+            Assert.True(pp.HasErrors == false);
+        }
+
     }
 }
