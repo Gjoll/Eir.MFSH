@@ -1,10 +1,10 @@
 lexer grammar MFSHLexer;
 
 fragment SPACE: ('\t' | ' ');
-fragment EOLN: ('\n' | EOF);
 MSTART: SPACE* '#'                  -> pushMode(MFSH) ;
-LINE: SPACE* ~('#' | '\n' | ' ' | '\t') (~EOLN)* EOLN;
-BLANKLINE: SPACE* EOLN ;
+LINE: SPACE* ~('#' | '\n' | ' ' | '\t') (~'\n')* '\n';
+LASTLINE: SPACE* ~('#' | ' ' | '\t') (~'\n')* EOF;
+BLANKLINE: SPACE* '\n' ;
 CR: '\r' -> skip;
 
 // Any character which does not match one of the above rules will appear in the token stream as

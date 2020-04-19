@@ -3,7 +3,7 @@ parser grammar MFSHParser;
 options { tokenVocab=MFSHLexer; }
 
 document    :   (fsh | mCommands)* EOF;
-fsh: LINE | BLANKLINE;
+fsh: LINE | BLANKLINE | LASTLINE ;
 
 mCommands: mModeStart mCommand+ (mModeEnd | EOF);
 mModeStart: MSTART;

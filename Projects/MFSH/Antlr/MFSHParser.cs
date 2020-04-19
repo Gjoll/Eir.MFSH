@@ -37,9 +37,9 @@ public partial class MFSHParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		MSTART=1, LINE=2, BLANKLINE=3, CR=4, Err=5, MINCLUDE=6, MUSE=7, MMACRO=8, 
-		MEND=9, MAPPLY=10, MMODEEND=11, MMODECONT=12, MSTRING=13, MOPAR=14, MCOMMA=15, 
-		MCPAR=16, MPNAME=17, MWS=18, MCR=19, MErr=20;
+		MSTART=1, LINE=2, LASTLINE=3, BLANKLINE=4, CR=5, Err=6, MINCLUDE=7, MUSE=8, 
+		MMACRO=9, MEND=10, MAPPLY=11, MMODEEND=12, MMODECONT=13, MSTRING=14, MOPAR=15, 
+		MCOMMA=16, MCPAR=17, MPNAME=18, MWS=19, MCR=20, MErr=21;
 	public const int
 		RULE_document = 0, RULE_fsh = 1, RULE_mCommands = 2, RULE_mModeStart = 3, 
 		RULE_mModeEnd = 4, RULE_mCommand = 5, RULE_mInclude = 6, RULE_mUse = 7, 
@@ -50,13 +50,13 @@ public partial class MFSHParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, null, null, null, "'include'", "'use'", "'macro'", "'end'", 
-		"'apply'", null, null, null, "'('", "','", "')'"
+		null, null, null, null, null, null, null, "'include'", "'use'", "'macro'", 
+		"'end'", "'apply'", null, null, null, "'('", "','", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "MSTART", "LINE", "BLANKLINE", "CR", "Err", "MINCLUDE", "MUSE", 
-		"MMACRO", "MEND", "MAPPLY", "MMODEEND", "MMODECONT", "MSTRING", "MOPAR", 
-		"MCOMMA", "MCPAR", "MPNAME", "MWS", "MCR", "MErr"
+		null, "MSTART", "LINE", "LASTLINE", "BLANKLINE", "CR", "Err", "MINCLUDE", 
+		"MUSE", "MMACRO", "MEND", "MAPPLY", "MMODEEND", "MMODECONT", "MSTRING", 
+		"MOPAR", "MCOMMA", "MCPAR", "MPNAME", "MWS", "MCR", "MErr"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -127,12 +127,13 @@ public partial class MFSHParser : Parser {
 			State = 26;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MSTART) | (1L << LINE) | (1L << BLANKLINE))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MSTART) | (1L << LINE) | (1L << LASTLINE) | (1L << BLANKLINE))) != 0)) {
 				{
 				State = 24;
 				ErrorHandler.Sync(this);
 				switch (TokenStream.LA(1)) {
 				case LINE:
+				case LASTLINE:
 				case BLANKLINE:
 					{
 					State = 22; fsh();
@@ -168,6 +169,7 @@ public partial class MFSHParser : Parser {
 	public partial class FshContext : ParserRuleContext {
 		public ITerminalNode LINE() { return GetToken(MFSHParser.LINE, 0); }
 		public ITerminalNode BLANKLINE() { return GetToken(MFSHParser.BLANKLINE, 0); }
+		public ITerminalNode LASTLINE() { return GetToken(MFSHParser.LASTLINE, 0); }
 		public FshContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -190,7 +192,7 @@ public partial class MFSHParser : Parser {
 			{
 			State = 31;
 			_la = TokenStream.LA(1);
-			if ( !(_la==LINE || _la==BLANKLINE) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LINE) | (1L << LASTLINE) | (1L << BLANKLINE))) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -696,7 +698,7 @@ public partial class MFSHParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x16', '_', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x17', '_', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
@@ -715,7 +717,7 @@ public partial class MFSHParser : Parser {
 		'T', '\n', '\v', '\f', '\v', '\xE', '\v', 'W', '\v', '\v', '\x5', '\v', 
 		'Y', '\n', '\v', '\x3', '\v', '\x3', '\v', '\x3', '\f', '\x3', '\f', '\x3', 
 		'\f', '\x2', '\x2', '\r', '\x2', '\x4', '\x6', '\b', '\n', '\f', '\xE', 
-		'\x10', '\x12', '\x14', '\x16', '\x2', '\x3', '\x3', '\x2', '\x4', '\x5', 
+		'\x10', '\x12', '\x14', '\x16', '\x2', '\x3', '\x3', '\x2', '\x4', '\x6', 
 		'\x2', '_', '\x2', '\x1C', '\x3', '\x2', '\x2', '\x2', '\x4', '!', '\x3', 
 		'\x2', '\x2', '\x2', '\x6', '#', '\x3', '\x2', '\x2', '\x2', '\b', '-', 
 		'\x3', '\x2', '\x2', '\x2', '\n', '/', '\x3', '\x2', '\x2', '\x2', '\f', 
@@ -737,7 +739,7 @@ public partial class MFSHParser : Parser {
 		'\x2', '*', ',', '\a', '\x2', '\x2', '\x3', '+', ')', '\x3', '\x2', '\x2', 
 		'\x2', '+', '*', '\x3', '\x2', '\x2', '\x2', ',', '\a', '\x3', '\x2', 
 		'\x2', '\x2', '-', '.', '\a', '\x3', '\x2', '\x2', '.', '\t', '\x3', '\x2', 
-		'\x2', '\x2', '/', '\x30', '\a', '\r', '\x2', '\x2', '\x30', '\v', '\x3', 
+		'\x2', '\x2', '/', '\x30', '\a', '\xE', '\x2', '\x2', '\x30', '\v', '\x3', 
 		'\x2', '\x2', '\x2', '\x31', '\x37', '\x5', '\xE', '\b', '\x2', '\x32', 
 		'\x37', '\x5', '\x10', '\t', '\x2', '\x33', '\x37', '\x5', '\x12', '\n', 
 		'\x2', '\x34', '\x37', '\x5', '\x14', '\v', '\x2', '\x35', '\x37', '\x5', 
@@ -745,28 +747,28 @@ public partial class MFSHParser : Parser {
 		'\x32', '\x3', '\x2', '\x2', '\x2', '\x36', '\x33', '\x3', '\x2', '\x2', 
 		'\x2', '\x36', '\x34', '\x3', '\x2', '\x2', '\x2', '\x36', '\x35', '\x3', 
 		'\x2', '\x2', '\x2', '\x37', '\r', '\x3', '\x2', '\x2', '\x2', '\x38', 
-		'\x39', '\a', '\b', '\x2', '\x2', '\x39', ':', '\a', '\xF', '\x2', '\x2', 
-		':', '\xF', '\x3', '\x2', '\x2', '\x2', ';', '<', '\a', '\t', '\x2', '\x2', 
-		'<', '=', '\a', '\xF', '\x2', '\x2', '=', '\x11', '\x3', '\x2', '\x2', 
-		'\x2', '>', '?', '\a', '\n', '\x2', '\x2', '?', '@', '\a', '\x13', '\x2', 
-		'\x2', '@', 'I', '\a', '\x10', '\x2', '\x2', '\x41', '\x46', '\a', '\x13', 
-		'\x2', '\x2', '\x42', '\x43', '\a', '\x11', '\x2', '\x2', '\x43', '\x45', 
-		'\a', '\x13', '\x2', '\x2', '\x44', '\x42', '\x3', '\x2', '\x2', '\x2', 
+		'\x39', '\a', '\t', '\x2', '\x2', '\x39', ':', '\a', '\x10', '\x2', '\x2', 
+		':', '\xF', '\x3', '\x2', '\x2', '\x2', ';', '<', '\a', '\n', '\x2', '\x2', 
+		'<', '=', '\a', '\x10', '\x2', '\x2', '=', '\x11', '\x3', '\x2', '\x2', 
+		'\x2', '>', '?', '\a', '\v', '\x2', '\x2', '?', '@', '\a', '\x14', '\x2', 
+		'\x2', '@', 'I', '\a', '\x11', '\x2', '\x2', '\x41', '\x46', '\a', '\x14', 
+		'\x2', '\x2', '\x42', '\x43', '\a', '\x12', '\x2', '\x2', '\x43', '\x45', 
+		'\a', '\x14', '\x2', '\x2', '\x44', '\x42', '\x3', '\x2', '\x2', '\x2', 
 		'\x45', 'H', '\x3', '\x2', '\x2', '\x2', '\x46', '\x44', '\x3', '\x2', 
 		'\x2', '\x2', '\x46', 'G', '\x3', '\x2', '\x2', '\x2', 'G', 'J', '\x3', 
 		'\x2', '\x2', '\x2', 'H', '\x46', '\x3', '\x2', '\x2', '\x2', 'I', '\x41', 
 		'\x3', '\x2', '\x2', '\x2', 'I', 'J', '\x3', '\x2', '\x2', '\x2', 'J', 
-		'K', '\x3', '\x2', '\x2', '\x2', 'K', 'L', '\a', '\x12', '\x2', '\x2', 
-		'L', '\x13', '\x3', '\x2', '\x2', '\x2', 'M', 'N', '\a', '\f', '\x2', 
-		'\x2', 'N', 'O', '\a', '\x13', '\x2', '\x2', 'O', 'X', '\a', '\x10', '\x2', 
-		'\x2', 'P', 'U', '\a', '\xF', '\x2', '\x2', 'Q', 'R', '\a', '\x11', '\x2', 
-		'\x2', 'R', 'T', '\a', '\xF', '\x2', '\x2', 'S', 'Q', '\x3', '\x2', '\x2', 
+		'K', '\x3', '\x2', '\x2', '\x2', 'K', 'L', '\a', '\x13', '\x2', '\x2', 
+		'L', '\x13', '\x3', '\x2', '\x2', '\x2', 'M', 'N', '\a', '\r', '\x2', 
+		'\x2', 'N', 'O', '\a', '\x14', '\x2', '\x2', 'O', 'X', '\a', '\x11', '\x2', 
+		'\x2', 'P', 'U', '\a', '\x10', '\x2', '\x2', 'Q', 'R', '\a', '\x12', '\x2', 
+		'\x2', 'R', 'T', '\a', '\x10', '\x2', '\x2', 'S', 'Q', '\x3', '\x2', '\x2', 
 		'\x2', 'T', 'W', '\x3', '\x2', '\x2', '\x2', 'U', 'S', '\x3', '\x2', '\x2', 
 		'\x2', 'U', 'V', '\x3', '\x2', '\x2', '\x2', 'V', 'Y', '\x3', '\x2', '\x2', 
 		'\x2', 'W', 'U', '\x3', '\x2', '\x2', '\x2', 'X', 'P', '\x3', '\x2', '\x2', 
 		'\x2', 'X', 'Y', '\x3', '\x2', '\x2', '\x2', 'Y', 'Z', '\x3', '\x2', '\x2', 
-		'\x2', 'Z', '[', '\a', '\x12', '\x2', '\x2', '[', '\x15', '\x3', '\x2', 
-		'\x2', '\x2', '\\', ']', '\a', '\v', '\x2', '\x2', ']', '\x17', '\x3', 
+		'\x2', 'Z', '[', '\a', '\x13', '\x2', '\x2', '[', '\x15', '\x3', '\x2', 
+		'\x2', '\x2', '\\', ']', '\a', '\f', '\x2', '\x2', ']', '\x17', '\x3', 
 		'\x2', '\x2', '\x2', '\v', '\x1A', '\x1C', '\'', '+', '\x36', '\x46', 
 		'I', 'U', 'X',
 	};
