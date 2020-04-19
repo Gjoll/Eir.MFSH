@@ -1,10 +1,10 @@
 lexer grammar MFSHLexer;
 
 fragment SPACE: ('\t' | ' ');
+fragment EOLN: ('\n' | EOF);
 MSTART: SPACE* '#'                  -> pushMode(MFSH) ;
-LINE: SPACE* ~('#' | '\n' | ' ' | '\t') (~'\n')* '\n';
-BLANKLINE: SPACE* '\n';
-LASTLINE: SPACE+ -> skip;
+LINE: SPACE* ~('#' | '\n' | ' ' | '\t') (~EOLN)* EOLN;
+BLANKLINE: SPACE* EOLN ;
 CR: '\r' -> skip;
 
 // Any character which does not match one of the above rules will appear in the token stream as
@@ -19,6 +19,7 @@ MMACRO: 'macro';
 MEND: 'end';
 MAPPLY: 'apply';
 MMODEEND: '\n' SPACE* ~'#'                    -> popMode;
+MMODECONT: '\n' SPACE* '#'                    -> skip;
 MSTRING: '"' (~'"')* '"' ;
 MOPAR: '(' ;
 MCOMMA: ',' ;
