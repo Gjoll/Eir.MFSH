@@ -5,6 +5,7 @@ MSTART: SPACE* '#'                  -> pushMode(MFSH) ;
 LINE: SPACE* ~('#' | '\n' | ' ' | '\t') (~'\n')* '\n';
 LASTLINE: SPACE* ~('#' | ' ' | '\t') (~'\n')* EOF;
 BLANKLINE: SPACE* '\n' ;
+BLANKLASTLINE: SPACE* EOF ;
 CR: '\r' -> skip;
 
 // Any character which does not match one of the above rules will appear in the token stream as
