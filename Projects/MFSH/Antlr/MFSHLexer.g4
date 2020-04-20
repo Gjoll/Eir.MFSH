@@ -38,7 +38,6 @@ MErr: .;
 
 mode MLSTRING;
 
-MLSTRMODECONT: '\n' SPACE* '#'                  -> skip;
-MLSTRMODEEND: '\n' SPACE* ~'#'                  -> popMode;
-MLSTRLINE: ~('\n')+ ;
-MMLENDSTRING: ~('\n')* '"' '"' '"'				-> popMode;
+MLCONT: '\n' SPACE* '#';
+MMLENDSTRING: '\n' SPACE* '#' SPACE* '"' '"' '"'				-> popMode;
+MLTEXT: ~('\n')+ ;

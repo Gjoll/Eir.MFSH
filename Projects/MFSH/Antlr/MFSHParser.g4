@@ -16,5 +16,8 @@ mMacro: MMACRO MPNAME ( MOPAR (MPNAME (MCOMMA MPNAME)* )? MCPAR );
 mApply: MAPPLY MPNAME MOPAR ( mString (MCOMMA mString)*)? MCPAR ;
 mEnd: MEND ;
 
-mString: (MSTRING | mlString);
-mlString: MSTARTMLSTRING (MLSTRLINE)* MMLENDSTRING ;
+mString: mSingleString | mlString ;
+mSingleString: MSTRING ;
+mlString: MSTARTMLSTRING mlCont? (mlText mlCont?)* MMLENDSTRING ;
+mlCont: MLCONT ;
+mlText: MLTEXT ;

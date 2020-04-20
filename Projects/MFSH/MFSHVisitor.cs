@@ -111,14 +111,12 @@ namespace MFSH
             TraceMsg(context, fcn);
 
             String macroName = context.MPNAME().GetText();
-            String[] parameters = context
-                .mString()
-                .Select((a) =>
-                {
-                    String s = a.GetText();
-                    return s.Substring(1, s.Length - 2);
-                })
-                .ToArray();
+            List<String> parameters = new List<string>();
+            foreach (var mStringContext in context.mString())
+            {
+                String s = (String)this.VisitChildren(mStringContext);
+                parameters.Add(s);
+            }
 
             if (this.mfsh.Defines.TryGetValue(macroName, out DefineInfo info) == false)
             {
@@ -128,11 +126,11 @@ namespace MFSH
                 return null;
             }
 
-            if (info.Parameters.Count != parameters.Length)
+            if (info.Parameters.Count != parameters.Count)
             {
                 this.Error(fcn,
                     context.Start,
-                    $"Macro {macroName} requires {info.Parameters.Count} parameters, but only {parameters.Length} supplied.");
+                    $"Macro {macroName} requires {info.Parameters.Count} parameters, but only {parameters.Count} supplied.");
                 return null;
             }
 
@@ -150,6 +148,7 @@ namespace MFSH
             return null;
         }
 
+
         public override object VisitMEnd(MFSHParser.MEndContext context)
         {
             const String fcn = "VisitMEnd";
@@ -163,7 +162,7 @@ namespace MFSH
                     break;
 
                 default:
-                    Error(fcn, 
+                    Error(fcn,
                         context.Start,
                         $"Unexpected '#end'");
                     break;
@@ -283,5 +282,37 @@ namespace MFSH
             String fullMsg = $"{this.SourceName}, line {start.Line}. {msg}";
             this.mfsh.ConversionError("mfsh", fcn, fullMsg);
         }
+
+        #region String processing
+
+        StringBuilder stringBuilder = new StringBuilder();
+        public override object VisitMlString(MFSHParser.MlStringContext context)
+        {
+            stringBuilder.Clear();
+            object retVal = base.VisitMlString(context);
+            return this.stringBuilder.ToString();
+        }
+
+        public override object VisitMSingleString(MFSHParser.MSingleStringContext context)
+        {
+            String s = context.GetText();
+            this.stringBuilder.Append(s.Substring(1, s.Length - 2));
+            return null;
+        }
+
+        public override object VisitMlCont(MFSHParser.MlContContext context)
+        {
+            this.stringBuilder.AppendLine("");
+            return null;
+        }
+
+        public override object VisitMlText(MFSHParser.MlTextContext context)
+        {
+            String s = context.GetText();
+            this.stringBuilder.Append(s.Substring(1, s.Length - 2));
+            return null;
+        }
+
+        #endregion
     }
 }
