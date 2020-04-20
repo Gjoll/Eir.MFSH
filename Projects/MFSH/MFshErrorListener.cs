@@ -55,7 +55,9 @@ namespace MFSH
 
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine($"Error: Error in parser at line {line}, column {charPositionInLine}");
+                // Note: We add a line feed at the start of input for grammatical reasons,
+                // so real line number is off by 1.
+                sb.AppendLine($"Error: Error in parser at line {line-1}, column {charPositionInLine}");
                 if (msgLine != null)
                     sb.AppendLine(msgLine);
                 sb.AppendLine(msg);

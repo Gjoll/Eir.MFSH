@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; }  = false;
+        public bool DebugFlag { get; set; }  = true;
         public List<String> IncludeDirs;
 
         public string BaseInputDir
@@ -68,6 +68,11 @@ namespace MFSH
             if (this.sources.Contains(sourceName))
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
             this.sources.Add(sourceName);
+
+            // Must prepend a line feed for grammar.
+            fshText = "\n" + fshText;
+            if (fshText.EndsWith("\n"))
+                fshText = fshText.Substring(0, fshText.Length - 1);
 
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');

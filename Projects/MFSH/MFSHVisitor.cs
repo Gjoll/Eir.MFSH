@@ -170,22 +170,15 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMModeEnd(MFSHParser.MModeEndContext context)
-        {
-            const String fcn = "VisitMModeEnd";
-            TraceMsg(context, fcn);
-
-            String s = context.GetText();
-            this.ParsedText.Append(s.Substring(1));
-            return null;
-        }
-
         public override object VisitFsh(MFSHParser.FshContext context)
         {
             const String fcn = "VisitFsh";
             TraceMsg(context, fcn);
 
-            this.ParsedText.Append(context.GetText());
+            String line = context.GetText();
+            Debug.Assert(line[0] == '\n');
+            line = line.Substring(1) + "\n";
+            this.ParsedText.Append(line);
             return null;
         }
 

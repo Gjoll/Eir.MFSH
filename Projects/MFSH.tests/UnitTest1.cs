@@ -37,18 +37,29 @@ namespace Eir.FSHer.tests
         }
 
 
-        [Fact]
-        public void Define1()
+        void Test(String mfshFile, String resultsFile)
         {
-            String input = GetCleanText("DefineTest1.mfsh");
+            String input = GetCleanText(mfshFile);
             MFsh pp = new MFsh();
             pp.TraceLogging(true, true, true);
             String results = pp.Parse(input, "test");
             Assert.True(pp.HasErrors == false);
-            String shouldBe = File.ReadAllText("DefineTest1.results");
+            String shouldBe = File.ReadAllText(resultsFile);
             shouldBe = shouldBe.Trim().Replace("\r", "");
             results = results.Trim().Replace("\r", "");
             Assert.True(String.Compare(results, shouldBe) == 0);
+        }
+
+        [Fact]
+        public void Define1()
+        {
+            Test("DefineTest1.mfsh", "DefineTest1.results");
+        }
+
+        [Fact]
+        public void Define2()
+        {
+            Test("DefineTest2.mfsh", "DefineTest2.results");
         }
 
         [Fact]

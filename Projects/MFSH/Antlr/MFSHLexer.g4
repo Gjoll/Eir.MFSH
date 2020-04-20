@@ -1,11 +1,8 @@
 lexer grammar MFSHLexer;
 
 fragment SPACE: ('\t' | ' ');
-MSTART: SPACE* '#'                  -> pushMode(MFSH) ;
-LINE: SPACE* ~('#' | '\n' | ' ' | '\t') (~'\n')* '\n';
-LASTLINE: SPACE* ~('#' | ' ' | '\t') (~'\n')* EOF;
-BLANKLINE: SPACE* '\n' ;
-BLANKLASTLINE: SPACE* EOF ;
+MSTART: '\n' SPACE* '#'                  -> pushMode(MFSH) ;
+FSHLINE: '\n' SPACE* ~('\n' | '#')*;
 CR: '\r' -> skip;
 
 // Any character which does not match one of the above rules will appear in the token stream as
@@ -19,16 +16,16 @@ MUSE: 'use';
 MMACRO: 'macro';
 MEND: 'end';
 MAPPLY: 'apply';
-MMODEEND: '\n' SPACE* ~'#'						-> popMode;
 MMODECONT: '\n' SPACE* '#'						-> skip;
 MSTRING: '"' (~'"')* '"' ;
 MSTARTMLSTRING: '"' '"' '"' 					-> pushMode(MLSTRING);
+MFSHLINE: '\n' SPACE* ~('\n' | '#')*			-> popMode;
 
 MOPAR: '(' ;
 MCOMMA: ',' ;
 MCPAR: ')' ;
 MPNAME: [A-Za-z][A-Za-z0-9]+ | '$' [A-Za-z][A-Za-z0-9]+ '$' | '%' [A-Za-z][A-Za-z0-9]+ '%' ;
-MWS: [\r\n \t#] -> skip;
+MWS: [ \t\r] -> skip;
 
 // Any character which does not match one of the above rules will appear in the token stream as
 // an ErrorCharacter token. This ensures the lexer itself will never encounter a syntax error,

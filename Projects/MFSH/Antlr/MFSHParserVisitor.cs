@@ -57,12 +57,6 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMModeStart([NotNull] MFSHParser.MModeStartContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mModeEnd"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMModeEnd([NotNull] MFSHParser.MModeEndContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.mCommand"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

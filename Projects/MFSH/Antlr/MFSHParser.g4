@@ -3,11 +3,10 @@ parser grammar MFSHParser;
 options { tokenVocab=MFSHLexer; }
 
 document    :   (fsh | mCommands)* EOF;
-fsh: LINE | BLANKLINE | LASTLINE | BLANKLASTLINE;
+fsh: FSHLINE | MFSHLINE;
 
-mCommands: mModeStart mCommand+ (mModeEnd | EOF);
+mCommands: mModeStart mCommand+ ;
 mModeStart: MSTART;
-mModeEnd: MMODEEND;
 
 mCommand: mInclude | mUse | mMacro | mApply | mEnd ;
 mInclude: MINCLUDE MSTRING ;
