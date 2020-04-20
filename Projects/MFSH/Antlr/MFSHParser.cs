@@ -40,7 +40,7 @@ public partial class MFSHParser : Parser {
 		MSTART=1, LINE=2, LASTLINE=3, BLANKLINE=4, BLANKLASTLINE=5, CR=6, Err=7, 
 		MINCLUDE=8, MUSE=9, MMACRO=10, MEND=11, MAPPLY=12, MMODEEND=13, MMODECONT=14, 
 		MSTRING=15, MSTARTMLSTRING=16, MOPAR=17, MCOMMA=18, MCPAR=19, MPNAME=20, 
-		MWS=21, MCR=22, MErr=23, MLCONT=24, MMLENDSTRING=25, MLTEXT=26;
+		MWS=21, MErr=22, MLCONT=23, MMLENDSTRING=24, MLTEXT=25;
 	public const int
 		RULE_document = 0, RULE_fsh = 1, RULE_mCommands = 2, RULE_mModeStart = 3, 
 		RULE_mModeEnd = 4, RULE_mCommand = 5, RULE_mInclude = 6, RULE_mUse = 7, 
@@ -53,14 +53,14 @@ public partial class MFSHParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, null, null, null, null, null, "'include'", "'use'", 
+		null, null, null, null, null, null, "'\r'", null, "'include'", "'use'", 
 		"'macro'", "'end'", "'apply'", null, null, null, null, "'('", "','", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "MSTART", "LINE", "LASTLINE", "BLANKLINE", "BLANKLASTLINE", "CR", 
 		"Err", "MINCLUDE", "MUSE", "MMACRO", "MEND", "MAPPLY", "MMODEEND", "MMODECONT", 
 		"MSTRING", "MSTARTMLSTRING", "MOPAR", "MCOMMA", "MCPAR", "MPNAME", "MWS", 
-		"MCR", "MErr", "MLCONT", "MMLENDSTRING", "MLTEXT"
+		"MErr", "MLCONT", "MMLENDSTRING", "MLTEXT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -946,7 +946,7 @@ public partial class MFSHParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x1C', '\x82', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x1B', '\x82', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
@@ -1039,10 +1039,10 @@ public partial class MFSHParser : Parser {
 		'\x2', 'u', 'w', '\x3', '\x2', '\x2', '\x2', 'v', 'r', '\x3', '\x2', '\x2', 
 		'\x2', 'w', 'z', '\x3', '\x2', '\x2', '\x2', 'x', 'v', '\x3', '\x2', '\x2', 
 		'\x2', 'x', 'y', '\x3', '\x2', '\x2', '\x2', 'y', '{', '\x3', '\x2', '\x2', 
-		'\x2', 'z', 'x', '\x3', '\x2', '\x2', '\x2', '{', '|', '\a', '\x1B', '\x2', 
-		'\x2', '|', '\x1D', '\x3', '\x2', '\x2', '\x2', '}', '~', '\a', '\x1A', 
+		'\x2', 'z', 'x', '\x3', '\x2', '\x2', '\x2', '{', '|', '\a', '\x1A', '\x2', 
+		'\x2', '|', '\x1D', '\x3', '\x2', '\x2', '\x2', '}', '~', '\a', '\x19', 
 		'\x2', '\x2', '~', '\x1F', '\x3', '\x2', '\x2', '\x2', '\x7F', '\x80', 
-		'\a', '\x1C', '\x2', '\x2', '\x80', '!', '\x3', '\x2', '\x2', '\x2', '\xF', 
+		'\a', '\x1B', '\x2', '\x2', '\x80', '!', '\x3', '\x2', '\x2', '\x2', '\xF', 
 		'$', '&', '\x31', '\x35', '@', 'P', 'S', '_', '\x62', 'j', 'p', 't', 'x',
 	};
 
