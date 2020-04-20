@@ -285,31 +285,33 @@ namespace MFSH
 
         #region String processing
 
-        StringBuilder stringBuilder = new StringBuilder();
-        public override object VisitMlString(MFSHParser.MlStringContext context)
+        public override object VisitMString(MFSHParser.MStringContext context)
         {
-            stringBuilder.Clear();
-            object retVal = base.VisitMlString(context);
-            return this.stringBuilder.ToString();
+            ParseInfo p = new ParseInfo();
+            this.PushState(p);
+            this.VisitChildren(context);
+            this.PopState();
+            return p.ParsedText.ToString();
         }
 
         public override object VisitMSingleString(MFSHParser.MSingleStringContext context)
         {
             String s = context.GetText();
-            this.stringBuilder.Append(s.Substring(1, s.Length - 2));
+            s = s.Substring(1, s.Length - 2);
+            this.Current.ParsedText.Append(s);
             return null;
         }
 
         public override object VisitMlCont(MFSHParser.MlContContext context)
         {
-            this.stringBuilder.AppendLine("");
+            this.Current.ParsedText.Append("\n");
             return null;
         }
 
         public override object VisitMlText(MFSHParser.MlTextContext context)
         {
             String s = context.GetText();
-            this.stringBuilder.Append(s.Substring(1, s.Length - 2));
+            this.Current.ParsedText.Append(s);
             return null;
         }
 

@@ -70,7 +70,11 @@ namespace Eir.FSHer.tests
             pp.TraceLogging(true, true, true);
             String results = pp.Parse(input, "test");
             Assert.True(pp.HasErrors == false);
-        }
 
+            String shouldBe = File.ReadAllText("ParseMultiLine.results");
+            shouldBe = shouldBe.Trim().Replace("\r", "");
+            results = results.Trim().Replace("\r", "");
+            Assert.True(String.Compare(results, shouldBe) == 0);
+        }
     }
 }
