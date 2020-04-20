@@ -1,8 +1,10 @@
 lexer grammar MFSHLexer;
 
 fragment SPACE: ('\t' | ' ');
+fragment LINE: '\n' SPACE* ~'#' ~'\n'*;
 MSTART: '\n' SPACE* '#'                  -> pushMode(MFSH) ;
-FSHLINE: '\n' SPACE* ~('\n' | '#')*;
+FSHLINE: LINE;
+BLANKLINE: '\n';
 CR: '\r' -> skip;
 
 // Any character which does not match one of the above rules will appear in the token stream as
@@ -19,7 +21,8 @@ MAPPLY: 'apply';
 MMODECONT: '\n' SPACE* '#'						-> skip;
 MSTRING: '"' (~'"')* '"' ;
 MSTARTMLSTRING: '"' '"' '"' 					-> pushMode(MLSTRING);
-MFSHLINE: '\n' SPACE* ~('\n' | '#')*			-> popMode;
+MFSHLINE: LINE									-> popMode;
+MBLANKLINE: '\n'								-> popMode;
 
 MOPAR: '(' ;
 MCOMMA: ',' ;

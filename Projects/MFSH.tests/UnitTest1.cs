@@ -44,6 +44,9 @@ namespace Eir.FSHer.tests
             pp.TraceLogging(true, true, true);
             String results = pp.Parse(input, "test");
             Assert.True(pp.HasErrors == false);
+            if (results == null)
+                return;
+
             String shouldBe = File.ReadAllText(resultsFile);
             shouldBe = shouldBe.Trim().Replace("\r", "");
             results = results.Trim().Replace("\r", "");
@@ -65,27 +68,19 @@ namespace Eir.FSHer.tests
         [Fact]
         public void Parse1()
         {
-            String input = GetCleanText("Parse1.mfsh");
-            MFsh pp = new MFsh();
-            pp.TraceLogging(true, true, true);
-            String results = pp.Parse(input, "test");
-            Assert.True(pp.HasErrors == false);
+            Test("Parse1.mfsh", null);
+        }
+
+        [Fact]
+        public void Parse2()
+        {
+            Test("Parse2.mfsh", null);
         }
 
         [Fact]
         public void ParseMultiLine()
         {
-            String input = GetCleanText("ParseMultiLine.mfsh");
-            MFsh pp = new MFsh();
-            pp.DebugFlag = true;
-            pp.TraceLogging(true, true, true);
-            String results = pp.Parse(input, "test");
-            Assert.True(pp.HasErrors == false);
-
-            String shouldBe = File.ReadAllText("ParseMultiLine.results");
-            shouldBe = shouldBe.Trim().Replace("\r", "");
-            results = results.Trim().Replace("\r", "");
-            Assert.True(String.Compare(results, shouldBe) == 0);
+            Test("ParseMultiLine.mfsh", "ParseMultiLine.results");
         }
     }
 }
