@@ -31,6 +31,12 @@
     <None Update="DefineTest2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="PreParse1.results">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="PreParse1.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Parse2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

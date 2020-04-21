@@ -6,12 +6,12 @@ using System.Text;
 using Antlr4.Runtime;
 using MFSH;
 
-namespace MFSH
+namespace MFSH.Parser
 {
     public class MFSHLexerLocal : MFSHLexer
     {
         public bool DebugFlag { get; set; } = false;
-        private TokenLookup tokens = new TokenLookup("MFSHLexer.tokens");
+        private TokenLookup tokens = new TokenLookup(Path.Combine("Parser", "ANTLR", "MFSHLexer.tokens"));
 
         public MFSHLexerLocal(ICharStream input) : base(input)
         {

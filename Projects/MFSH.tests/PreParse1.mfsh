@@ -1,0 +1,5 @@
+Line1
+#macro Macro()
+line 2
+#end
+line3

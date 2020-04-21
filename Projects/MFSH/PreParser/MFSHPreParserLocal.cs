@@ -6,17 +6,17 @@ using System.Text;
 using Antlr4.Runtime;
 using MFSH;
 
-namespace MFSH
+namespace MFSH.PreParser
 {
-    public class MFSHParserLocal : MFSHParser
+    public class MFSHPreParserLocal : MFSHPreParser
     {
         public bool DebugFlag { get; set; } = false;
-        private TokenLookup tokens = new TokenLookup("MFSHParser.tokens");
-        public MFSHParserLocal(ITokenStream input) : base(input)
+        private TokenLookup tokens = new TokenLookup(Path.Combine("PreParser", "ANTLR", "MFSHPreParser.tokens"));
+        public MFSHPreParserLocal(ITokenStream input) : base(input)
         {
         }
 
-        public MFSHParserLocal(ITokenStream input, TextWriter output, TextWriter errorOutput)
+        public MFSHPreParserLocal(ITokenStream input, TextWriter output, TextWriter errorOutput)
             : base(input, output, errorOutput)
         {
         }

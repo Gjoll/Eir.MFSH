@@ -37,14 +37,30 @@ namespace Eir.FSHer.tests
         }
 
 
-        void Test(String mfshFile, String resultsFile)
+        void PreParseTest(String mfshFile, String resultsFile)
+        {
+            String input = GetCleanText(mfshFile);
+            MFsh pp = new MFsh();
+            pp.TraceLogging(true, true, true);
+            String results = pp.PreParseText(input, "test");
+            Assert.True(pp.HasErrors == false);
+            if (resultsFile == null)
+                return;
+
+            String shouldBe = File.ReadAllText(resultsFile);
+            shouldBe = shouldBe.Trim().Replace("\r", "");
+            results = results.Trim().Replace("\r", "");
+            Assert.True(String.Compare(results, shouldBe) == 0);
+        }
+
+        void ParseTest(String mfshFile, String resultsFile)
         {
             String input = GetCleanText(mfshFile);
             MFsh pp = new MFsh();
             pp.TraceLogging(true, true, true);
             String results = pp.Parse(input, "test");
             Assert.True(pp.HasErrors == false);
-            if (results == null)
+            if (resultsFile == null)
                 return;
 
             String shouldBe = File.ReadAllText(resultsFile);
@@ -54,33 +70,39 @@ namespace Eir.FSHer.tests
         }
 
         [Fact]
+        public void PreParse1()
+        {
+            PreParseTest("PreParse1.mfsh", "PreParse1.results");
+        }
+
+        [Fact]
         public void Define1()
         {
-            Test("DefineTest1.mfsh", "DefineTest1.results");
+            ParseTest("DefineTest1.mfsh", "DefineTest1.results");
         }
 
         [Fact]
         public void Define2()
         {
-            Test("DefineTest2.mfsh", "DefineTest2.results");
+            ParseTest("DefineTest2.mfsh", "DefineTest2.results");
         }
 
         [Fact]
         public void Parse1()
         {
-            Test("Parse1.mfsh", null);
+            ParseTest("Parse1.mfsh", null);
         }
 
         [Fact]
         public void Parse2()
         {
-            Test("Parse2.mfsh", null);
+            ParseTest("Parse2.mfsh", null);
         }
 
         [Fact]
         public void ParseMultiLine()
         {
-            Test("ParseMultiLine.mfsh", "ParseMultiLine.results");
+            ParseTest("ParseMultiLine.mfsh", "ParseMultiLine.results");
         }
     }
 }

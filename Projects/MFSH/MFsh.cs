@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; }  = true;
+        public bool DebugFlag { get; set; } = true;
         public List<String> IncludeDirs;
 
         public string BaseInputDir
@@ -35,7 +35,7 @@ namespace MFSH
         }
         private string baseOutputDir;
 
-        public List<String> Paths= new List<string>();
+        public List<String> Paths = new List<string>();
 
         public Dictionary<String, DefineInfo> Defines = new Dictionary<string, DefineInfo>();
         public HashSet<String> Includes = new HashSet<string>();
@@ -60,6 +60,7 @@ namespace MFSH
             return SubParse(fshText, sourceName);
         }
 
+
         /// <summary>
         /// Parse input text.
         /// </summary>
@@ -69,6 +70,38 @@ namespace MFSH
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
             this.sources.Add(sourceName);
 
+            string text = PreParseText(fshText, sourceName);
+            text = ParseText(text, sourceName);
+            return text;
+        }
+
+        public string PreParseText(String fshText, String sourceName)
+        {
+            if (fshText.EndsWith("\n") == false)
+               fshText = fshText + "\n";
+
+            fshText = fshText.Replace("\r", "");
+            String[] inputLines = fshText.Split('\n');
+
+            PreParser.MFSHPreLexerLocal lexer = new PreParser.MFSHPreLexerLocal(new AntlrInputStream(fshText));
+            lexer.DebugFlag = DebugFlag;
+            lexer.RemoveErrorListeners();
+            lexer.AddErrorListener(new MFSHErrorListenerLexer(this, sourceName, inputLines));
+
+            PreParser.MFSHPreParserLocal parser = new PreParser.MFSHPreParserLocal(new CommonTokenStream(lexer));
+            parser.DebugFlag = DebugFlag;
+            parser.Trace = false;
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(new MFSHErrorListenerParser(this, sourceName, inputLines));
+
+            PreParser.MFSHPreVisitor visitor = new PreParser.MFSHPreVisitor(sourceName);
+            visitor.DebugFlag = DebugFlag;
+            visitor.Visit(parser.text());
+            return visitor.ParsedText.ToString();
+        }
+
+        public string ParseText(String fshText, String sourceName)
+        {
             // Must prepend a line feed for grammar.
             fshText = "\n" + fshText;
             if (fshText.EndsWith("\n"))
@@ -77,19 +110,19 @@ namespace MFSH
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
 
-            MFSHLexerLocal lexer = new MFSHLexerLocal(new AntlrInputStream(fshText));
+            Parser.MFSHLexerLocal lexer = new Parser.MFSHLexerLocal(new AntlrInputStream(fshText));
             lexer.DebugFlag = DebugFlag;
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new MFSHErrorListenerLexer(this, sourceName, inputLines));
 
-            MFSHParserLocal parser = new MFSHParserLocal(new CommonTokenStream(lexer));
+            Parser.MFSHParserLocal parser = new Parser.MFSHParserLocal(new CommonTokenStream(lexer));
             parser.DebugFlag = DebugFlag;
             parser.Trace = false;
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new MFSHErrorListenerParser(this, sourceName, inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
-            MFSHVisitor visitor = new MFSHVisitor(this, sourceName);
+            Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this, sourceName);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
             if (visitor.state.Count != 1)
@@ -97,8 +130,6 @@ namespace MFSH
                 String fullMsg = $"Error processing {sourceName}. Unterminated #{{Command}}";
                 this.ConversionError("mfsh", "ProcessInclude", fullMsg);
             }
-            fshText = fshText.Replace("\r", "");
-            visitor.InputLines = fshText.Split('\n');
 
             return visitor.ParsedText.ToString();
         }

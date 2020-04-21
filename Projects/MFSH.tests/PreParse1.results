@@ -1,0 +1,5 @@
+FshLine "Line1"
+macro Macro()
+FshLine "line 2"
+end
+FshLine "line3"

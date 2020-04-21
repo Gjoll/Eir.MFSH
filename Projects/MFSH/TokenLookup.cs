@@ -26,7 +26,6 @@ namespace MFSH
 
                 String tokenPath = Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "Antlr",
                     this.tokenFile);
                 foreach (String token in File.ReadAllLines(tokenPath))
                 {

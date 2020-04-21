@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace MFSH {
+namespace MFSH.Parser {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -39,88 +39,64 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitDocument([NotNull] MFSHParser.DocumentContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.fsh"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.command"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitFsh([NotNull] MFSHParser.FshContext context);
+	Result VisitCommand([NotNull] MFSHParser.CommandContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mCommands"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.fshLine"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMCommands([NotNull] MFSHParser.MCommandsContext context);
+	Result VisitFshLine([NotNull] MFSHParser.FshLineContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mModeStart"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.include"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMModeStart([NotNull] MFSHParser.MModeStartContext context);
+	Result VisitInclude([NotNull] MFSHParser.IncludeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mCommand"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.use"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMCommand([NotNull] MFSHParser.MCommandContext context);
+	Result VisitUse([NotNull] MFSHParser.UseContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mInclude"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.macro"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMInclude([NotNull] MFSHParser.MIncludeContext context);
+	Result VisitMacro([NotNull] MFSHParser.MacroContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mUse"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.apply"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMUse([NotNull] MFSHParser.MUseContext context);
+	Result VisitApply([NotNull] MFSHParser.ApplyContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mMacro"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.end"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMMacro([NotNull] MFSHParser.MMacroContext context);
+	Result VisitEnd([NotNull] MFSHParser.EndContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mApply"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.string"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMApply([NotNull] MFSHParser.MApplyContext context);
+	Result VisitString([NotNull] MFSHParser.StringContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mEnd"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.multiLineString"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMEnd([NotNull] MFSHParser.MEndContext context);
+	Result VisitMultiLineString([NotNull] MFSHParser.MultiLineStringContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mString"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.singleString"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMString([NotNull] MFSHParser.MStringContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mSingleString"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMSingleString([NotNull] MFSHParser.MSingleStringContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mlString"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMlString([NotNull] MFSHParser.MlStringContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mlCont"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMlCont([NotNull] MFSHParser.MlContContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mlText"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMlText([NotNull] MFSHParser.MlTextContext context);
+	Result VisitSingleString([NotNull] MFSHParser.SingleStringContext context);
 }
-} // namespace MFSH
+} // namespace MFSH.Parser

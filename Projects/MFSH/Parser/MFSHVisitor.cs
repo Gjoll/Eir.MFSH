@@ -13,7 +13,7 @@ using Antlr4.Runtime.Tree;
 using MFSH;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace MFSH
+namespace MFSH.Parser
 {
     class MFSHVisitor : MFSHParserBaseVisitor<Object>
     {
@@ -21,7 +21,6 @@ namespace MFSH
 
         public Stack<ParseInfo> state = new Stack<ParseInfo>();
         ParseInfo Current => this.state.Peek();
-        public String[] InputLines;
         public string SourceName;
         MFsh mfsh;
 
@@ -62,21 +61,21 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMUse(MFSHParser.MUseContext context)
+        public override object VisitUse(MFSHParser.UseContext context)
         {
-            const String fcn = "VisitMuse";
+            const String fcn = "VisitUse";
             TraceMsg(context, fcn);
-            String include = context.MSTRING().GetText();
+            String include = context.STRING().GetText();
             include = include.Substring(1, include.Length - 2);
             ProcessInclude(include);
             return null;
         }
 
-        public override object VisitMInclude(MFSHParser.MIncludeContext context)
+        public override object VisitInclude(MFSHParser.IncludeContext context)
         {
-            const String fcn = "VisitMInclude";
+            const String fcn = "VisitInclude";
             TraceMsg(context, fcn);
-            String include = context.MSTRING().GetText();
+            String include = context.STRING().GetText();
             include = include.Substring(1, include.Length - 2);
             String text = ProcessInclude(include);
             if (text == null)
@@ -89,15 +88,15 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMMacro(MFSHParser.MMacroContext context)
+        public override object VisitMacro(MFSHParser.MacroContext context)
         {
-            const String fcn = "VisitMMacro";
+            const String fcn = "VisitMacro";
             TraceMsg(context, fcn);
 
             DefineInfo s = new DefineInfo();
             this.PushState(s);
             String[] names = context
-                .MPNAME()
+                .NAME()
                 .Select((a) => a.GetText())
                 .ToArray();
             s.Name = names[0];
@@ -105,14 +104,14 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMApply(MFSHParser.MApplyContext context)
+        public override object VisitApply(MFSHParser.ApplyContext context)
         {
-            const String fcn = "VisitMApply";
+            const String fcn = "VisitApply";
             TraceMsg(context, fcn);
 
-            String macroName = context.MPNAME().GetText();
+            String macroName = context.NAME().GetText();
             List<String> parameters = new List<string>();
-            foreach (var mStringContext in context.mString())
+            foreach (var mStringContext in context.@string())
             {
                 String s = (String)this.VisitChildren(mStringContext);
                 parameters.Add(s);
@@ -149,9 +148,9 @@ namespace MFSH
         }
 
 
-        public override object VisitMEnd(MFSHParser.MEndContext context)
+        public override object VisitEnd(MFSHParser.EndContext context)
         {
-            const String fcn = "VisitMEnd";
+            const String fcn = "VisitEnd";
             TraceMsg(context, fcn);
 
             ParseInfo s = this.PopState();
@@ -170,15 +169,15 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitFsh(MFSHParser.FshContext context)
+        public override object VisitFshLine(MFSHParser.FshLineContext context)
         {
-            const String fcn = "VisitFsh";
+            const String fcn = "VisitFshLine";
             TraceMsg(context, fcn);
 
-            String line = context.GetText();
-            Debug.Assert(line[0] == '\n');
-            line = line.Substring(1) + "\n";
+            String line = context.STRING().GetText();
+            line = line.Substring(1, line.Length - 2);
             this.ParsedText.Append(line);
+            this.ParsedText.Append("\n");
             return null;
         }
 
@@ -278,7 +277,7 @@ namespace MFSH
 
         #region String processing
 
-        public override object VisitMString(MFSHParser.MStringContext context)
+        public override object VisitString(MFSHParser.StringContext context)
         {
             ParseInfo p = new ParseInfo();
             this.PushState(p);
@@ -287,7 +286,7 @@ namespace MFSH
             return p.ParsedText.ToString();
         }
 
-        public override object VisitMSingleString(MFSHParser.MSingleStringContext context)
+        public override object VisitSingleString(MFSHParser.SingleStringContext context)
         {
             String s = context.GetText();
             s = s.Substring(1, s.Length - 2);
@@ -295,19 +294,17 @@ namespace MFSH
             return null;
         }
 
-        public override object VisitMlCont(MFSHParser.MlContContext context)
+        public override object VisitMultiLineString(MFSHParser.MultiLineStringContext context)
         {
-            this.Current.ParsedText.Append("\n");
-            return null;
-        }
-
-        public override object VisitMlText(MFSHParser.MlTextContext context)
-        {
-            String s = context.GetText();
+            String s = context.GetText().Trim();
+            if (s.StartsWith("\"\"\""))
+                s = s.Substring(3);
+            if (s.EndsWith("\"\"\""))
+                s = s.Substring(0, s.Length - 3);
+            s = s.Trim();
             this.Current.ParsedText.Append(s);
             return null;
         }
-
         #endregion
     }
 }
