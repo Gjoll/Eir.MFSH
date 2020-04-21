@@ -1,0 +1,9 @@
+#macro Alpha(pa)
+pa
+#end
+
+#apply Alpha("""
+#Line 1
+#Line 2
+#Line 3
+# """ )

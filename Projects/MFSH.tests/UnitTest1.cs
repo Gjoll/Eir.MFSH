@@ -100,9 +100,15 @@ namespace Eir.FSHer.tests
         }
 
         [Fact]
-        public void ParseMultiLine()
+        public void ParseMultiLine1()
         {
-            ParseTest("ParseMultiLine.mfsh", "ParseMultiLine.results");
+            ParseTest("ParseMultiLine1.mfsh", "ParseMultiLine1.results");
+        }
+
+        [Fact]
+        public void ParseMultiLine2()
+        {
+            ParseTest("ParseMultiLine2.mfsh", "ParseMultiLine2.results");
         }
     }
 }

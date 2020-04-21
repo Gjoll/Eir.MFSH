@@ -5,13 +5,13 @@ options { tokenVocab=MFSHLexer; }
 document    :   command* EOF;
 command: fshLine | include | use | macro | apply | end ;
 
-fshLine: FSHLINE STRING;
-include: INCLUDE STRING ;
-use: USE STRING ;
+fshLine: FSHLINE anyString;
+include: INCLUDE anyString ;
+use: USE anyString ;
 macro: MACRO NAME ( OPAR (NAME (COMMA NAME)* )? CPAR );
-apply: APPLY NAME OPAR ( string (COMMA string)*)? CPAR ;
+apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 
-string:  singleString | multiLineString ;
+anyString:  singleString | multiLineString ;
 multiLineString:  MULTILINE_STRING ;
 singleString: STRING ;

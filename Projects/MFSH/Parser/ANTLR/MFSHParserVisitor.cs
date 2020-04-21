@@ -81,11 +81,11 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEnd([NotNull] MFSHParser.EndContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.string"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.anyString"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitString([NotNull] MFSHParser.StringContext context);
+	Result VisitAnyString([NotNull] MFSHParser.AnyStringContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.multiLineString"/>.
 	/// </summary>

@@ -31,6 +31,12 @@
     <None Update="DefineTest2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ParseMultiLine2.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ParseMultiLine1.results">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="PreParse1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -67,10 +73,10 @@
     <None Update="MacroTest1.results.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ParseMultiLine.results">
+    <None Update="ParseMultiLine2.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ParseMultiLine.mfsh">
+    <None Update="ParseMultiLine1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Test1.fsh">

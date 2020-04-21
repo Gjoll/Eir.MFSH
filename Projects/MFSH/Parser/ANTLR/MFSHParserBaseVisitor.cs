@@ -115,7 +115,7 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEnd([NotNull] MFSHParser.EndContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.string"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.anyString"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -123,7 +123,7 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitString([NotNull] MFSHParser.StringContext context) { return VisitChildren(context); }
+	public virtual Result VisitAnyString([NotNull] MFSHParser.AnyStringContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.multiLineString"/>.
 	/// <para>

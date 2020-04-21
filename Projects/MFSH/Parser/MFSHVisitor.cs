@@ -65,8 +65,7 @@ namespace MFSH.Parser
         {
             const String fcn = "VisitUse";
             TraceMsg(context, fcn);
-            String include = context.STRING().GetText();
-            include = include.Substring(1, include.Length - 2);
+            String include = (String) this.VisitChildren(context.anyString());
             ProcessInclude(include);
             return null;
         }
@@ -75,8 +74,7 @@ namespace MFSH.Parser
         {
             const String fcn = "VisitInclude";
             TraceMsg(context, fcn);
-            String include = context.STRING().GetText();
-            include = include.Substring(1, include.Length - 2);
+            String include = (String) this.VisitChildren(context.anyString());
             String text = ProcessInclude(include);
             if (text == null)
                 return null;
@@ -111,7 +109,7 @@ namespace MFSH.Parser
 
             String macroName = context.NAME().GetText();
             List<String> parameters = new List<string>();
-            foreach (var mStringContext in context.@string())
+            foreach (var mStringContext in context.anyString())
             {
                 String s = (String)this.VisitChildren(mStringContext);
                 parameters.Add(s);
@@ -174,13 +172,40 @@ namespace MFSH.Parser
             const String fcn = "VisitFshLine";
             TraceMsg(context, fcn);
 
-            String line = context.STRING().GetText();
-            line = line.Substring(1, line.Length - 2);
+            String line = (String)this.VisitChildren(context.anyString());
             this.ParsedText.Append(line);
             this.ParsedText.Append("\n");
             return null;
         }
 
+        public override object VisitAnyString(MFSHParser.AnyStringContext context)
+        {
+            return (String) this.VisitChildren(context);
+        }
+
+        public override object VisitSingleString(MFSHParser.SingleStringContext context)
+        {
+            String s = context.GetText();
+            s = s
+                .Substring(1, s.Length - 2)
+                .Replace("\\\"", "\"")
+                ;
+            return s;
+        }
+
+        public override object VisitMultiLineString(MFSHParser.MultiLineStringContext context)
+        {
+            String s = context.GetText().Trim();
+            if (s.StartsWith("\"\"\""))
+                s = s.Substring(3);
+            if (s.EndsWith("\"\"\""))
+                s = s.Substring(0, s.Length - 3);
+            s = s.Trim();
+            return s;
+        }
+
+
+        #region Non Visitor Methods
         String FindInclude(String includeFile)
         {
             if (Path.IsPathRooted(includeFile))
@@ -274,37 +299,6 @@ namespace MFSH.Parser
             String fullMsg = $"{this.SourceName}, line {start.Line}. {msg}";
             this.mfsh.ConversionError("mfsh", fcn, fullMsg);
         }
-
-        #region String processing
-
-        public override object VisitString(MFSHParser.StringContext context)
-        {
-            ParseInfo p = new ParseInfo();
-            this.PushState(p);
-            this.VisitChildren(context);
-            this.PopState();
-            return p.ParsedText.ToString();
-        }
-
-        public override object VisitSingleString(MFSHParser.SingleStringContext context)
-        {
-            String s = context.GetText();
-            s = s.Substring(1, s.Length - 2);
-            this.Current.ParsedText.Append(s);
-            return null;
-        }
-
-        public override object VisitMultiLineString(MFSHParser.MultiLineStringContext context)
-        {
-            String s = context.GetText().Trim();
-            if (s.StartsWith("\"\"\""))
-                s = s.Substring(3);
-            if (s.EndsWith("\"\"\""))
-                s = s.Substring(0, s.Length - 3);
-            s = s.Trim();
-            this.Current.ParsedText.Append(s);
-            return null;
-        }
-        #endregion
+#endregion
     }
 }

@@ -41,11 +41,11 @@ public partial class MFSHParser : Parser {
 		OPAR=9, COMMA=10, CPAR=11, NAME=12, WS=13;
 	public const int
 		RULE_document = 0, RULE_command = 1, RULE_fshLine = 2, RULE_include = 3, 
-		RULE_use = 4, RULE_macro = 5, RULE_apply = 6, RULE_end = 7, RULE_string = 8, 
+		RULE_use = 4, RULE_macro = 5, RULE_apply = 6, RULE_end = 7, RULE_anyString = 8, 
 		RULE_multiLineString = 9, RULE_singleString = 10;
 	public static readonly string[] ruleNames = {
 		"document", "command", "fshLine", "include", "use", "macro", "apply", 
-		"end", "string", "multiLineString", "singleString"
+		"end", "anyString", "multiLineString", "singleString"
 	};
 
 	private static readonly string[] _LiteralNames = {
@@ -235,7 +235,9 @@ public partial class MFSHParser : Parser {
 
 	public partial class FshLineContext : ParserRuleContext {
 		public ITerminalNode FSHLINE() { return GetToken(MFSHParser.FSHLINE, 0); }
-		public ITerminalNode STRING() { return GetToken(MFSHParser.STRING, 0); }
+		public AnyStringContext anyString() {
+			return GetRuleContext<AnyStringContext>(0);
+		}
 		public FshLineContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -256,7 +258,7 @@ public partial class MFSHParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 38; Match(FSHLINE);
-			State = 39; Match(STRING);
+			State = 39; anyString();
 			}
 		}
 		catch (RecognitionException re) {
@@ -272,7 +274,9 @@ public partial class MFSHParser : Parser {
 
 	public partial class IncludeContext : ParserRuleContext {
 		public ITerminalNode INCLUDE() { return GetToken(MFSHParser.INCLUDE, 0); }
-		public ITerminalNode STRING() { return GetToken(MFSHParser.STRING, 0); }
+		public AnyStringContext anyString() {
+			return GetRuleContext<AnyStringContext>(0);
+		}
 		public IncludeContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -293,7 +297,7 @@ public partial class MFSHParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 41; Match(INCLUDE);
-			State = 42; Match(STRING);
+			State = 42; anyString();
 			}
 		}
 		catch (RecognitionException re) {
@@ -309,7 +313,9 @@ public partial class MFSHParser : Parser {
 
 	public partial class UseContext : ParserRuleContext {
 		public ITerminalNode USE() { return GetToken(MFSHParser.USE, 0); }
-		public ITerminalNode STRING() { return GetToken(MFSHParser.STRING, 0); }
+		public AnyStringContext anyString() {
+			return GetRuleContext<AnyStringContext>(0);
+		}
 		public UseContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -330,7 +336,7 @@ public partial class MFSHParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 44; Match(USE);
-			State = 45; Match(STRING);
+			State = 45; anyString();
 			}
 		}
 		catch (RecognitionException re) {
@@ -423,11 +429,11 @@ public partial class MFSHParser : Parser {
 		public ITerminalNode NAME() { return GetToken(MFSHParser.NAME, 0); }
 		public ITerminalNode OPAR() { return GetToken(MFSHParser.OPAR, 0); }
 		public ITerminalNode CPAR() { return GetToken(MFSHParser.CPAR, 0); }
-		public StringContext[] @string() {
-			return GetRuleContexts<StringContext>();
+		public AnyStringContext[] anyString() {
+			return GetRuleContexts<AnyStringContext>();
 		}
-		public StringContext @string(int i) {
-			return GetRuleContext<StringContext>(i);
+		public AnyStringContext anyString(int i) {
+			return GetRuleContext<AnyStringContext>(i);
 		}
 		public ITerminalNode[] COMMA() { return GetTokens(MFSHParser.COMMA); }
 		public ITerminalNode COMMA(int i) {
@@ -461,7 +467,7 @@ public partial class MFSHParser : Parser {
 			_la = TokenStream.LA(1);
 			if (_la==STRING || _la==MULTILINE_STRING) {
 				{
-				State = 65; @string();
+				State = 65; anyString();
 				State = 70;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
@@ -469,7 +475,7 @@ public partial class MFSHParser : Parser {
 					{
 					{
 					State = 66; Match(COMMA);
-					State = 67; @string();
+					State = 67; anyString();
 					}
 					}
 					State = 72;
@@ -528,29 +534,29 @@ public partial class MFSHParser : Parser {
 		return _localctx;
 	}
 
-	public partial class StringContext : ParserRuleContext {
+	public partial class AnyStringContext : ParserRuleContext {
 		public SingleStringContext singleString() {
 			return GetRuleContext<SingleStringContext>(0);
 		}
 		public MultiLineStringContext multiLineString() {
 			return GetRuleContext<MultiLineStringContext>(0);
 		}
-		public StringContext(ParserRuleContext parent, int invokingState)
+		public AnyStringContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_string; } }
+		public override int RuleIndex { get { return RULE_anyString; } }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IMFSHParserVisitor<TResult> typedVisitor = visitor as IMFSHParserVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitString(this);
+			if (typedVisitor != null) return typedVisitor.VisitAnyString(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public StringContext @string() {
-		StringContext _localctx = new StringContext(Context, State);
-		EnterRule(_localctx, 16, RULE_string);
+	public AnyStringContext anyString() {
+		AnyStringContext _localctx = new AnyStringContext(Context, State);
+		EnterRule(_localctx, 16, RULE_anyString);
 		try {
 			State = 81;
 			ErrorHandler.Sync(this);
@@ -691,37 +697,37 @@ public partial class MFSHParser : Parser {
 		'\x2', '&', '!', '\x3', '\x2', '\x2', '\x2', '&', '\"', '\x3', '\x2', 
 		'\x2', '\x2', '&', '#', '\x3', '\x2', '\x2', '\x2', '&', '$', '\x3', '\x2', 
 		'\x2', '\x2', '&', '%', '\x3', '\x2', '\x2', '\x2', '\'', '\x5', '\x3', 
-		'\x2', '\x2', '\x2', '(', ')', '\a', '\x3', '\x2', '\x2', ')', '*', '\a', 
-		'\t', '\x2', '\x2', '*', '\a', '\x3', '\x2', '\x2', '\x2', '+', ',', '\a', 
-		'\x4', '\x2', '\x2', ',', '-', '\a', '\t', '\x2', '\x2', '-', '\t', '\x3', 
-		'\x2', '\x2', '\x2', '.', '/', '\a', '\x5', '\x2', '\x2', '/', '\x30', 
-		'\a', '\t', '\x2', '\x2', '\x30', '\v', '\x3', '\x2', '\x2', '\x2', '\x31', 
-		'\x32', '\a', '\x6', '\x2', '\x2', '\x32', '\x33', '\a', '\xE', '\x2', 
-		'\x2', '\x33', '<', '\a', '\v', '\x2', '\x2', '\x34', '\x39', '\a', '\xE', 
-		'\x2', '\x2', '\x35', '\x36', '\a', '\f', '\x2', '\x2', '\x36', '\x38', 
-		'\a', '\xE', '\x2', '\x2', '\x37', '\x35', '\x3', '\x2', '\x2', '\x2', 
-		'\x38', ';', '\x3', '\x2', '\x2', '\x2', '\x39', '\x37', '\x3', '\x2', 
-		'\x2', '\x2', '\x39', ':', '\x3', '\x2', '\x2', '\x2', ':', '=', '\x3', 
-		'\x2', '\x2', '\x2', ';', '\x39', '\x3', '\x2', '\x2', '\x2', '<', '\x34', 
-		'\x3', '\x2', '\x2', '\x2', '<', '=', '\x3', '\x2', '\x2', '\x2', '=', 
-		'>', '\x3', '\x2', '\x2', '\x2', '>', '?', '\a', '\r', '\x2', '\x2', '?', 
-		'\r', '\x3', '\x2', '\x2', '\x2', '@', '\x41', '\a', '\b', '\x2', '\x2', 
-		'\x41', '\x42', '\a', '\xE', '\x2', '\x2', '\x42', 'K', '\a', '\v', '\x2', 
-		'\x2', '\x43', 'H', '\x5', '\x12', '\n', '\x2', '\x44', '\x45', '\a', 
-		'\f', '\x2', '\x2', '\x45', 'G', '\x5', '\x12', '\n', '\x2', '\x46', '\x44', 
-		'\x3', '\x2', '\x2', '\x2', 'G', 'J', '\x3', '\x2', '\x2', '\x2', 'H', 
-		'\x46', '\x3', '\x2', '\x2', '\x2', 'H', 'I', '\x3', '\x2', '\x2', '\x2', 
-		'I', 'L', '\x3', '\x2', '\x2', '\x2', 'J', 'H', '\x3', '\x2', '\x2', '\x2', 
-		'K', '\x43', '\x3', '\x2', '\x2', '\x2', 'K', 'L', '\x3', '\x2', '\x2', 
-		'\x2', 'L', 'M', '\x3', '\x2', '\x2', '\x2', 'M', 'N', '\a', '\r', '\x2', 
-		'\x2', 'N', '\xF', '\x3', '\x2', '\x2', '\x2', 'O', 'P', '\a', '\a', '\x2', 
-		'\x2', 'P', '\x11', '\x3', '\x2', '\x2', '\x2', 'Q', 'T', '\x5', '\x16', 
-		'\f', '\x2', 'R', 'T', '\x5', '\x14', '\v', '\x2', 'S', 'Q', '\x3', '\x2', 
-		'\x2', '\x2', 'S', 'R', '\x3', '\x2', '\x2', '\x2', 'T', '\x13', '\x3', 
-		'\x2', '\x2', '\x2', 'U', 'V', '\a', '\n', '\x2', '\x2', 'V', '\x15', 
-		'\x3', '\x2', '\x2', '\x2', 'W', 'X', '\a', '\t', '\x2', '\x2', 'X', '\x17', 
-		'\x3', '\x2', '\x2', '\x2', '\t', '\x1B', '&', '\x39', '<', 'H', 'K', 
-		'S',
+		'\x2', '\x2', '\x2', '(', ')', '\a', '\x3', '\x2', '\x2', ')', '*', '\x5', 
+		'\x12', '\n', '\x2', '*', '\a', '\x3', '\x2', '\x2', '\x2', '+', ',', 
+		'\a', '\x4', '\x2', '\x2', ',', '-', '\x5', '\x12', '\n', '\x2', '-', 
+		'\t', '\x3', '\x2', '\x2', '\x2', '.', '/', '\a', '\x5', '\x2', '\x2', 
+		'/', '\x30', '\x5', '\x12', '\n', '\x2', '\x30', '\v', '\x3', '\x2', '\x2', 
+		'\x2', '\x31', '\x32', '\a', '\x6', '\x2', '\x2', '\x32', '\x33', '\a', 
+		'\xE', '\x2', '\x2', '\x33', '<', '\a', '\v', '\x2', '\x2', '\x34', '\x39', 
+		'\a', '\xE', '\x2', '\x2', '\x35', '\x36', '\a', '\f', '\x2', '\x2', '\x36', 
+		'\x38', '\a', '\xE', '\x2', '\x2', '\x37', '\x35', '\x3', '\x2', '\x2', 
+		'\x2', '\x38', ';', '\x3', '\x2', '\x2', '\x2', '\x39', '\x37', '\x3', 
+		'\x2', '\x2', '\x2', '\x39', ':', '\x3', '\x2', '\x2', '\x2', ':', '=', 
+		'\x3', '\x2', '\x2', '\x2', ';', '\x39', '\x3', '\x2', '\x2', '\x2', '<', 
+		'\x34', '\x3', '\x2', '\x2', '\x2', '<', '=', '\x3', '\x2', '\x2', '\x2', 
+		'=', '>', '\x3', '\x2', '\x2', '\x2', '>', '?', '\a', '\r', '\x2', '\x2', 
+		'?', '\r', '\x3', '\x2', '\x2', '\x2', '@', '\x41', '\a', '\b', '\x2', 
+		'\x2', '\x41', '\x42', '\a', '\xE', '\x2', '\x2', '\x42', 'K', '\a', '\v', 
+		'\x2', '\x2', '\x43', 'H', '\x5', '\x12', '\n', '\x2', '\x44', '\x45', 
+		'\a', '\f', '\x2', '\x2', '\x45', 'G', '\x5', '\x12', '\n', '\x2', '\x46', 
+		'\x44', '\x3', '\x2', '\x2', '\x2', 'G', 'J', '\x3', '\x2', '\x2', '\x2', 
+		'H', '\x46', '\x3', '\x2', '\x2', '\x2', 'H', 'I', '\x3', '\x2', '\x2', 
+		'\x2', 'I', 'L', '\x3', '\x2', '\x2', '\x2', 'J', 'H', '\x3', '\x2', '\x2', 
+		'\x2', 'K', '\x43', '\x3', '\x2', '\x2', '\x2', 'K', 'L', '\x3', '\x2', 
+		'\x2', '\x2', 'L', 'M', '\x3', '\x2', '\x2', '\x2', 'M', 'N', '\a', '\r', 
+		'\x2', '\x2', 'N', '\xF', '\x3', '\x2', '\x2', '\x2', 'O', 'P', '\a', 
+		'\a', '\x2', '\x2', 'P', '\x11', '\x3', '\x2', '\x2', '\x2', 'Q', 'T', 
+		'\x5', '\x16', '\f', '\x2', 'R', 'T', '\x5', '\x14', '\v', '\x2', 'S', 
+		'Q', '\x3', '\x2', '\x2', '\x2', 'S', 'R', '\x3', '\x2', '\x2', '\x2', 
+		'T', '\x13', '\x3', '\x2', '\x2', '\x2', 'U', 'V', '\a', '\n', '\x2', 
+		'\x2', 'V', '\x15', '\x3', '\x2', '\x2', '\x2', 'W', 'X', '\a', '\t', 
+		'\x2', '\x2', 'X', '\x17', '\x3', '\x2', '\x2', '\x2', '\t', '\x1B', '&', 
+		'\x39', '<', 'H', 'K', 'S',
 	};
 
 	public static readonly ATN _ATN =
