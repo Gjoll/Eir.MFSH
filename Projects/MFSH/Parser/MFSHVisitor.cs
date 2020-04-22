@@ -65,7 +65,7 @@ namespace MFSH.Parser
         {
             const String fcn = "VisitUse";
             TraceMsg(context, fcn);
-            String include = (String) this.VisitChildren(context.anyString());
+            String include = (String)this.VisitChildren(context.anyString());
             ProcessInclude(include);
             return null;
         }
@@ -74,7 +74,7 @@ namespace MFSH.Parser
         {
             const String fcn = "VisitInclude";
             TraceMsg(context, fcn);
-            String include = (String) this.VisitChildren(context.anyString());
+            String include = (String)this.VisitChildren(context.anyString());
             String text = ProcessInclude(include);
             if (text == null)
                 return null;
@@ -180,7 +180,7 @@ namespace MFSH.Parser
 
         public override object VisitAnyString(MFSHParser.AnyStringContext context)
         {
-            return (String) this.VisitChildren(context);
+            return (String)this.VisitChildren(context);
         }
 
         public override object VisitSingleString(MFSHParser.SingleStringContext context)
@@ -228,14 +228,21 @@ namespace MFSH.Parser
                 if (File.Exists(includeFile) == true)
                     return includeFile;
             }
-            else
+
+            if (this.mfsh.LocalDir != null)
             {
-                foreach (String dir in this.mfsh.IncludeDirs)
-                {
-                    String path = Path.Combine(dir, includeFile);
-                    if (File.Exists(path))
-                        return path;
-                }
+                String localFile = Path.Combine(this.mfsh.LocalDir, includeFile);
+                if (File.Exists(localFile) == true)
+                    return localFile;
+            }
+
+            if (File.Exists(includeFile) == true)
+                return includeFile;
+            foreach (String dir in this.mfsh.IncludeDirs)
+            {
+                String path = Path.GetFullPath(Path.Combine(dir, includeFile));
+                if (File.Exists(path))
+                    return path;
             }
 
             throw new Exception($"Include file '{includeFile}' does not exist");
@@ -250,7 +257,9 @@ namespace MFSH.Parser
             this.mfsh.Includes.Add(includeFile);
             String fshText = File.ReadAllText(includePath);
 
-            string includeFileText = this.mfsh.SubParse(fshText, includeFile);
+            string includeFileText = this.mfsh.SubParse(fshText,
+                includeFile,
+                Path.GetDirectoryName(includePath));
             return includeFileText;
         }
 
@@ -314,6 +323,6 @@ namespace MFSH.Parser
             String fullMsg = $"{this.SourceName}, line {start.Line}. {msg}";
             this.mfsh.ConversionError("mfsh", fcn, fullMsg);
         }
-#endregion
+        #endregion
     }
 }

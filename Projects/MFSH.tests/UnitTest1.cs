@@ -28,7 +28,7 @@ namespace Eir.FSHer.tests
             String input = GetCleanText("IncludeTest1.mfsh");
             MFsh pp = new MFsh();
             pp.TraceLogging(true, true, true);
-            String results = pp.Parse(input, "test");
+            String results = pp.Parse(input, "test", null);
             Assert.True(pp.HasErrors == false);
             String shouldBe = File.ReadAllText("IncludeTest1.results");
             shouldBe = shouldBe.Trim().Replace("\r", "");
@@ -58,7 +58,7 @@ namespace Eir.FSHer.tests
             String input = GetCleanText(mfshFile);
             MFsh pp = new MFsh();
             pp.TraceLogging(true, true, true);
-            String results = pp.Parse(input, "test");
+            String results = pp.Parse(input, "test", null);
             Assert.True(pp.HasErrors == false);
             if (resultsFile == null)
                 return;

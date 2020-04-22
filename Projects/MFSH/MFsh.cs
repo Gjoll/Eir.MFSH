@@ -21,6 +21,8 @@ namespace MFSH
         public bool DebugFlag { get; set; } = false;
         public List<String> IncludeDirs;
 
+        // dir containing file being parsed. Usd for local includes.
+        public String LocalDir { get; set; }
         public string BaseInputDir
         {
             get => this.baseInputDir;
@@ -51,27 +53,34 @@ namespace MFSH
             this.IncludeDirs = new List<string>();
             this.IncludeDirs.Add(".");
         }
-        public string Parse(String fshText, String sourceName)
+        public string Parse(String fshText,
+            String sourceName,
+            String localDir)
         {
             this.Includes.Clear();
             this.Defines.Clear();
             this.sources.Clear();
 
-            return SubParse(fshText, sourceName);
+            return SubParse(fshText, sourceName, localDir);
         }
 
 
         /// <summary>
         /// Parse input text.
         /// </summary>
-        public string SubParse(String fshText, String sourceName)
+        public string SubParse(String fshText, 
+            String sourceName,
+            String localDir)
         {
+            String saveLocalDir = this.LocalDir;
+            this.LocalDir = localDir;
             if (this.sources.Contains(sourceName))
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
             this.sources.Add(sourceName);
 
             string text = PreParseText(fshText, sourceName);
             text = ParseText(text, sourceName);
+            this.LocalDir = saveLocalDir;
             return text;
         }
 
@@ -141,7 +150,9 @@ namespace MFSH
             String fshText = File.ReadAllText(path);
             FSHFile f = new FSHFile
             {
-                Text = this.Parse(fshText, Path.GetFileName(path)),
+                Text = this.Parse(fshText,
+                    Path.GetFileName(path),
+                    Path.GetDirectoryName(path)),
             };
 
             if (path.StartsWith(BaseInputDir) == false)
@@ -160,12 +171,20 @@ namespace MFSH
         {
             foreach (String path in this.Paths)
             {
-                if (Directory.Exists(path))
-                    this.ProcessDir(path);
-                else if (File.Exists(path))
-                    this.ProcessFile(path);
-                else
-                    throw new Exception($"Path {path} does not exist");
+                try
+                {
+                    if (Directory.Exists(path))
+                        this.ProcessDir(path);
+                    else if (File.Exists(path))
+                        this.ProcessFile(path);
+                    else
+                        throw new Exception($"Path {path} does not exist");
+                }
+                catch (Exception err)
+                {
+                    String fullMsg = $"Error processing {Path.GetFileName(path)}. '{err.Message}'";
+                    this.ConversionError("mfsh", "ProcessInclude", fullMsg);
+                }
             }
         }
 
