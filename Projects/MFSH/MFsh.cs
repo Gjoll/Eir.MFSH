@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; } = true;
+        public bool DebugFlag { get; set; } = false;
         public List<String> IncludeDirs;
 
         public string BaseInputDir
@@ -102,11 +102,6 @@ namespace MFSH
 
         public string ParseText(String fshText, String sourceName)
         {
-            // Must prepend a line feed for grammar.
-            fshText = "\n" + fshText;
-            if (fshText.EndsWith("\n"))
-                fshText = fshText.Substring(0, fshText.Length - 1);
-
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
 

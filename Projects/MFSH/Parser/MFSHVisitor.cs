@@ -195,13 +195,28 @@ namespace MFSH.Parser
 
         public override object VisitMultiLineString(MFSHParser.MultiLineStringContext context)
         {
-            String s = context.GetText().Trim();
-            if (s.StartsWith("\"\"\""))
-                s = s.Substring(3);
-            if (s.EndsWith("\"\"\""))
-                s = s.Substring(0, s.Length - 3);
-            s = s.Trim();
-            return s;
+            String text = context.GetText().Trim();
+            List<String> lines = context.GetText().Split('\n').ToList();
+            if (lines.Count == 0)
+                return null;
+            if (lines[0].StartsWith("\"\"\""))
+                lines[0] = lines[0].Substring(3);
+            if (lines[^1].EndsWith("\"\"\""))
+                lines[^1] = lines[^1].Substring(0, lines[^1].Length - 3);
+            while (String.IsNullOrWhiteSpace(lines[0]))
+                lines.RemoveAt(0);
+            while (String.IsNullOrWhiteSpace(lines[^1]))
+                lines.RemoveAt(lines.Count - 1);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(lines[0]);
+            foreach (String line in lines.Skip(1))
+            {
+                sb.Append("\n");
+                sb.Append(line);
+            }
+
+            return sb.ToString();
         }
 
 

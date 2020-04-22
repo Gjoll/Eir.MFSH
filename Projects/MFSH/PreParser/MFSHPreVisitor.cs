@@ -40,7 +40,7 @@ namespace MFSH.PreParser
         {
             String text = context.GetText();
             Int32 lbIndex = text.IndexOf('#');
-            text = text.Substring(0, lbIndex) + text.Substring(lbIndex + 1);
+            text = text.Substring(lbIndex + 1);
             Debug.Assert(text[^1] == '\n');
             this.ParsedText.Append(text);
             return null;
