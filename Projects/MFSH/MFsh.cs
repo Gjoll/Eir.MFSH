@@ -136,7 +136,7 @@ namespace MFSH
                 this.ConversionError("mfsh", "ProcessInclude", fullMsg);
             }
 
-            return visitor.ParsedText.ToString();
+            return visitor.Current.GetText();
         }
 
         /// <summary>

@@ -19,30 +19,29 @@ namespace MFSH.Parser
     {
         public bool DebugFlag { get; set; } = false;
 
-        public Stack<ParseInfo> state = new Stack<ParseInfo>();
-        ParseInfo Current => this.state.Peek();
+        public Stack<FileData> state = new Stack<FileData>();
+        public FileData Current => this.state.Peek();
         public string SourceName;
         MFsh mfsh;
 
-        void PushState(ParseInfo s)
+        void PushState(FileData s)
         {
             this.state.Push(s);
         }
 
-        ParseInfo PopState()
+        FileData PopState()
         {
-            ParseInfo s = this.state.Peek();
+            FileData s = this.state.Peek();
             this.state.Pop();
             return s;
         }
-        public StringBuilder ParsedText => this.Current.ParsedText;
 
         public MFSHVisitor(MFsh mfsh,
             string sourceName)
         {
             this.SourceName = sourceName;
             this.mfsh = mfsh;
-            this.PushState(new ParseInfo());
+            this.PushState(new FileData());
         }
 
         void TraceMsg(ParserRuleContext context, String fcn)
@@ -82,7 +81,7 @@ namespace MFSH.Parser
                 return null;
             if (text[^1] != '\n')
                 text += '\n';
-            this.ParsedText.Append(text);
+            this.Current.AppendText(text);
             return null;
         }
 
@@ -154,10 +153,10 @@ namespace MFSH.Parser
                 return null;
             }
 
-            string text = info.ParsedText.ToString();
+            string text = info.GetText();
             for (Int32 i = 0; i < info.Parameters.Count; i++)
             {
-                // Replace occurances of macro parameter.
+                // Replace occurrences of macro parameter.
                 // Replacement is done on word boundaries ('\b');
                 String word = info.Parameters[i];
                 String byWhat = parameters[i];
@@ -169,7 +168,7 @@ namespace MFSH.Parser
             if (info.RedirectData != null)
                 info.RedirectData.AppendText(text);
             else
-                this.Current.ParsedText.Append(text);
+                this.Current.AppendText(text);
             return null;
         }
 
@@ -179,7 +178,7 @@ namespace MFSH.Parser
             const String fcn = "VisitEnd";
             TraceMsg(context, fcn);
 
-            ParseInfo s = this.PopState();
+            FileData s = this.PopState();
             switch (s)
             {
                 case DefineInfo defineInfo:
@@ -201,8 +200,8 @@ namespace MFSH.Parser
             TraceMsg(context, fcn);
 
             String line = (String)this.VisitChildren(context.anyString());
-            this.ParsedText.Append(line);
-            this.ParsedText.Append("\n");
+            this.Current.AppendText(line);
+            this.Current.AppendText("\n");
             return null;
         }
 

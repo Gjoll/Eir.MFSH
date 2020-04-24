@@ -10,9 +10,16 @@ namespace MFSH
     {
         protected StringBuilder text = new StringBuilder();
 
-        public virtual void AppendText(String text) => this.text.AppendLine(text);
+        public virtual void AppendText(String text) => this.text.Append(text);
         public virtual String GetText() => this.text.ToString();
         public String RelativePath { get; set; }
+    }
+
+    public class DefineInfo : FileData
+    {
+        public FileData RedirectData { get; set; }
+        public String Name;
+        public List<String> Parameters = new List<string>();
     }
 
     public class JsonArrayData: FileData
