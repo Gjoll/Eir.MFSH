@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace MFSH
@@ -11,6 +12,7 @@ namespace MFSH
 
     public class DefineInfo : ParseInfo
     {
+        public FileData RedirectData { get; set; }
         public String Name;
         public List<String> Parameters = new List<string>();
     }

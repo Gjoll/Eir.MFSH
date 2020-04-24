@@ -85,6 +85,16 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// <return>The visitor result.</return>
 	public virtual Result VisitUse([NotNull] MFSHParser.UseContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.apply"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitApply([NotNull] MFSHParser.ApplyContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.macro"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
@@ -95,7 +105,7 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// <return>The visitor result.</return>
 	public virtual Result VisitMacro([NotNull] MFSHParser.MacroContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.apply"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.redirect"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -103,7 +113,7 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitApply([NotNull] MFSHParser.ApplyContext context) { return VisitChildren(context); }
+	public virtual Result VisitRedirect([NotNull] MFSHParser.RedirectContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.end"/>.
 	/// <para>

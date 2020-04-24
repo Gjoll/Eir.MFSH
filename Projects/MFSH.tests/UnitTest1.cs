@@ -100,6 +100,12 @@ namespace Eir.FSHer.tests
         }
 
         [Fact]
+        public void ParseRedirect()
+        {
+            ParseTest("ParseRedirect1.mfsh", "ParseRedirect1.results");
+        }
+
+        [Fact]
         public void ParseMultiLine1()
         {
             ParseTest("ParseMultiLine1.mfsh", "ParseMultiLine1.results");

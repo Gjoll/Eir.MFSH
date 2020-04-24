@@ -63,17 +63,23 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitUse([NotNull] MFSHParser.UseContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.apply"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitApply([NotNull] MFSHParser.ApplyContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.macro"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitMacro([NotNull] MFSHParser.MacroContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.apply"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.redirect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitApply([NotNull] MFSHParser.ApplyContext context);
+	Result VisitRedirect([NotNull] MFSHParser.RedirectContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.end"/>.
 	/// </summary>

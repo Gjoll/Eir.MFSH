@@ -46,7 +46,8 @@ namespace MFSH
 
         private const String FSHSuffix = ".fsh";
         private const String MFSHSuffix = ".mfsh";
-        private List<FSHFile> fshFiles = new List<FSHFile>();
+        public Dictionary<String, FileData> FileItems = 
+            new Dictionary<String, FileData>();
 
         public MFsh()
         {
@@ -148,12 +149,10 @@ namespace MFSH
             path = Path.GetFullPath(path);
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing file {path}");
             String fshText = File.ReadAllText(path);
-            FSHFile f = new FSHFile
-            {
-                Text = this.Parse(fshText,
+            FileData f = new FileData();
+            f.AppendText(this.Parse(fshText,
                     Path.GetFileName(path),
-                    Path.GetDirectoryName(path)),
-            };
+                    Path.GetDirectoryName(path)));
 
             if (path.StartsWith(BaseInputDir) == false)
                 throw new Exception("Internal error. Path does not start with correct base path");
@@ -161,7 +160,7 @@ namespace MFSH
             if (relativePath.StartsWith("\\"))
                 relativePath = relativePath.Substring(1);
             f.RelativePath = relativePath;
-            fshFiles.Add(f);
+            this.FileItems.Add(f.RelativePath, f);
         }
 
         /// <summary>
@@ -208,8 +207,7 @@ namespace MFSH
         {
             const String fcn = "SaveAll";
 
-            void Save(String outputPath,
-                String text)
+            void Save(String outputPath, String text)
             {
                 text = text.Trim();
                 if (text.Length == 0)
@@ -231,14 +229,14 @@ namespace MFSH
 
             this.BaseOutputDir = Path.GetFullPath(BaseOutputDir);
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
-            foreach (FSHFile f in this.fshFiles)
+            foreach (FileData f in this.FileItems.Values)
             {
                 String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
                 String dir = Path.GetDirectoryName(outputPath);
                 outputPath = Path.Combine(dir,
                     $"{Path.GetFileNameWithoutExtension(outputPath)}{MFsh.FSHSuffix}"
                 );
-                Save(outputPath, f.Text);
+                Save(outputPath, f.GetText());
             }
         }
     }

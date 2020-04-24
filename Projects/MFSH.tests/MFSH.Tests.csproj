@@ -31,6 +31,12 @@
     <None Update="DefineTest2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ParseRedirect1.results">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ParseRedirect1.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ParseMultiLine2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -99,6 +99,29 @@ namespace MFSH.Parser
                 .ToArray();
             s.Name = names[0];
             s.Parameters.AddRange(names.Skip(1));
+
+            var redirectContext = context.redirect();
+            if (redirectContext != null)
+            {
+                String rPath = redirectContext.singleString().GetText();
+                rPath = rPath
+                        .Substring(1, rPath.Length - 2)
+                        .Replace("\\\"", "\"")
+                        .Replace("%Source%", this.SourceName)
+                    ;
+
+                // Create new file data if one of this relative path name does
+                // nor already exist.
+                if (this.mfsh.FileItems.TryGetValue(rPath, out FileData fd) == false)
+                {
+                    fd = new JsonArrayData
+                    {
+                        RelativePath =  rPath
+                    };
+                    this.mfsh.FileItems.Add(rPath, fd);
+                }
+                s.RedirectData = fd;
+            }
             return null;
         }
 
@@ -138,10 +161,15 @@ namespace MFSH.Parser
                 // Replacement is done on word boundaries ('\b');
                 String word = info.Parameters[i];
                 String byWhat = parameters[i];
-                text = ReplaceWholeWord(text, word, byWhat);
+                if ((word[0] == '%') || (word[0] == '$'))
+                    text = text.Replace(word, byWhat);
+                else
+                    text = ReplaceWholeWord(text, word, byWhat);
             }
-
-            this.Current.ParsedText.Append(text);
+            if (info.RedirectData != null)
+                info.RedirectData.AppendText(text);
+            else
+                this.Current.ParsedText.Append(text);
             return null;
         }
 
