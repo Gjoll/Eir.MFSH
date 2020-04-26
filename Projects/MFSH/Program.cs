@@ -53,6 +53,14 @@ namespace MFSH
                         this.mfsh.IncludeDirs.Add(GetArg("-i"));
                         break;
 
+                    case "-d":
+                        {
+                            String name = GetArg("-d");
+                            String value = GetArg("-d");
+                            this.mfsh.Variables.Add(name, value);
+                        }
+                        break;
+
                     case "-t":
                         filter = GetArg("-t");
                         break;

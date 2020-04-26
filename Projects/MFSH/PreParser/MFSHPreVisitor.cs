@@ -46,15 +46,30 @@ namespace MFSH.PreParser
             return null;
         }
 
+        public override object VisitProfile(MFSHPreParser.ProfileContext context)
+        {
+            String text = context.GetText();
+            OutputFshLine(text);
+
+            String profileName = context.TEXT(0).GetText();
+            this.ParsedText.Append($"profile {profileName}\n");
+            return null;
+        }
+
+        void OutputFshLine(String text)
+        {
+            Debug.Assert(text[^1] == '\n');
+            text = text
+                    .Substring(0, text.Length - 1)
+                    .Replace("\"", "\\\"")
+                ;
+            this.ParsedText.Append($"FshLine \"{text}\"\n");
+        }
+
         public override object VisitFsh(MFSHPreParser.FshContext context)
         {
             String text = context.GetText();
-            Debug.Assert(text[^1] == '\n');
-            text = text
-                .Substring(0, text.Length-1)
-                .Replace("\"", "\\\"")
-                ;
-            this.ParsedText.Append($"FshLine \"{text}\"\n");
+            OutputFshLine(text);
             return null;
         }
     }

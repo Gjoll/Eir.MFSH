@@ -1,0 +1,27 @@
+#macro GraphNode(GraphName, NodeName, %Path%, DisplayName, CssClass) > jsonArray("%GraphDir%\\%BasePath%.json")
+  {
+    "graphNode" : {
+	  "currentClass" : "%CurrentClass%",
+	  "graphName" : "GraphName",
+	  "nodeName" : "NodeName",
+	  "displayName" : "DisplayName",
+	  "cssClass" : "CssClass"
+	}
+  },
+#end
+
+#macro GraphLinkByName(GraphName, LinkName, SourceName, TargetName) > jsonArray("%GraphDir%\\%BasePath%.json")
+  {
+    "graphLinkByName" : {
+	  "graphName" : "GraphName",
+	  "source" : {
+	    "name" : "ParentName",
+	    "class" : "%CurrentClass%",
+	  }
+	  "target" : {
+	    "name" : "TargetName",
+	    "class" : "%CurrentClass%",
+	  }
+	}
+  },
+#end

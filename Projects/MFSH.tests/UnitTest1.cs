@@ -36,7 +36,6 @@ namespace Eir.FSHer.tests
             Assert.True(String.Compare(results, shouldBe) == 0);
         }
 
-
         void PreParseTest(String mfshFile, String resultsFile)
         {
             String input = GetCleanText(mfshFile);
@@ -100,6 +99,12 @@ namespace Eir.FSHer.tests
         }
 
         [Fact]
+        public void Parse3()
+        {
+            ParseTest("Parse3.mfsh", null);
+        }
+
+        [Fact]
         public void ParseRedirect()
         {
             ParseTest("ParseRedirect1.mfsh", "ParseRedirect1.results");
@@ -115,6 +120,12 @@ namespace Eir.FSHer.tests
         public void ParseMultiLine2()
         {
             ParseTest("ParseMultiLine2.mfsh", "ParseMultiLine2.results");
+        }
+
+        [Fact]
+        public void Profile1()
+        {
+            ParseTest("ParseProfile1.mfsh", null);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; } = false;
+        public bool DebugFlag { get; set; } = true;
         public List<String> IncludeDirs;
 
         // dir containing file being parsed. Usd for local includes.
@@ -46,6 +46,8 @@ namespace MFSH
 
         private const String FSHSuffix = ".fsh";
         private const String MFSHSuffix = ".mfsh";
+        public Dictionary<String, String> Variables =
+            new Dictionary<String, string>();
         public Dictionary<String, FileData> FileItems = 
             new Dictionary<String, FileData>();
 
@@ -54,6 +56,7 @@ namespace MFSH
             this.IncludeDirs = new List<string>();
             this.IncludeDirs.Add(".");
         }
+
         public string Parse(String fshText,
             String sourceName,
             String localDir)
@@ -107,7 +110,14 @@ namespace MFSH
             PreParser.MFSHPreVisitor visitor = new PreParser.MFSHPreVisitor(sourceName);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.text());
-            return visitor.ParsedText.ToString();
+            String retVal = visitor.ParsedText.ToString();
+            if (this.DebugFlag)
+            {
+                Trace.WriteLine("Pre parsed text");
+                Trace.WriteLine(retVal);
+            }
+
+            return retVal;
         }
 
         public string ParseText(String fshText, String sourceName)
@@ -150,16 +160,32 @@ namespace MFSH
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing file {path}");
             String fshText = File.ReadAllText(path);
             FileData f = new FileData();
+
+            String baseRPath = path.Substring(BaseInputDir.Length);
+            if (baseRPath.StartsWith("\\"))
+                baseRPath = baseRPath.Substring(1);
+            Int32 extensionIndex = baseRPath.LastIndexOf('.');
+            if (extensionIndex > 0)
+                baseRPath = baseRPath.Substring(0, extensionIndex);
+
+            String baseName = Path.GetFileName(baseRPath);
+            String baseDir = Path.GetDirectoryName(baseRPath);
+
+            this.Variables.Remove("%BasePath%");
+            this.Variables.Remove("%BaseDir%");
+            this.Variables.Remove("%BaseName%");
+
+            this.Variables.Add("%BasePath%", baseRPath);
+            this.Variables.Add("%BaseDir%", baseDir);
+            this.Variables.Add("%BaseName%", baseName);
+
             f.AppendText(this.Parse(fshText,
-                    Path.GetFileName(path),
-                    Path.GetDirectoryName(path)));
+                baseName,
+                Path.GetDirectoryName(path)));
 
             if (path.StartsWith(BaseInputDir) == false)
                 throw new Exception("Internal error. Path does not start with correct base path");
-            String relativePath = path.Substring(BaseInputDir.Length);
-            if (relativePath.StartsWith("\\"))
-                relativePath = relativePath.Substring(1);
-            f.RelativePath = relativePath;
+            f.RelativePath = baseRPath + FSHSuffix;
             this.FileItems.Add(f.RelativePath, f);
         }
 
@@ -232,10 +258,6 @@ namespace MFSH
             foreach (FileData f in this.FileItems.Values)
             {
                 String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
-                String dir = Path.GetDirectoryName(outputPath);
-                outputPath = Path.Combine(dir,
-                    $"{Path.GetFileNameWithoutExtension(outputPath)}{MFsh.FSHSuffix}"
-                );
                 Save(outputPath, f.GetText());
             }
         }

@@ -48,7 +48,10 @@ namespace MFSH.Parser
         {
             if (!DebugFlag)
                 return;
-            String text = context.GetText().Replace("\r", "").Replace("\n", "");
+            String text = context
+                .GetText()
+                .Replace("\r", "")
+                .Replace("\n", "");
             Trace.WriteLine($"{fcn}. [{this.state.Count}] {this.SourceName}, #{context.Start.Line} '{text}'");
         }
 
@@ -106,11 +109,12 @@ namespace MFSH.Parser
                 rPath = rPath
                         .Substring(1, rPath.Length - 2)
                         .Replace("\\\"", "\"")
-                        .Replace("%Source%", this.SourceName)
+                        .Replace(@"\\", @"\")
                     ;
+                rPath = this.ReplaceTextWithVariables(rPath);
 
                 // Create new file data if one of this relative path name does
-                // nor already exist.
+                // not already exist.
                 if (this.mfsh.FileItems.TryGetValue(rPath, out FileData fd) == false)
                 {
                     fd = new JsonArrayData
@@ -154,16 +158,14 @@ namespace MFSH.Parser
             }
 
             string text = info.GetText();
+            text = ReplaceTextWithVariables(text);
             for (Int32 i = 0; i < info.Parameters.Count; i++)
             {
                 // Replace occurrences of macro parameter.
                 // Replacement is done on word boundaries ('\b');
                 String word = info.Parameters[i];
                 String byWhat = parameters[i];
-                if ((word[0] == '%') || (word[0] == '$'))
-                    text = text.Replace(word, byWhat);
-                else
-                    text = ReplaceWholeWord(text, word, byWhat);
+                text = ReplaceText(text, word, byWhat);
             }
             if (info.RedirectData != null)
                 info.RedirectData.AppendText(text);
@@ -247,6 +249,14 @@ namespace MFSH.Parser
         }
 
 
+        public override object VisitProfile(MFSHParser.ProfileContext context)
+        {
+            String currentClass = context.NAME().GetText();
+            this.mfsh.Variables.Remove("%CurrentClass%");
+            this.mfsh.Variables.Add("%CurrentClass%", currentClass);
+            return null;
+        }
+
         #region Non Visitor Methods
         String FindInclude(String includeFile)
         {
@@ -288,6 +298,26 @@ namespace MFSH.Parser
                 includeFile,
                 Path.GetDirectoryName(includePath));
             return includeFileText;
+        }
+
+        String ReplaceTextWithVariables(String text)
+        {
+            foreach (String key in this.mfsh.Variables.Keys)
+            {
+                String value = this.mfsh.Variables[key];
+                text = ReplaceText(text, key, value);
+            }
+
+            return text;
+        }
+
+        String ReplaceText(String text, String word, String byWhat)
+        {
+            if ((word[0] == '%') || (word[0] == '$'))
+                text = text.Replace(word, byWhat);
+            else
+                text = ReplaceWholeWord(text, word, byWhat);
+            return text;
         }
 
         public String ReplaceWholeWord(String s, String wordToReplace, String bywhat)

@@ -39,6 +39,12 @@ public interface IMFSHPreParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitText([NotNull] MFSHPreParser.TextContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHPreParser.profile"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitProfile([NotNull] MFSHPreParser.ProfileContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHPreParser.fsh"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -6,9 +6,10 @@ FSHLINE: 'FshLine';
 INCLUDE: 'include';
 JSONARRAY: 'jsonArray';
 MACRO: 'macro';
+PROFILE: 'profile';
 USE: 'use';
 
-STRING: '"' (~[\\"] | '\\"' | '\\\\')* '"' ;
+STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"';
 MULTILINE_STRING: '"""' .*? '"""' ;
 
 OPAR: '(' ;

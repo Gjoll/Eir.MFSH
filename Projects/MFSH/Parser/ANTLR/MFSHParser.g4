@@ -3,15 +3,17 @@ parser grammar MFSHParser;
 options { tokenVocab=MFSHLexer; }
 
 document    :   command* EOF;
-command: fshLine | include | use | macro | apply | end ;
+command: fshLine | apply | end | include | macro | profile | use;
 
 fshLine: FSHLINE anyString;
-include: INCLUDE anyString ;
-use: USE anyString ;
+
 apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
-macro: MACRO NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
-redirect: GT JSONARRAY OPAR singleString CPAR ;
 end: END ;
+include: INCLUDE anyString ;
+macro: MACRO NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
+profile: PROFILE NAME;
+redirect: GT JSONARRAY OPAR singleString CPAR ;
+use: USE anyString ;
 
 anyString:  singleString | multiLineString ;
 multiLineString:  MULTILINE_STRING ;
