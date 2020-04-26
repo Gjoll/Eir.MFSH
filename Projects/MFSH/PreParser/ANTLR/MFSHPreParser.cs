@@ -125,7 +125,7 @@ public partial class MFSHPreParser : Parser {
 			State = 13;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PROFILE) | (1L << EOL) | (1L << TEXT) | (1L << LB) | (1L << WS))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PROFILE) | (1L << COLON) | (1L << EOL) | (1L << TEXT) | (1L << LB) | (1L << WS))) != 0)) {
 				{
 				State = 11;
 				ErrorHandler.Sync(this);
@@ -258,6 +258,10 @@ public partial class MFSHPreParser : Parser {
 		public ITerminalNode TEXT(int i) {
 			return GetToken(MFSHPreParser.TEXT, i);
 		}
+		public ITerminalNode[] COLON() { return GetTokens(MFSHPreParser.COLON); }
+		public ITerminalNode COLON(int i) {
+			return GetToken(MFSHPreParser.COLON, i);
+		}
 		public ITerminalNode[] LB() { return GetTokens(MFSHPreParser.LB); }
 		public ITerminalNode LB(int i) {
 			return GetToken(MFSHPreParser.LB, i);
@@ -298,18 +302,26 @@ public partial class MFSHPreParser : Parser {
 				State = 41;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if (_la==TEXT) {
+				if (_la==COLON || _la==TEXT) {
 					{
-					State = 34; Match(TEXT);
+					State = 34;
+					_la = TokenStream.LA(1);
+					if ( !(_la==COLON || _la==TEXT) ) {
+					ErrorHandler.RecoverInline(this);
+					}
+					else {
+						ErrorHandler.ReportMatch(this);
+					    Consume();
+					}
 					State = 38;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
-					while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TEXT) | (1L << LB) | (1L << WS))) != 0)) {
+					while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COLON) | (1L << TEXT) | (1L << LB) | (1L << WS))) != 0)) {
 						{
 						{
 						State = 35;
 						_la = TokenStream.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TEXT) | (1L << LB) | (1L << WS))) != 0)) ) {
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COLON) | (1L << TEXT) | (1L << LB) | (1L << WS))) != 0)) ) {
 						ErrorHandler.RecoverInline(this);
 						}
 						else {
@@ -451,18 +463,19 @@ public partial class MFSHPreParser : Parser {
 		'\x5', '\x5', '\x36', '\n', '\x5', '\x3', '\x5', '\x3', '\x5', '\a', '\x5', 
 		':', '\n', '\x5', '\f', '\x5', '\xE', '\x5', '=', '\v', '\x5', '\x3', 
 		'\x5', '\x3', '\x5', '\x3', '\x5', '\x2', '\x2', '\x6', '\x2', '\x4', 
-		'\x6', '\b', '\x2', '\x3', '\x3', '\x2', '\x6', '\b', '\x2', 'H', '\x2', 
-		'\xF', '\x3', '\x2', '\x2', '\x2', '\x4', '\x14', '\x3', '\x2', '\x2', 
-		'\x2', '\x6', '\x32', '\x3', '\x2', '\x2', '\x2', '\b', '\x35', '\x3', 
-		'\x2', '\x2', '\x2', '\n', '\xE', '\x5', '\x6', '\x4', '\x2', '\v', '\xE', 
-		'\x5', '\b', '\x5', '\x2', '\f', '\xE', '\x5', '\x4', '\x3', '\x2', '\r', 
-		'\n', '\x3', '\x2', '\x2', '\x2', '\r', '\v', '\x3', '\x2', '\x2', '\x2', 
-		'\r', '\f', '\x3', '\x2', '\x2', '\x2', '\xE', '\x11', '\x3', '\x2', '\x2', 
-		'\x2', '\xF', '\r', '\x3', '\x2', '\x2', '\x2', '\xF', '\x10', '\x3', 
-		'\x2', '\x2', '\x2', '\x10', '\x12', '\x3', '\x2', '\x2', '\x2', '\x11', 
-		'\xF', '\x3', '\x2', '\x2', '\x2', '\x12', '\x13', '\a', '\x2', '\x2', 
-		'\x3', '\x13', '\x3', '\x3', '\x2', '\x2', '\x2', '\x14', '\x16', '\a', 
-		'\x3', '\x2', '\x2', '\x15', '\x17', '\a', '\b', '\x2', '\x2', '\x16', 
+		'\x6', '\b', '\x2', '\x5', '\x3', '\x2', '\x6', '\b', '\x4', '\x2', '\x4', 
+		'\x4', '\x6', '\x6', '\x4', '\x2', '\x4', '\x4', '\x6', '\b', '\x2', 'H', 
+		'\x2', '\xF', '\x3', '\x2', '\x2', '\x2', '\x4', '\x14', '\x3', '\x2', 
+		'\x2', '\x2', '\x6', '\x32', '\x3', '\x2', '\x2', '\x2', '\b', '\x35', 
+		'\x3', '\x2', '\x2', '\x2', '\n', '\xE', '\x5', '\x6', '\x4', '\x2', '\v', 
+		'\xE', '\x5', '\b', '\x5', '\x2', '\f', '\xE', '\x5', '\x4', '\x3', '\x2', 
+		'\r', '\n', '\x3', '\x2', '\x2', '\x2', '\r', '\v', '\x3', '\x2', '\x2', 
+		'\x2', '\r', '\f', '\x3', '\x2', '\x2', '\x2', '\xE', '\x11', '\x3', '\x2', 
+		'\x2', '\x2', '\xF', '\r', '\x3', '\x2', '\x2', '\x2', '\xF', '\x10', 
+		'\x3', '\x2', '\x2', '\x2', '\x10', '\x12', '\x3', '\x2', '\x2', '\x2', 
+		'\x11', '\xF', '\x3', '\x2', '\x2', '\x2', '\x12', '\x13', '\a', '\x2', 
+		'\x2', '\x3', '\x13', '\x3', '\x3', '\x2', '\x2', '\x2', '\x14', '\x16', 
+		'\a', '\x3', '\x2', '\x2', '\x15', '\x17', '\a', '\b', '\x2', '\x2', '\x16', 
 		'\x15', '\x3', '\x2', '\x2', '\x2', '\x16', '\x17', '\x3', '\x2', '\x2', 
 		'\x2', '\x17', '\x18', '\x3', '\x2', '\x2', '\x2', '\x18', '\x1C', '\a', 
 		'\x6', '\x2', '\x2', '\x19', '\x1B', '\t', '\x2', '\x2', '\x2', '\x1A', 
@@ -472,8 +485,8 @@ public partial class MFSHPreParser : Parser {
 		'\x1C', '\x3', '\x2', '\x2', '\x2', '\x1F', ' ', '\a', '\x5', '\x2', '\x2', 
 		' ', '\x5', '\x3', '\x2', '\x2', '\x2', '!', '#', '\a', '\b', '\x2', '\x2', 
 		'\"', '!', '\x3', '\x2', '\x2', '\x2', '\"', '#', '\x3', '\x2', '\x2', 
-		'\x2', '#', '+', '\x3', '\x2', '\x2', '\x2', '$', '(', '\a', '\x6', '\x2', 
-		'\x2', '%', '\'', '\t', '\x2', '\x2', '\x2', '&', '%', '\x3', '\x2', '\x2', 
+		'\x2', '#', '+', '\x3', '\x2', '\x2', '\x2', '$', '(', '\t', '\x3', '\x2', 
+		'\x2', '%', '\'', '\t', '\x4', '\x2', '\x2', '&', '%', '\x3', '\x2', '\x2', 
 		'\x2', '\'', '*', '\x3', '\x2', '\x2', '\x2', '(', '&', '\x3', '\x2', 
 		'\x2', '\x2', '(', ')', '\x3', '\x2', '\x2', '\x2', ')', ',', '\x3', '\x2', 
 		'\x2', '\x2', '*', '(', '\x3', '\x2', '\x2', '\x2', '+', '$', '\x3', '\x2', 

@@ -6,7 +6,7 @@ text: (fsh | mfsh | profile)* EOF;
 
 profile: PROFILE WS? (TEXT (WS | TEXT | LB)*) EOL ;
 fsh:
-	WS? (TEXT (WS | TEXT | LB)*)? EOL
+	WS? ( (TEXT | COLON) (WS | TEXT | LB | COLON)*)? EOL
   |	WS? EOL
 	;
 
