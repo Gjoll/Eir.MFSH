@@ -38,21 +38,12 @@ namespace MFSH.PreParser
 
         public override object VisitMfsh(MFSHPreParser.MfshContext context)
         {
+            TraceMsg(context, "Mfsh");
             String text = context.GetText();
             Int32 lbIndex = text.IndexOf('#');
             text = text.Substring(lbIndex + 1);
             Debug.Assert(text[^1] == '\n');
             this.ParsedText.Append(text);
-            return null;
-        }
-
-        public override object VisitProfile(MFSHPreParser.ProfileContext context)
-        {
-            String text = context.GetText();
-            OutputFshLine(text);
-
-            String profileName = context.TEXT(0).GetText();
-            this.ParsedText.Append($"profile {profileName}\n");
             return null;
         }
 
@@ -66,8 +57,35 @@ namespace MFSH.PreParser
             this.ParsedText.Append($"FshLine \"{text}\"\n");
         }
 
-        public override object VisitFsh(MFSHPreParser.FshContext context)
+        public override object VisitFshCmd(MFSHPreParser.FshCmdContext context)
         {
+            TraceMsg(context, "FshCmd");
+            String text = context.GetText();
+            OutputFshLine(text);
+
+            String command = context.TEXT(0).GetText();
+            switch (command)
+            {
+                case "Profile":
+                    String profileName = context.TEXT(1).GetText();
+                    this.ParsedText.Append($"profile {profileName}\n");
+                    break;
+            }
+            return null;
+        }
+
+        public override object VisitTickData(MFSHPreParser.TickDataContext context)
+        {
+            TraceMsg(context, "TickData");
+            String text = context.GetText();
+            text = text.Substring(text.IndexOf('`') + 1);
+            OutputFshLine(text);
+            return null;
+        }
+
+        public override object VisitData(MFSHPreParser.DataContext context)
+        {
+            TraceMsg(context, "Data");
             String text = context.GetText();
             OutputFshLine(text);
             return null;

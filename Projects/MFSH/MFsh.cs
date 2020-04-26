@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; } = false;
+        public bool DebugFlag { get; set; } = true;
         public List<String> IncludeDirs;
 
         // dir containing file being parsed. Usd for local includes.
@@ -99,13 +99,19 @@ namespace MFSH
             PreParser.MFSHPreLexerLocal lexer = new PreParser.MFSHPreLexerLocal(new AntlrInputStream(fshText));
             lexer.DebugFlag = DebugFlag;
             lexer.RemoveErrorListeners();
-            lexer.AddErrorListener(new MFSHErrorListenerLexer(this, sourceName, inputLines));
+            lexer.AddErrorListener(new MFSHErrorListenerLexer(this,
+                "Fsh PreLexer",
+                sourceName, 
+                inputLines));
 
             PreParser.MFSHPreParserLocal parser = new PreParser.MFSHPreParserLocal(new CommonTokenStream(lexer));
             parser.DebugFlag = DebugFlag;
             parser.Trace = false;
             parser.RemoveErrorListeners();
-            parser.AddErrorListener(new MFSHErrorListenerParser(this, sourceName, inputLines));
+            parser.AddErrorListener(new MFSHErrorListenerParser(this,
+                "MFsh PreParser",
+                sourceName, 
+                inputLines));
 
             PreParser.MFSHPreVisitor visitor = new PreParser.MFSHPreVisitor(sourceName);
             visitor.DebugFlag = DebugFlag;
@@ -128,13 +134,19 @@ namespace MFSH
             Parser.MFSHLexerLocal lexer = new Parser.MFSHLexerLocal(new AntlrInputStream(fshText));
             lexer.DebugFlag = DebugFlag;
             lexer.RemoveErrorListeners();
-            lexer.AddErrorListener(new MFSHErrorListenerLexer(this, sourceName, inputLines));
+            lexer.AddErrorListener(new MFSHErrorListenerLexer(this,
+                "MFsh Lexer",
+                sourceName, 
+                inputLines));
 
             Parser.MFSHParserLocal parser = new Parser.MFSHParserLocal(new CommonTokenStream(lexer));
             parser.DebugFlag = DebugFlag;
             parser.Trace = false;
             parser.RemoveErrorListeners();
-            parser.AddErrorListener(new MFSHErrorListenerParser(this, sourceName, inputLines));
+            parser.AddErrorListener(new MFSHErrorListenerParser(this,
+                "MFsh Parser",
+                sourceName, 
+                inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
             Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this, sourceName);

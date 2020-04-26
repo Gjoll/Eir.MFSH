@@ -105,12 +105,7 @@ namespace MFSH.Parser
             var redirectContext = context.redirect();
             if (redirectContext != null)
             {
-                String rPath = redirectContext.singleString().GetText();
-                rPath = rPath
-                        .Substring(1, rPath.Length - 2)
-                        .Replace("\\\"", "\"")
-                        .Replace(@"\\", @"\")
-                    ;
+                String rPath = (String) (this.Visit(redirectContext.singleString()));
                 rPath = this.ReplaceTextWithVariables(rPath);
 
                 // Create new file data if one of this relative path name does
@@ -138,6 +133,7 @@ namespace MFSH.Parser
             foreach (var mStringContext in context.anyString())
             {
                 String s = (String)this.VisitChildren(mStringContext);
+                s = ReplaceTextWithVariables(s);
                 parameters.Add(s);
             }
 
@@ -164,7 +160,7 @@ namespace MFSH.Parser
                 // Replace occurrences of macro parameter.
                 // Replacement is done on word boundaries ('\b');
                 String word = info.Parameters[i];
-                String byWhat = ReplaceTextWithVariables(parameters[i]);
+                String byWhat = parameters[i];
                 text = ReplaceText(text, word, byWhat);
             }
             if (info.RedirectData != null)

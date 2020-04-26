@@ -1,11 +1,11 @@
-PROFILE=1
-COLON=2
-EOL=3
+COLON=1
+EOL=2
+TICKTEXT=3
 TEXT=4
 LB=5
 WS=6
 CR=7
-':'=2
-'\n'=3
+':'=1
+'\n'=2
 '#'=5
 '\r'=7

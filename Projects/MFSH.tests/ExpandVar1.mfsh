@@ -1,0 +1,14 @@
+#macro GraphNode(GraphName)
+  `{
+  `  "graphNode" : {
+  `  "graphName" : "GraphName",
+  `  "nodeName" : "NodeName",
+  `  "displayName" : "DisplayName",
+  `  "cssClass" : "CssClass"
+  `  }
+  `},
+#end
+
+Profile: Alpha
+#apply GraphNode("%CurrentClass%")
+

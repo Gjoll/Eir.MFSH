@@ -1,15 +1,18 @@
 parser grammar MFSHPreParser;
-
 options { tokenVocab=MFSHPreLexer; }
 
-text: (fsh | mfsh | profile)* EOF;
+text: (data | tickData | fshCmd | mfsh )* EOF;
 
-profile: PROFILE WS? (TEXT (WS | TEXT | LB)*) EOL ;
-fsh:
-	WS? ( (TEXT | COLON) (WS | TEXT | LB | COLON)*)? EOL
-  |	WS? EOL
+fshCmd:
+	WS? TEXT WS? COLON (WS | TEXT | LB | COLON)+ EOL
 	;
 
-mfsh: WS? LB (WS | TEXT | LB)* EOL
-    ;
+data:
+    WS? EOL
+ |  WS? TEXT EOL
+ |	WS? TEXT WS? ( TEXT | LB) (WS | TEXT | LB | COLON)* EOL
+	;
+
+tickData: WS?  TICKTEXT EOL;
+mfsh: WS? LB (WS | TEXT | LB)* EOL;
 

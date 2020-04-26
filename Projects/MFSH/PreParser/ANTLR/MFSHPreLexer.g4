@@ -1,10 +1,10 @@
 lexer grammar MFSHPreLexer;
 
-PROFILE: 'Profile' WS? COLON;
-
 COLON: ':' ;
 EOL: '\n' ;
+TICKTEXT: '`' ~[\n]* ;
 TEXT: ~[ \t#\n:]+ ;
+
 LB: '#' ;
 WS: [ \t]+ ;
 

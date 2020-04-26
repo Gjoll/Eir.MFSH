@@ -14,14 +14,17 @@ namespace MFSH
 {
     class ErrorListener
     {
+        String parserName;
         String sourceName;
         private MFsh mFsh;
         private String[] inputLines;
 
         public ErrorListener(MFsh mFsh,
+            String parserName,
             String sourceName,
             String[] inputLines)
         {
+            this.parserName = parserName;
             this.sourceName = sourceName;
             this.mFsh = mFsh;
             this.inputLines = inputLines;
@@ -57,7 +60,7 @@ namespace MFSH
                 StringBuilder sb = new StringBuilder();
                 // Note: We add a line feed at the start of input for grammatical reasons,
                 // so real line number is off by 1.
-                sb.AppendLine($"Error: Error in parser at line {line}, column {charPositionInLine}");
+                sb.AppendLine($"Error: Error in {this.parserName} at line {line}, column {charPositionInLine}");
                 if (msgLine != null)
                     sb.AppendLine(msgLine);
                 sb.AppendLine(msg);
@@ -71,8 +74,9 @@ namespace MFSH
     class MFSHErrorListenerLexer : ErrorListener, IAntlrErrorListener<Int32>
     {
         public MFSHErrorListenerLexer(MFsh mFsh,
+            String parserName,
             String sourceName,
-            String[] inputLines) : base(mFsh, sourceName, inputLines)
+            String[] inputLines) : base(mFsh, parserName, sourceName, inputLines)
         {
         }
 
@@ -92,8 +96,9 @@ namespace MFSH
     class MFSHErrorListenerParser : ErrorListener, IAntlrErrorListener<IToken>
     {
         public MFSHErrorListenerParser(MFsh mFsh,
+            String parserName,
             String sourceName,
-            String[] inputLines) : base(mFsh, sourceName, inputLines)
+            String[] inputLines) : base(mFsh, parserName, sourceName, inputLines)
         {
         }
 

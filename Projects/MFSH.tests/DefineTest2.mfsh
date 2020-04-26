@@ -1,13 +1,13 @@
 #macro MacroAlpha()
 #end
-#macro $MacroBeta$($p1$)
+#macro %MacroBeta%(%p1%)
 #apply MacroAlpha()
-$p1$
+%p1%
 #end
-#macro $MacroDelta$(%p1%,$p2$,p3)
+#macro %MacroDelta%(%p1%,%p2%,p3)
 Line 2
-#apply $MacroBeta$("Line 3")
+#apply %MacroBeta%("Line 3")
 #end
 
 Line 1
-#apply $MacroDelta$("", "", "")
+#apply %MacroDelta%("", "", "")
