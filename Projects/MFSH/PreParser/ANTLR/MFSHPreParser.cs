@@ -279,13 +279,13 @@ public partial class MFSHPreParser : Parser {
 		public ITerminalNode TEXT(int i) {
 			return GetToken(MFSHPreParser.TEXT, i);
 		}
-		public ITerminalNode[] LB() { return GetTokens(MFSHPreParser.LB); }
-		public ITerminalNode LB(int i) {
-			return GetToken(MFSHPreParser.LB, i);
-		}
 		public ITerminalNode[] COLON() { return GetTokens(MFSHPreParser.COLON); }
 		public ITerminalNode COLON(int i) {
 			return GetToken(MFSHPreParser.COLON, i);
+		}
+		public ITerminalNode[] LB() { return GetTokens(MFSHPreParser.LB); }
+		public ITerminalNode LB(int i) {
+			return GetToken(MFSHPreParser.LB, i);
 		}
 		public DataContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -354,16 +354,16 @@ public partial class MFSHPreParser : Parser {
 				State = 48; Match(TEXT);
 				State = 50;
 				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				if (_la==WS) {
+				switch ( Interpreter.AdaptivePredict(TokenStream,8,Context) ) {
+				case 1:
 					{
 					State = 49; Match(WS);
 					}
+					break;
 				}
-
 				State = 52;
 				_la = TokenStream.LA(1);
-				if ( !(_la==TEXT || _la==LB) ) {
+				if ( _la <= 0 || (_la==COLON) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -554,7 +554,7 @@ public partial class MFSHPreParser : Parser {
 		'\x3', '\x6', '\x3', '\x6', '\a', '\x6', 'L', '\n', '\x6', '\f', '\x6', 
 		'\xE', '\x6', 'O', '\v', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', 
 		'\x2', '\x2', '\a', '\x2', '\x4', '\x6', '\b', '\n', '\x2', '\x5', '\x4', 
-		'\x2', '\x3', '\x3', '\x6', '\b', '\x3', '\x2', '\x6', '\a', '\x3', '\x2', 
+		'\x2', '\x3', '\x3', '\x6', '\b', '\x3', '\x2', '\x3', '\x3', '\x3', '\x2', 
 		'\x6', '\b', '\x2', '^', '\x2', '\x12', '\x3', '\x2', '\x2', '\x2', '\x4', 
 		'\x18', '\x3', '\x2', '\x2', '\x2', '\x6', '>', '\x3', '\x2', '\x2', '\x2', 
 		'\b', '\x41', '\x3', '\x2', '\x2', '\x2', '\n', 'G', '\x3', '\x2', '\x2', 
@@ -588,7 +588,7 @@ public partial class MFSHPreParser : Parser {
 		'\x2', '\x2', '\x2', '\x32', '\x34', '\a', '\x6', '\x2', '\x2', '\x33', 
 		'\x35', '\a', '\b', '\x2', '\x2', '\x34', '\x33', '\x3', '\x2', '\x2', 
 		'\x2', '\x34', '\x35', '\x3', '\x2', '\x2', '\x2', '\x35', '\x36', '\x3', 
-		'\x2', '\x2', '\x2', '\x36', ':', '\t', '\x3', '\x2', '\x2', '\x37', '\x39', 
+		'\x2', '\x2', '\x2', '\x36', ':', '\n', '\x3', '\x2', '\x2', '\x37', '\x39', 
 		'\t', '\x2', '\x2', '\x2', '\x38', '\x37', '\x3', '\x2', '\x2', '\x2', 
 		'\x39', '<', '\x3', '\x2', '\x2', '\x2', ':', '\x38', '\x3', '\x2', '\x2', 
 		'\x2', ':', ';', '\x3', '\x2', '\x2', '\x2', ';', '=', '\x3', '\x2', '\x2', 

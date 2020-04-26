@@ -10,7 +10,7 @@ fshCmd:
 data:
     WS? EOL
  |  WS? TEXT EOL
- |	WS? TEXT WS? ( TEXT | LB) (WS | TEXT | LB | COLON)* EOL
+ |	WS? TEXT WS? ~COLON (WS | TEXT | LB | COLON)* EOL
 	;
 
 tickData: WS?  TICKTEXT EOL;
