@@ -30,8 +30,12 @@ namespace MFSH
                     throw new Exception($"Missing {errorMsg} parameter");
 
                 String arg = args[i++].Trim();
-                if ((arg[0] == '"') && (arg[arg.Length - 1] == '"'))
-                    arg = arg.Substring(1, arg.Length - 2);
+                if (arg.Length > 0)
+                {
+                    if ((arg[0] == '"') && (arg[arg.Length - 1] == '"'))
+                        arg = arg.Substring(1, arg.Length - 2);
+                }
+
                 return arg;
             }
 
@@ -57,6 +61,8 @@ namespace MFSH
                         {
                             String name = GetArg("-d");
                             String value = GetArg("-d");
+                            name = name.Replace("%%", "%");
+                            value = value.Replace("%%", "%");
                             this.mfsh.Variables.Add(name, value);
                         }
                         break;
@@ -71,7 +77,7 @@ namespace MFSH
 
                     case "-p":
                         {
-                            String pathArg = GetArg("-d");
+                            String pathArg = GetArg("-p");
                             this.mfsh.Paths.Add(pathArg);
                             if (String.IsNullOrEmpty(this.mfsh.BaseInputDir) == true)
                                 this.mfsh.BaseInputDir = DirPart(pathArg);

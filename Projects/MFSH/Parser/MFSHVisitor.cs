@@ -164,7 +164,7 @@ namespace MFSH.Parser
                 // Replace occurrences of macro parameter.
                 // Replacement is done on word boundaries ('\b');
                 String word = info.Parameters[i];
-                String byWhat = parameters[i];
+                String byWhat = ReplaceTextWithVariables(parameters[i]);
                 text = ReplaceText(text, word, byWhat);
             }
             if (info.RedirectData != null)
@@ -313,7 +313,7 @@ namespace MFSH.Parser
 
         String ReplaceText(String text, String word, String byWhat)
         {
-            if ((word[0] == '%') || (word[0] == '$'))
+            if (word[0] == '%')
                 text = text.Replace(word, byWhat);
             else
                 text = ReplaceWholeWord(text, word, byWhat);
@@ -325,8 +325,6 @@ namespace MFSH.Parser
             bool IsBreakChar(char c)
             {
                 if (Char.IsLetterOrDigit(c))
-                    return false;
-                if (c == '$')
                     return false;
                 if (c == '%')
                     return false;

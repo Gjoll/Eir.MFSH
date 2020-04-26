@@ -1,11 +1,13 @@
 ﻿using Eir.DevTools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
 namespace MFSH
 {
+    [DebuggerDisplay("{RelativePath}")]
     public class FileData
     {
         protected StringBuilder text = new StringBuilder();
