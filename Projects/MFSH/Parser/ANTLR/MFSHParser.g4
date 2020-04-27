@@ -4,7 +4,7 @@ options { tokenVocab=MFSHLexer; }
 
 document    :   command* EOF;
 command: fshLine | apply | end | include |  macro | profile | use;
-
+P
 fshLine: FSHLINE anyString;
 
 apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;

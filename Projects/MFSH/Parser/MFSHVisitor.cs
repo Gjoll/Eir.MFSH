@@ -24,6 +24,10 @@ namespace MFSH.Parser
         public string SourceName;
         MFsh mfsh;
 
+        protected void AppendText(String text)
+        {
+            this.Current.AppendText(text);
+        }
         void PushState(FileData s)
         {
             this.state.Push(s);
@@ -84,7 +88,7 @@ namespace MFSH.Parser
                 return null;
             if (text[^1] != '\n')
                 text += '\n';
-            this.Current.AppendText(text);
+            this.AppendText(text);
             return null;
         }
 
@@ -166,7 +170,7 @@ namespace MFSH.Parser
             if (info.RedirectData != null)
                 info.RedirectData.AppendText(text);
             else
-                this.Current.AppendText(text);
+                this.AppendText(text);
             return null;
         }
 
@@ -198,8 +202,8 @@ namespace MFSH.Parser
             TraceMsg(context, fcn);
 
             String line = (String)this.VisitChildren(context.anyString());
-            this.Current.AppendText(line);
-            this.Current.AppendText("\n");
+            this.AppendText(line);
+            this.AppendText("\n");
             return null;
         }
 

@@ -270,7 +270,10 @@ public partial class MFSHPreParser : Parser {
 	}
 
 	public partial class DataContext : ParserRuleContext {
-		public ITerminalNode EOL() { return GetToken(MFSHPreParser.EOL, 0); }
+		public ITerminalNode[] EOL() { return GetTokens(MFSHPreParser.EOL); }
+		public ITerminalNode EOL(int i) {
+			return GetToken(MFSHPreParser.EOL, i);
+		}
 		public ITerminalNode[] WS() { return GetTokens(MFSHPreParser.WS); }
 		public ITerminalNode WS(int i) {
 			return GetToken(MFSHPreParser.WS, i);
@@ -363,7 +366,7 @@ public partial class MFSHPreParser : Parser {
 				}
 				State = 52;
 				_la = TokenStream.LA(1);
-				if ( _la <= 0 || (_la==COLON) ) {
+				if ( _la <= 0 || (_la==COLON || _la==EOL) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
@@ -554,7 +557,7 @@ public partial class MFSHPreParser : Parser {
 		'\x3', '\x6', '\x3', '\x6', '\a', '\x6', 'L', '\n', '\x6', '\f', '\x6', 
 		'\xE', '\x6', 'O', '\v', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', 
 		'\x2', '\x2', '\a', '\x2', '\x4', '\x6', '\b', '\n', '\x2', '\x5', '\x4', 
-		'\x2', '\x3', '\x3', '\x6', '\b', '\x3', '\x2', '\x3', '\x3', '\x3', '\x2', 
+		'\x2', '\x3', '\x3', '\x6', '\b', '\x3', '\x2', '\x3', '\x4', '\x3', '\x2', 
 		'\x6', '\b', '\x2', '^', '\x2', '\x12', '\x3', '\x2', '\x2', '\x2', '\x4', 
 		'\x18', '\x3', '\x2', '\x2', '\x2', '\x6', '>', '\x3', '\x2', '\x2', '\x2', 
 		'\b', '\x41', '\x3', '\x2', '\x2', '\x2', '\n', 'G', '\x3', '\x2', '\x2', 
