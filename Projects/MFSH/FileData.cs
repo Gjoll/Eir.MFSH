@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MFSH
 {
-    [DebuggerDisplay("{RelativePath}")]
+    [DebuggerDisplay("{ToString()}")]
     public class FileData
     {
         protected StringBuilder text = new StringBuilder();
@@ -15,6 +15,13 @@ namespace MFSH
         public virtual void AppendText(String text) => this.text.Append(text);
         public virtual String GetText() => this.text.ToString();
         public String RelativePath { get; set; }
+
+        public override string ToString()
+        {
+            if (this.RelativePath != null)
+                return this.RelativePath;
+            return "No Relative Path";
+        }
     }
 
     public class DefineInfo : FileData

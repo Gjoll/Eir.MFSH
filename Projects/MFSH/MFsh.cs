@@ -46,8 +46,7 @@ namespace MFSH
 
         private const String FSHSuffix = ".fsh";
         private const String MFSHSuffix = ".mfsh";
-        public Dictionary<String, String> Variables =
-            new Dictionary<String, string>();
+        public VariablesStack Variables = new VariablesStack();
         public Dictionary<String, FileData> FileItems = 
             new Dictionary<String, FileData>();
 
@@ -183,13 +182,9 @@ namespace MFSH
             String baseName = Path.GetFileName(baseRPath);
             String baseDir = Path.GetDirectoryName(baseRPath);
 
-            this.Variables.Remove("%BasePath%");
-            this.Variables.Remove("%BaseDir%");
-            this.Variables.Remove("%BaseName%");
-
-            this.Variables.Add("%BasePath%", baseRPath);
-            this.Variables.Add("%BaseDir%", baseDir);
-            this.Variables.Add("%BaseName%", baseName);
+            this.Variables.Current.Set("%BasePath%", baseRPath);
+            this.Variables.Current.Set("%BaseDir%", baseDir);
+            this.Variables.Current.Set("%BaseName%", baseName);
 
             f.AppendText(this.Parse(fshText,
                 baseName,

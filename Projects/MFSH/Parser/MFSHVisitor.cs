@@ -20,6 +20,8 @@ namespace MFSH.Parser
         public bool DebugFlag { get; set; } = false;
 
         public Stack<FileData> state = new Stack<FileData>();
+        public Stack<VariablesBlock> Variables = new Stack<VariablesBlock>();
+
         public FileData Current => this.state.Peek();
         public string SourceName;
         MFsh mfsh;
@@ -110,7 +112,7 @@ namespace MFSH.Parser
             if (redirectContext != null)
             {
                 String rPath = (String) (this.Visit(redirectContext.singleString()));
-                rPath = this.ReplaceTextWithVariables(rPath);
+                rPath = this.mfsh.Variables.ReplaceText(rPath);
 
                 // Create new file data if one of this relative path name does
                 // not already exist.
@@ -127,51 +129,68 @@ namespace MFSH.Parser
             return null;
         }
 
+        bool LoadApplyParams(VariablesBlock variablesBlock,
+            IEnumerable<MFSHParser.AnyStringContext> varsContext,
+            DefineInfo info,
+            IToken start)
+        {
+            const String fcn = "LoadApplyParams";
+
+            List<String> parameters = new List<string>();
+            foreach (MFSHParser.AnyStringContext varContext in varsContext)
+            {
+                String s = (String)this.VisitChildren(varContext);
+                parameters.Add(s);
+            }
+
+            if (info.Parameters.Count != parameters.Count)
+            {
+                this.Error(fcn,
+                    start,
+                    $"Macro {info.Name} requires {info.Parameters.Count} parameters, but only {parameters.Count} supplied.");
+                return false;
+            }
+
+            for (Int32 i = 0; i < info.Parameters.Count; i++)
+            {
+                String key= info.Parameters[i];
+                String value = parameters[i];
+                variablesBlock.Set(key, value);
+            }
+
+            return true;
+        }
+
         public override object VisitApply(MFSHParser.ApplyContext context)
         {
             const String fcn = "VisitApply";
             TraceMsg(context, fcn);
 
             String macroName = context.NAME().GetText();
-            List<String> parameters = new List<string>();
-            foreach (var mStringContext in context.anyString())
+            //Debug.Assert(macroName != "GraphNode");
+            using (VariablesBlock b = new VariablesBlock($"macro {macroName}", this.mfsh.Variables))
             {
-                String s = (String)this.VisitChildren(mStringContext);
-                s = ReplaceTextWithVariables(s);
-                parameters.Add(s);
-            }
+                if (this.mfsh.Defines.TryGetValue(macroName, out DefineInfo info) == false)
+                {
+                    this.Error(fcn,
+                        context.Start,
+                        $"Macro {macroName} not found.");
+                    return null;
+                }
 
-            if (this.mfsh.Defines.TryGetValue(macroName, out DefineInfo info) == false)
-            {
-                this.Error(fcn,
-                    context.Start,
-                    $"Macro {macroName} not found.");
+                if (LoadApplyParams(b, context.anyString(), info, context.Start) == false)
+                    return null;
+
+
+                string text = info.GetText();
+                text = this.mfsh.Variables.ReplaceText(text);
+
+                if (info.RedirectData != null)
+                    info.RedirectData.AppendText(text);
+                else
+                    this.AppendText(text);
                 return null;
             }
-
-            if (info.Parameters.Count != parameters.Count)
-            {
-                this.Error(fcn,
-                    context.Start,
-                    $"Macro {macroName} requires {info.Parameters.Count} parameters, but only {parameters.Count} supplied.");
-                return null;
-            }
-
-            string text = info.GetText();
-            text = ReplaceTextWithVariables(text);
-            for (Int32 i = 0; i < info.Parameters.Count; i++)
-            {
-                // Replace occurrences of macro parameter.
-                // Replacement is done on word boundaries ('\b');
-                String word = info.Parameters[i];
-                String byWhat = parameters[i];
-                text = ReplaceText(text, word, byWhat);
-            }
-            if (info.RedirectData != null)
-                info.RedirectData.AppendText(text);
-            else
-                this.AppendText(text);
-            return null;
         }
 
 
@@ -252,8 +271,8 @@ namespace MFSH.Parser
         public override object VisitProfile(MFSHParser.ProfileContext context)
         {
             String currentClass = context.NAME().GetText();
-            this.mfsh.Variables.Remove("%CurrentClass%");
-            this.mfsh.Variables.Add("%CurrentClass%", currentClass);
+            this.mfsh.Variables.Current.Remove("%CurrentClass%");
+            this.mfsh.Variables.Current.Add("%CurrentClass%", currentClass);
             return null;
         }
 
@@ -300,76 +319,6 @@ namespace MFSH.Parser
             return includeFileText;
         }
 
-        String ReplaceTextWithVariables(String text)
-        {
-            foreach (String key in this.mfsh.Variables.Keys)
-            {
-                String value = this.mfsh.Variables[key];
-                text = ReplaceText(text, key, value);
-            }
-
-            return text;
-        }
-
-        String ReplaceText(String text, String word, String byWhat)
-        {
-            if (word[0] == '%')
-                text = text.Replace(word, byWhat);
-            else
-                text = ReplaceWholeWord(text, word, byWhat);
-            return text;
-        }
-
-        public String ReplaceWholeWord(String s, String wordToReplace, String bywhat)
-        {
-            bool IsBreakChar(char c)
-            {
-                if (Char.IsLetterOrDigit(c))
-                    return false;
-                if (c == '%')
-                    return false;
-                return true;
-            }
-            StringBuilder sb = new StringBuilder();
-            Int32 i = 0;
-            Int32 length = s.Length;
-            void SkipLeading()
-            {
-                while (i < length)
-                {
-                    Char c = s[i];
-                    if (IsBreakChar(c) == false)
-                        return;
-                    sb.Append(c);
-                    i += 1;
-                }
-            }
-
-            String GetWholeWord()
-            {
-                StringBuilder w = new StringBuilder();
-                while (i < length)
-                {
-                    Char c = s[i];
-                    if (IsBreakChar(c) == true)
-                        break;
-                    w.Append(c);
-                    i += 1;
-                }
-                return w.ToString();
-            }
-
-            while (i < length)
-            {
-                SkipLeading();
-                String wholeWord = GetWholeWord();
-                if (String.Compare(wholeWord, wordToReplace, StringComparison.Ordinal) == 0)
-                    sb.Append(bywhat);
-                else
-                    sb.Append(wholeWord);
-            }
-            return sb.ToString();
-        }
 
         void Error(String fcn,
             IToken start,
