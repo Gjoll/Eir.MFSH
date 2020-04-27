@@ -20,7 +20,6 @@ namespace MFSH.Parser
         public bool DebugFlag { get; set; } = false;
 
         public Stack<FileData> state = new Stack<FileData>();
-        public Stack<VariablesBlock> Variables = new Stack<VariablesBlock>();
 
         public FileData Current => this.state.Peek();
         public string SourceName;
@@ -52,13 +51,13 @@ namespace MFSH.Parser
 
         void TraceMsg(ParserRuleContext context, String fcn)
         {
-            if (!DebugFlag)
-                return;
+            //if (!DebugFlag)
+            //    return;
             String text = context
                 .GetText()
                 .Replace("\r", "")
                 .Replace("\n", "");
-            Trace.WriteLine($"{fcn}. [{this.state.Count}] {this.SourceName}, #{context.Start.Line} '{text}'");
+            Trace.WriteLine($"{fcn}. {this.SourceName}, #{context.Start.Line} '{text}'");
         }
 
         public override object VisitDocument(MFSHParser.DocumentContext context)
@@ -110,22 +109,7 @@ namespace MFSH.Parser
 
             var redirectContext = context.redirect();
             if (redirectContext != null)
-            {
-                String rPath = (String) (this.Visit(redirectContext.singleString()));
-                rPath = this.mfsh.Variables.ReplaceText(rPath);
-
-                // Create new file data if one of this relative path name does
-                // not already exist.
-                if (this.mfsh.FileItems.TryGetValue(rPath, out FileData fd) == false)
-                {
-                    fd = new JsonArrayData
-                    {
-                        RelativePath =  rPath
-                    };
-                    this.mfsh.FileItems.Add(rPath, fd);
-                }
-                s.RedirectData = fd;
-            }
+                s.RedirectDataPath = (String)(this.Visit(redirectContext.singleString()));
             return null;
         }
 
@@ -153,7 +137,7 @@ namespace MFSH.Parser
 
             for (Int32 i = 0; i < info.Parameters.Count; i++)
             {
-                String key= info.Parameters[i];
+                String key = info.Parameters[i];
                 String value = parameters[i];
                 variablesBlock.Set(key, value);
             }
@@ -167,9 +151,10 @@ namespace MFSH.Parser
             TraceMsg(context, fcn);
 
             String macroName = context.NAME().GetText();
-            //Debug.Assert(macroName != "GraphNode");
             using (VariablesBlock b = new VariablesBlock($"macro {macroName}", this.mfsh.Variables))
             {
+                String tracePath = this.mfsh.Variables.StackTrace();
+                Debug.Assert(macroName != "GraphNode");
                 if (this.mfsh.Defines.TryGetValue(macroName, out DefineInfo info) == false)
                 {
                     this.Error(fcn,
@@ -185,10 +170,28 @@ namespace MFSH.Parser
                 string text = info.GetText();
                 text = this.mfsh.Variables.ReplaceText(text);
 
-                if (info.RedirectData != null)
-                    info.RedirectData.AppendText(text);
-                else
-                    this.AppendText(text);
+                /*
+                 * Output of macro either goes to current output, or to a redirected target.
+                 * If redirected, the redirection path is evaluated now, so any variables
+                 * can be expanded.
+                 */
+                FileData macroOutput = this.Current;
+                if (String.IsNullOrEmpty(info.RedirectDataPath) == false)
+                {
+                    String rPath = this.mfsh.Variables.ReplaceText(info.RedirectDataPath);
+                    
+                    // Create new file data if a file data with this relative path
+                    // name does not already exist.
+                    if (this.mfsh.FileItems.TryGetValue(rPath, out macroOutput) == false)
+                    {
+                        macroOutput = new JsonArrayData
+                        {
+                            RelativePath = rPath
+                        };
+                        this.mfsh.FileItems.Add(rPath, macroOutput);
+                    }
+                }
+                macroOutput.AppendText(text);
                 return null;
             }
         }
@@ -237,6 +240,7 @@ namespace MFSH.Parser
             s = s
                 .Substring(1, s.Length - 2)
                 .Replace("\\\"", "\"")
+                .Replace("\\\\", "\\")
                 ;
             return s;
         }

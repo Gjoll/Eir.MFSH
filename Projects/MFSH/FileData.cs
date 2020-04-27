@@ -26,7 +26,7 @@ namespace MFSH
 
     public class DefineInfo : FileData
     {
-        public FileData RedirectData { get; set; }
+        public String RedirectDataPath { get; set; }
         public String Name;
         public List<String> Parameters = new List<string>();
     }
