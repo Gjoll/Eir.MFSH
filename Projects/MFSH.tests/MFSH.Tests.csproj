@@ -37,6 +37,9 @@
     <None Update="ExpandVar1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Parse3.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ParseProfile1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

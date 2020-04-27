@@ -99,6 +99,12 @@ namespace Eir.FSHer.tests
         }
 
         [Fact]
+        public void Parse3()
+        {
+            ParseTest("Parse3.mfsh", null);
+        }
+
+        [Fact]
         public void ExpandVar1()
         {
             ParseTest("ExpandVar1.mfsh", "ExpandVar1.results");
