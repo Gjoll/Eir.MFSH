@@ -281,7 +281,7 @@ namespace MFSH.Parser
         public override object VisitProfile(MFSHParser.ProfileContext context)
         {
             String currentClass = context.NAME().GetText();
-            this.Current.FrameVariables.Set("%CurrentClass%", currentClass);
+            this.Current.FrameVariables.Set("%Profile%", currentClass);
             return null;
         }
 

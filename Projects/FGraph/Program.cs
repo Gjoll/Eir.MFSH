@@ -60,7 +60,7 @@ namespace FGraph
 
         bool Process()
         {
-            //this.fGrapher.Process();
+            this.fGrapher.Process();
             //this.fGrapher.SaveAll();
             return this.fGrapher.HasErrors == false;
         }

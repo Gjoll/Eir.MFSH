@@ -10,5 +10,5 @@
 #end
 
 Profile: Alpha
-#apply GraphNode("%CurrentClass%")
+#apply GraphNode("%Profile%")
 

@@ -19,6 +19,9 @@ namespace FGraph
         }
         private string outputDir;
 
+        Dictionary<String, GraphNode> graphNodes = new Dictionary<string, GraphNode>();
+        List<GraphLinkByName> graphLinkByNames = new List<GraphLinkByName>();
+
         public bool DebugFlag { get; set; } = false;
 
         void LoadDir(String path)
@@ -57,9 +60,15 @@ namespace FGraph
             switch (type)
             {
                 case "graphNode":
+                    GraphNode node = new GraphNode(value);
+                    this.graphNodes.Add(node.NodeName, node);
                     break;
+
                 case "graphLinkByName":
+                    GraphLinkByName link = new GraphLinkByName(value);
+                    this.graphLinkByNames.Add(link);
                     break;
+
                 default:
                     this.ConversionError("FGrapher",
                         "Load",
@@ -81,6 +90,11 @@ namespace FGraph
                     "Load",
                     $"{path} not found");
             }
+        }
+
+        public void Process()
+        {
+
         }
     }
 }
