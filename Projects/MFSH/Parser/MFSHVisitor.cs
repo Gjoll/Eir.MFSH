@@ -46,7 +46,9 @@ namespace MFSH.Parser
         {
             this.SourceName = sourceName;
             this.mfsh = mfsh;
-            this.PushState(new StackFrame());
+            StackFrame f = new StackFrame();
+            f.Data.RelativePath = "%BasePath%";
+            this.PushState(f);
         }
 
         void TraceMsg(ParserRuleContext context, String fcn)
