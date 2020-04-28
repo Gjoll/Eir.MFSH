@@ -69,75 +69,41 @@ namespace Eir.FSHer.tests
         }
 
         [Fact]
-        public void PreParse1()
-        {
-            PreParseTest("PreParse1.mfsh", "PreParse1.results");
-        }
+        public void PreParse1() => PreParseTest("PreParse1.mfsh", "PreParse1.results");
 
         [Fact]
-        public void Define1()
-        {
-            ParseTest("DefineTest1.mfsh", "DefineTest1.results");
-        }
+        public void Define1() => ParseTest("DefineTest1.mfsh", "DefineTest1.results");
 
         [Fact]
-        public void Define2()
-        {
-            ParseTest("DefineTest2.mfsh", "DefineTest2.results");
-        }
+        public void Define2() => ParseTest("DefineTest2.mfsh", "DefineTest2.results");
 
         [Fact]
-        public void Parse1()
-        {
-            ParseTest("Parse1.mfsh", null);
-        }
+        public void Parse1() => ParseTest("Parse1.mfsh", null);
 
         [Fact]
-        public void Parse2()
-        {
-            ParseTest("Parse2.mfsh", null);
-        }
+        public void Parse2() => ParseTest("Parse2.mfsh", null);
 
         [Fact]
-        public void Parse3()
-        {
-            ParseTest("Parse3.mfsh", null);
-        }
+        public void Parse3() => ParseTest("Parse3.mfsh", null);
+        [Fact]
+        public void Parse4() => ParseTest("Parse4.mfsh", null);
 
         [Fact]
-        public void ExpandVar1()
-        {
-            ParseTest("ExpandVar1.mfsh", "ExpandVar1.results");
-        }
+        public void ExpandVar1() => ParseTest("ExpandVar1.mfsh", "ExpandVar1.results");
 
         [Fact]
-        public void ExpandVar2()
-        {
-            ParseTest("ExpandVar2.mfsh", "ExpandVar2.results");
-        }
+        public void ExpandVar2() =>  ParseTest("ExpandVar2.mfsh", "ExpandVar2.results");
 
         [Fact]
-        public void ParseRedirect()
-        {
-            ParseTest("ParseRedirect1.mfsh", "ParseRedirect1.results");
-        }
+        public void ParseRedirect() => ParseTest("ParseRedirect1.mfsh", "ParseRedirect1.results");
 
         [Fact]
-        public void ParseMultiLine1()
-        {
-            ParseTest("ParseMultiLine1.mfsh", "ParseMultiLine1.results");
-        }
+        public void ParseMultiLine1() => ParseTest("ParseMultiLine1.mfsh", "ParseMultiLine1.results");
 
         [Fact]
-        public void ParseMultiLine2()
-        {
-            ParseTest("ParseMultiLine2.mfsh", "ParseMultiLine2.results");
-        }
+        public void ParseMultiLine2() => ParseTest("ParseMultiLine2.mfsh", "ParseMultiLine2.results");
 
         [Fact]
-        public void Profile1()
-        {
-            ParseTest("ParseProfile1.mfsh", null);
-        }
+        public void Profile1() => ParseTest("ParseProfile1.mfsh", null);
     }
 }

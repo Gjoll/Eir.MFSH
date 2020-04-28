@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; } = false;
+        public bool DebugFlag { get; set; } = true;
         public List<String> IncludeDirs;
 
         // dir containing file being parsed. Usd for local includes.

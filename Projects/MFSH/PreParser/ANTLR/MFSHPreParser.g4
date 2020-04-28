@@ -14,5 +14,5 @@ data:
 	;
 
 tickData: WS?  TICKTEXT EOL;
-mfsh: WS? LB (WS | TEXT | LB)* EOL;
+mfsh: WS? LB (WS | TEXT | LB | COLON)* EOL;
 
