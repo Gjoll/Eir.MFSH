@@ -47,7 +47,7 @@ namespace MFSH.Parser
             this.SourceName = sourceName;
             this.mfsh = mfsh;
             StackFrame f = new StackFrame();
-            f.Data.RelativePath = "%BasePath%";
+            f.Data.RelativePath = "%SavePath%";
             this.PushState(f);
         }
 

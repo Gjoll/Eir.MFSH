@@ -39,7 +39,6 @@ namespace MFSH
                 return arg;
             }
 
-            String filter = ".mfsh";
             while (i < args.Length)
             {
                 String DirPart(String path)
@@ -65,10 +64,6 @@ namespace MFSH
                             value = value.Replace("%%", "%");
                             this.mfsh.GlobalVars.Set(name, value);
                         }
-                        break;
-
-                    case "-t":
-                        filter = GetArg("-t");
                         break;
 
                     case "-b":

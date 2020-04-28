@@ -44,8 +44,8 @@ namespace MFSH
         // Keep track of include files so we dont end up in recursive loop.
         List<String> sources = new List<string>();
 
-        private const String FSHSuffix = ".fsh";
-        private const String MFSHSuffix = ".mfsh";
+        public const String FSHSuffix = ".fsh";
+        public const String MFSHSuffix = ".mfsh";
         public VariablesBlock GlobalVars = new VariablesBlock();
         public Dictionary<String, FileData> FileItems =
             new Dictionary<String, FileData>();
@@ -186,6 +186,7 @@ namespace MFSH
             this.GlobalVars.Set("%BasePath%", baseRPath);
             this.GlobalVars.Set("%BaseDir%", baseDir);
             this.GlobalVars.Set("%BaseName%", baseName);
+            this.GlobalVars.Set("%SavePath%", $"{baseRPath}{MFsh.FSHSuffix}");
 
             StackFrame frame = this.Parse(fshText,
                 baseName,
