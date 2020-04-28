@@ -1,0 +1,16 @@
+#macro Alpha(AlphaName)
+  `{
+  `  "graphNode" : {
+  `  "graphName" : "AlphaName",
+  `  }
+  `},
+#end
+
+#macro Beta(BetaName)
+#apply Alpha("BetaName")
+#end
+
+Profile: Alpha
+#apply Beta("%CurrentClass%")
+#apply Beta("One")
+#apply Beta("Two")

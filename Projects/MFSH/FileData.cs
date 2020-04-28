@@ -12,10 +12,22 @@ namespace MFSH
     {
         protected StringBuilder text = new StringBuilder();
 
+        public FileData()
+        {
+        }
+
         public virtual void AppendText(String text) => this.text.Append(text);
-        public virtual String GetText() => this.text.ToString();
+        public virtual String Text() => this.text.ToString();
+        public virtual String SaveText() => this.text.ToString();
         public String RelativePath { get; set; }
 
+        public void ProcessVariables(VariablesBlock v)
+        {
+            this.RelativePath = v.ReplaceText(this.RelativePath);
+            String text = v.ReplaceText(this.text.ToString());
+            this.text.Clear();
+            this.text.Append(text);
+        }
         public override string ToString()
         {
             if (this.RelativePath != null)
@@ -24,16 +36,9 @@ namespace MFSH
         }
     }
 
-    public class DefineInfo : FileData
-    {
-        public String RedirectDataPath { get; set; }
-        public String Name;
-        public List<String> Parameters = new List<string>();
-    }
-
     public class JsonArrayData: FileData
     {
-        public override String GetText()
+        public override String SaveText()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("[\n");

@@ -63,7 +63,7 @@ namespace MFSH
                             String value = GetArg("-d");
                             name = name.Replace("%%", "%");
                             value = value.Replace("%%", "%");
-                            this.mfsh.Variables.Current.Set(name, value);
+                            this.mfsh.GlobalVars.Set(name, value);
                         }
                         break;
 

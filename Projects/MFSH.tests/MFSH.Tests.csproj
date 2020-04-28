@@ -31,6 +31,12 @@
     <None Update="DefineTest2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ExpandVar2.results">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ExpandVar2.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ExpandVar1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

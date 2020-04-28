@@ -4,31 +4,14 @@ using System.Text;
 
 namespace MFSH
 {
-    public class VariablesBlock : IDisposable
+    public class VariablesBlock
     {
-        public String Name { get; }
-        VariablesStack variablesStack;
-
         Dictionary<String, String> variables =
             new Dictionary<String, string>();
 
-        public VariablesBlock(String name,
-            VariablesStack variablesStack)
+        public VariablesBlock()
         {
-            this.variablesStack = variablesStack;
-            this.variablesStack.Push(this);
-            this.Name = name;
         }
-
-        public void Dispose()
-        {
-            if (this.variablesStack != null)
-            {
-                this.variablesStack?.Pop();
-                this.variablesStack = null;
-            }
-        }
-
         public void Remove(String name) => this.variables.Remove(name);
         public void Add(String key, String value) => this.variables.Add(key, value);
 
@@ -39,6 +22,8 @@ namespace MFSH
         }
         public String ReplaceText(String text)
         {
+            if (String.IsNullOrEmpty(text))
+                return text;
             foreach (String key in this.variables.Keys)
             {
                 String value = this.variables[key];
@@ -50,6 +35,9 @@ namespace MFSH
 
         String ReplaceText(String text, String word, String byWhat)
         {
+            if (String.IsNullOrEmpty(text))
+                return text;
+
             if (word[0] == '%')
                 text = text.Replace(word, byWhat);
             else

@@ -19,24 +19,24 @@ namespace MFSH.Parser
     {
         public bool DebugFlag { get; set; } = false;
 
-        public Stack<FileData> state = new Stack<FileData>();
+        public Stack<StackFrame> state = new Stack<StackFrame>();
 
-        public FileData Current => this.state.Peek();
+        public StackFrame Current => this.state.Peek();
         public string SourceName;
         MFsh mfsh;
 
         protected void AppendText(String text)
         {
-            this.Current.AppendText(text);
+            this.Current.Data.AppendText(text);
         }
-        void PushState(FileData s)
+        void PushState(StackFrame s)
         {
             this.state.Push(s);
         }
 
-        FileData PopState()
+        StackFrame PopState()
         {
-            FileData s = this.state.Peek();
+            StackFrame s = this.state.Peek();
             this.state.Pop();
             return s;
         }
@@ -46,7 +46,7 @@ namespace MFSH.Parser
         {
             this.SourceName = sourceName;
             this.mfsh = mfsh;
-            this.PushState(new FileData());
+            this.PushState(new StackFrame());
         }
 
         void TraceMsg(ParserRuleContext context, String fcn)
@@ -97,8 +97,7 @@ namespace MFSH.Parser
         {
             const String fcn = "VisitMacro";
             TraceMsg(context, fcn);
-
-            DefineInfo s = new DefineInfo();
+            MacroDefinition s = new MacroDefinition();
             this.PushState(s);
             String[] names = context
                 .NAME()
@@ -109,13 +108,14 @@ namespace MFSH.Parser
 
             var redirectContext = context.redirect();
             if (redirectContext != null)
-                s.RedirectDataPath = (String)(this.Visit(redirectContext.singleString()));
+                s.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
+
             return null;
         }
 
         bool LoadApplyParams(VariablesBlock variablesBlock,
             IEnumerable<MFSHParser.AnyStringContext> varsContext,
-            DefineInfo info,
+            MacroDefinition info,
             IToken start)
         {
             const String fcn = "LoadApplyParams";
@@ -130,7 +130,7 @@ namespace MFSH.Parser
             if (info.Parameters.Count != parameters.Count)
             {
                 this.Error(fcn,
-                    start,
+                    start.Line.ToString(),
                     $"Macro {info.Name} requires {info.Parameters.Count} parameters, but only {parameters.Count} supplied.");
                 return false;
             }
@@ -151,49 +151,53 @@ namespace MFSH.Parser
             TraceMsg(context, fcn);
 
             String macroName = context.NAME().GetText();
-            using (VariablesBlock b = new VariablesBlock($"macro {macroName}", this.mfsh.Variables))
+            VariablesBlock parameterValues = new VariablesBlock();
+
+            //Debug.Assert(macroName != "GraphNode");
+            if (this.mfsh.Defines.TryGetValue(macroName, out MacroDefinition info) == false)
             {
-                String tracePath = this.mfsh.Variables.StackTrace();
-                Debug.Assert(macroName != "GraphNode");
-                if (this.mfsh.Defines.TryGetValue(macroName, out DefineInfo info) == false)
-                {
-                    this.Error(fcn,
-                        context.Start,
-                        $"Macro {macroName} not found.");
-                    return null;
-                }
-
-                if (LoadApplyParams(b, context.anyString(), info, context.Start) == false)
-                    return null;
-
-
-                string text = info.GetText();
-                text = this.mfsh.Variables.ReplaceText(text);
-
-                /*
-                 * Output of macro either goes to current output, or to a redirected target.
-                 * If redirected, the redirection path is evaluated now, so any variables
-                 * can be expanded.
-                 */
-                FileData macroOutput = this.Current;
-                if (String.IsNullOrEmpty(info.RedirectDataPath) == false)
-                {
-                    String rPath = this.mfsh.Variables.ReplaceText(info.RedirectDataPath);
-                    
-                    // Create new file data if a file data with this relative path
-                    // name does not already exist.
-                    if (this.mfsh.FileItems.TryGetValue(rPath, out macroOutput) == false)
-                    {
-                        macroOutput = new JsonArrayData
-                        {
-                            RelativePath = rPath
-                        };
-                        this.mfsh.FileItems.Add(rPath, macroOutput);
-                    }
-                }
-                macroOutput.AppendText(text);
+                this.Error(fcn,
+                    context.Start.Line.ToString(),
+                    $"Macro {macroName} not found.");
                 return null;
             }
+
+            if (LoadApplyParams(parameterValues, context.anyString(), info, context.Start) == false)
+                return null;
+            string text = info.Data.Text();
+            text = parameterValues.ReplaceText(text);
+            text = this.Current.FrameVariables.ReplaceText(text);
+
+            /*
+             * Output of macro either goes to current output, or to a redirected target.
+             */
+            FileData macroOutput = this.Current.Data;
+            if (String.IsNullOrEmpty(info.Data.RelativePath) == false)
+            {
+                String rPath = parameterValues.ReplaceText(info.Data.RelativePath);
+                macroOutput = new JsonArrayData
+                {
+                    RelativePath = rPath
+                };
+                this.Current.Redirections.Add(macroOutput);
+            }
+            macroOutput.AppendText(text);
+
+            // Make a copy of redir and process variables. Dont
+            // change original because it may be used again.
+            foreach (FileData redir in info.Redirections)
+            {
+                FileData fd = new FileData
+                {
+                    RelativePath = redir.RelativePath
+                };
+                fd.AppendText(redir.Text());
+                fd.ProcessVariables(parameterValues);
+                fd.ProcessVariables(this.Current.FrameVariables);
+                this.Current.Redirections.Add(fd);
+            }
+
+            return null;
         }
 
 
@@ -202,16 +206,16 @@ namespace MFSH.Parser
             const String fcn = "VisitEnd";
             TraceMsg(context, fcn);
 
-            FileData s = this.PopState();
+            StackFrame s = this.PopState();
             switch (s)
             {
-                case DefineInfo defineInfo:
-                    this.mfsh.Defines.Add(defineInfo.Name, defineInfo);
+                case MacroDefinition macroDef:
+                    this.mfsh.Defines.Add(macroDef.Name, macroDef);
                     break;
 
                 default:
                     Error(fcn,
-                        context.Start,
+                        context.Start.Line.ToString(),
                         $"Unexpected '#end'");
                     break;
             }
@@ -275,8 +279,7 @@ namespace MFSH.Parser
         public override object VisitProfile(MFSHParser.ProfileContext context)
         {
             String currentClass = context.NAME().GetText();
-            this.mfsh.Variables.Current.Remove("%CurrentClass%");
-            this.mfsh.Variables.Current.Add("%CurrentClass%", currentClass);
+            this.Current.FrameVariables.Set("%CurrentClass%", currentClass);
             return null;
         }
 
@@ -310,6 +313,8 @@ namespace MFSH.Parser
 
         String ProcessInclude(String includeFile)
         {
+            const String fcn = "ProcessInclude";
+
             String includePath = this.FindInclude(includeFile);
             if (this.mfsh.Includes.Contains(includeFile))
                 return null;
@@ -317,18 +322,24 @@ namespace MFSH.Parser
             this.mfsh.Includes.Add(includeFile);
             String fshText = File.ReadAllText(includePath);
 
-            string includeFileText = this.mfsh.SubParse(fshText,
+            StackFrame frame = this.mfsh.SubParse(fshText,
                 includeFile,
                 Path.GetDirectoryName(includePath));
-            return includeFileText;
+            if (frame.Redirections.Count > 0)
+            {
+                this.Error(fcn,
+                    "",
+                    $"Include file {includeFile} defined redirections which will not be saved");
+            }
+            return frame.Data.Text();
         }
 
 
         void Error(String fcn,
-            IToken start,
+            String location,
             String msg)
         {
-            String fullMsg = $"{this.SourceName}, line {start.Line}. {msg}";
+            String fullMsg = $"{this.SourceName}, line {location}. {msg}";
             this.mfsh.ConversionError("mfsh", fcn, fullMsg);
         }
         #endregion

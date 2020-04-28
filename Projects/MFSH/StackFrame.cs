@@ -4,7 +4,15 @@ using System.Text;
 
 namespace MFSH
 {
-    class StackFrame
+    public class StackFrame
     {
+        public VariablesBlock FrameVariables = new VariablesBlock();
+        public List<FileData> Redirections = new List<FileData>();
+        public FileData Data;
+
+        public StackFrame()
+        {
+            this.Data = new FileData();
+        }
     }
 }

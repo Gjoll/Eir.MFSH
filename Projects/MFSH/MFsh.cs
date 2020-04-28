@@ -39,15 +39,15 @@ namespace MFSH
 
         public List<String> Paths = new List<string>();
 
-        public Dictionary<String, DefineInfo> Defines = new Dictionary<string, DefineInfo>();
+        public Dictionary<String, MacroDefinition> Defines = new Dictionary<string, MacroDefinition>();
         public HashSet<String> Includes = new HashSet<string>();
         // Keep track of include files so we dont end up in recursive loop.
         List<String> sources = new List<string>();
 
         private const String FSHSuffix = ".fsh";
         private const String MFSHSuffix = ".mfsh";
-        public VariablesStack Variables = new VariablesStack();
-        public Dictionary<String, FileData> FileItems = 
+        public VariablesBlock GlobalVars = new VariablesBlock();
+        public Dictionary<String, FileData> FileItems =
             new Dictionary<String, FileData>();
 
         public MFsh()
@@ -56,7 +56,7 @@ namespace MFSH
             this.IncludeDirs.Add(".");
         }
 
-        public string Parse(String fshText,
+        public StackFrame Parse(String fshText,
             String sourceName,
             String localDir)
         {
@@ -71,7 +71,7 @@ namespace MFSH
         /// <summary>
         /// Parse input text.
         /// </summary>
-        public string SubParse(String fshText, 
+        public StackFrame SubParse(String fshText,
             String sourceName,
             String localDir)
         {
@@ -82,15 +82,15 @@ namespace MFSH
             this.sources.Add(sourceName);
 
             string text = PreParseText(fshText, sourceName);
-            text = ParseText(text, sourceName);
+            StackFrame retVal = ParseText(text, sourceName);
             this.LocalDir = saveLocalDir;
-            return text;
+            return retVal;
         }
 
         public string PreParseText(String fshText, String sourceName)
         {
             if (fshText.EndsWith("\n") == false)
-               fshText = fshText + "\n";
+                fshText = fshText + "\n";
 
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
@@ -100,7 +100,7 @@ namespace MFSH
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new MFSHErrorListenerLexer(this,
                 "Fsh PreLexer",
-                sourceName, 
+                sourceName,
                 inputLines));
 
             PreParser.MFSHPreParserLocal parser = new PreParser.MFSHPreParserLocal(new CommonTokenStream(lexer));
@@ -109,7 +109,7 @@ namespace MFSH
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new MFSHErrorListenerParser(this,
                 "MFsh PreParser",
-                sourceName, 
+                sourceName,
                 inputLines));
 
             PreParser.MFSHPreVisitor visitor = new PreParser.MFSHPreVisitor(sourceName);
@@ -125,7 +125,7 @@ namespace MFSH
             return retVal;
         }
 
-        public string ParseText(String fshText, String sourceName)
+        public StackFrame ParseText(String fshText, String sourceName)
         {
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
@@ -135,7 +135,7 @@ namespace MFSH
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new MFSHErrorListenerLexer(this,
                 "MFsh Lexer",
-                sourceName, 
+                sourceName,
                 inputLines));
 
             Parser.MFSHParserLocal parser = new Parser.MFSHParserLocal(new CommonTokenStream(lexer));
@@ -144,7 +144,7 @@ namespace MFSH
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new MFSHErrorListenerParser(this,
                 "MFsh Parser",
-                sourceName, 
+                sourceName,
                 inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
@@ -156,8 +156,7 @@ namespace MFSH
                 String fullMsg = $"Error processing {sourceName}. Unterminated #{{Command}}";
                 this.ConversionError("mfsh", "ProcessInclude", fullMsg);
             }
-
-            return visitor.Current.GetText();
+            return visitor.Current;
         }
 
         /// <summary>
@@ -168,9 +167,11 @@ namespace MFSH
             const String fcn = "ProcessFile";
 
             path = Path.GetFullPath(path);
+            if (path.StartsWith(BaseInputDir) == false)
+                throw new Exception("Internal error. Path does not start with correct base path");
+
             this.ConversionInfo(this.GetType().Name, fcn, $"Processing file {path}");
             String fshText = File.ReadAllText(path);
-            FileData f = new FileData();
 
             String baseRPath = path.Substring(BaseInputDir.Length);
             if (baseRPath.StartsWith("\\"))
@@ -182,18 +183,26 @@ namespace MFSH
             String baseName = Path.GetFileName(baseRPath);
             String baseDir = Path.GetDirectoryName(baseRPath);
 
-            this.Variables.Current.Set("%BasePath%", baseRPath);
-            this.Variables.Current.Set("%BaseDir%", baseDir);
-            this.Variables.Current.Set("%BaseName%", baseName);
+            this.GlobalVars.Set("%BasePath%", baseRPath);
+            this.GlobalVars.Set("%BaseDir%", baseDir);
+            this.GlobalVars.Set("%BaseName%", baseName);
 
-            f.AppendText(this.Parse(fshText,
+            StackFrame frame = this.Parse(fshText,
                 baseName,
-                Path.GetDirectoryName(path)));
+                Path.GetDirectoryName(path));
 
-            if (path.StartsWith(BaseInputDir) == false)
-                throw new Exception("Internal error. Path does not start with correct base path");
-            f.RelativePath = baseRPath + FSHSuffix;
-            this.FileItems.Add(f.RelativePath, f);
+            void SaveData(FileData fileData)
+            {
+                fileData.ProcessVariables(this.GlobalVars);
+                if (this.FileItems.TryGetValue(fileData.RelativePath, out FileData existingReDir) == true)
+                    existingReDir.AppendText(fileData.Text());
+                else
+                    this.FileItems.Add(fileData.RelativePath, fileData);
+            }
+
+            SaveData(frame.Data);
+            foreach (FileData reDir in frame.Redirections)
+                SaveData(reDir);
         }
 
         /// <summary>
@@ -265,7 +274,8 @@ namespace MFSH
             foreach (FileData f in this.FileItems.Values)
             {
                 String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
-                Save(outputPath, f.GetText());
+                string outText = f.SaveText();
+                Save(outputPath, outText);
             }
         }
     }
