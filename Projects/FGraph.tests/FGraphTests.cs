@@ -56,6 +56,5 @@ namespace FGraph.Tests
             Assert.True(mainBeta.ParentLinks.Count == 0);
             Assert.True(mainBeta.ChildLinks.Count == 0);
         }
-
     }
 }

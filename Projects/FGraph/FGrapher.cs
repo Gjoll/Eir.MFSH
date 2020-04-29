@@ -70,9 +70,6 @@ namespace FGraph
 
         public void LoadItem(String type, dynamic value)
         {
-            if (!IsGraphMember((String) value.graphName))
-                return;
-
             switch (type)
             {
                 case "graphNode":
@@ -107,7 +104,37 @@ namespace FGraph
                     $"{path} not found");
             }
         }
+        public void RenderFocusGraphs()
+        {
+            foreach (GraphNode node in this.graphNodes.Values)
+                this.RenderFocusGraph(node);
+        }
 
+        public void RenderFocusGraph(GraphNode node)
+        {
+            GraphTraversal traversal = new GraphTraversal
+            {
+                LinkGraphName = node.GraphName
+            };
+
+            RenderGraph();
+        }
+
+        void RenderGraph(GraphNode node,
+            GraphTraversal traversal)
+        {
+            NodeGroup focusGroup = new NodeGroup();
+            focusGroup.Items.Add(node);
+            RenderGroupParents(focusGroup, traversal);
+        }
+
+        void RenderGroupParents(NodeGroup focusGroup,
+            GraphTraversal traversal)
+        {
+
+        }
+
+        IEnumerable<GraphLinkByName>
         public void Process()
         {
             ProcessLinks();
