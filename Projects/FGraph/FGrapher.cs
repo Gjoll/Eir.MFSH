@@ -107,34 +107,44 @@ namespace FGraph
         public void RenderFocusGraphs()
         {
             foreach (GraphNode node in this.graphNodes.Values)
-                this.RenderFocusGraph(node);
-        }
-
-        public void RenderFocusGraph(GraphNode node)
-        {
-            GraphTraversal traversal = new GraphTraversal
             {
-                LinkGraphName = node.GraphName
-            };
-
-            RenderGraph();
+                this.RenderGraph(node, $"focus/{node.NodeName.FirstSlashPart()}");
+            }
         }
 
         void RenderGraph(GraphNode node,
-            GraphTraversal traversal)
+            String traversalName)
         {
-            NodeGroup focusGroup = new NodeGroup();
-            focusGroup.Items.Add(node);
-            RenderGroupParents(focusGroup, traversal);
+            GraphItemGroup focusGroup = new GraphItemGroup();
+            focusGroup.Nodes.Add(node);
+
+            RenderGroupParents(node, focusGroup, traversalName);
         }
 
-        void RenderGroupParents(NodeGroup focusGroup,
-            GraphTraversal traversal)
+        void RenderGroupParents(GraphNode node,
+            GraphItemGroup focusGroup,
+            String traversalName)
         {
+            HashSet<GraphNode> parentNodes = new HashSet<GraphNode>();
+            parentNodes.Add(node);
 
+            GraphItemGroup parentGroup = new GraphItemGroup();
+            foreach (GraphNode.Link parentLink in node.ParentLinks)
+            {
+                if (
+                    (parentLink.TraversalName == traversalName) &&
+                    (parentNodes.Contains(parentLink.Node) == false)
+                    )
+                {
+                    parentNodes.Add(parentLink.Node);  // dont add same node twice...
+                    parentGroup.Nodes.Add(parentLink.Node);
+                }
+            }
+
+            if (parentGroup.Nodes.Count == 0)
+                return;
         }
 
-        IEnumerable<GraphLinkByName>
         public void Process()
         {
             ProcessLinks();
@@ -180,8 +190,8 @@ namespace FGraph
             {
                 foreach (GraphNode targetNode in targets)
                 {
-                    sourceNode.AddChild(targetNode);
-                    targetNode.AddParent(sourceNode);
+                    sourceNode.AddChild(link.TraversalName, targetNode);
+                    targetNode.AddParent(link.TraversalName, sourceNode);
                 }
             }
         }

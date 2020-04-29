@@ -7,6 +7,7 @@ namespace FGraph
     class GraphLinkByName
     {
         public String GraphName { get; set; }
+        public String TraversalName { get; set; }
         public String Source { get; set; }
         public String Target { get; set; }
 
@@ -17,6 +18,7 @@ namespace FGraph
         public GraphLinkByName(dynamic data)
         {
             this.GraphName = data.graphName;
+            this.TraversalName = data.traversalName;
             this.Source = data.source;
             this.Target = data.target;
         }

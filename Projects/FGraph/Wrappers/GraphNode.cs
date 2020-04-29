@@ -10,6 +10,7 @@ namespace FGraph
     {
         public class Link
         {
+            public String TraversalName { get; set; }
             public GraphNode Node { get; set; }
         }
 
@@ -33,20 +34,22 @@ namespace FGraph
             this.CssClass = data.cssClass;
         }
 
-        public void AddChild(GraphNode child)
+        public void AddChild(String traversalName, GraphNode child)
         {
             Link link = new Link
             {
-                Node = child
+                Node = child,
+                TraversalName = traversalName
             };
             this.ChildLinks.Add(link);
         }
 
-        public void AddParent(GraphNode parent)
+        public void AddParent(String traversalName, GraphNode parent)
         {
             Link link = new Link
             {
-                Node = parent
+                Node = parent,
+                TraversalName = traversalName
             };
             this.ParentLinks.Add(link);
         }
