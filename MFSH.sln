@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFSH.Tests", "Projects\MFSH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FGraph", "Projects\FGraph\FGraph.csproj", "{49DD7C70-B51C-453D-A7CD-DCEF7A58B876}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FGraph.Tests", "Projects\FGraph.tests\FGraph.Tests.csproj", "{D8495428-5548-4AFA-8952-C517B5F9E0CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{49DD7C70-B51C-453D-A7CD-DCEF7A58B876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49DD7C70-B51C-453D-A7CD-DCEF7A58B876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49DD7C70-B51C-453D-A7CD-DCEF7A58B876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8495428-5548-4AFA-8952-C517B5F9E0CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8495428-5548-4AFA-8952-C517B5F9E0CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8495428-5548-4AFA-8952-C517B5F9E0CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8495428-5548-4AFA-8952-C517B5F9E0CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

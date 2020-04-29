@@ -6,7 +6,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using Xunit;
 
-namespace Eir.FSHer.tests
+namespace MFSH.Tests
 {
     public class UnitTest1
     {

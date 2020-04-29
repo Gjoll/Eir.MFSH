@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace FGraph
@@ -94,7 +95,46 @@ namespace FGraph
 
         public void Process()
         {
+            ProcessLinks();
+        }
+
+        void ProcessLinks()
+        {
+            foreach (GraphLinkByName link in this.graphLinkByNames)
+                ProcessLink(link);
+        }
+
+        List<GraphNode> FindNamedNodes(String name)
+        {
+            List<GraphNode> retVal = new List<GraphNode>();
+            Regex r = new Regex(name);
+            foreach (GraphNode graphNode in graphNodes.Values)
+            {
+                if (r.IsMatch(graphNode.NodeName))
+                    retVal.Add(graphNode);
+            }
+            if (retVal.Count == 0)
+            {
+                this.ConversionWarn("FGrapher",
+                    "FindNamedNodes",
+                    $"No nodes named '{name}' found");
+            }
+
+            return retVal;
+        }
+
+        void ProcessLink(GraphLinkByName link)
+        {
+            List<GraphNode> sources = FindNamedNodes(link.Source);
+            List<GraphNode> targets = FindNamedNodes(link.Target);
+            if ((sources.Count > 1) && (targets.Count > 1))
+            {
+                this.ConversionError("FGrapher",
+                    "ProcessLink",
+                    $"Many to many link not supported. {link.Source}' <--> {link.Target}");
+            }
 
         }
+
     }
 }
