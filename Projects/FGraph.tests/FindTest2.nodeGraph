@@ -1,0 +1,52 @@
+[
+    {
+        "graphNode": {
+            "graphName": "focus",
+            "nodeName": "Parent/Alpha"
+        }
+    },
+    {
+        "graphNode": {
+            "graphName": "focus",
+            "nodeName": "Parent/Beta"
+        }
+    },
+    {
+        "graphNode": {
+            "graphName": "focus",
+            "nodeName": "Main/Alpha"
+        }
+    },
+    {
+        "graphNode": {
+            "graphName": "focus",
+            "nodeName": "Main/Beta"
+        }
+    },
+    {
+        "graphNode": {
+            "graphName": "focus",
+            "nodeName": "Child/Alpha"
+        }
+    },
+    {
+        "graphNode": {
+            "graphName": "focus",
+            "nodeName": "Child/Beta"
+        }
+    },
+    {
+        "graphLinkByName": {
+            "graphName": "focus",
+            "source": "Parent/*",
+            "target": "Main/Alpha"
+        }
+    },
+    {
+        "graphLinkByName": {
+            "graphName": "focus",
+            "source": "Main/Alpha",
+            "target": "Child/*"
+        }
+    }
+]

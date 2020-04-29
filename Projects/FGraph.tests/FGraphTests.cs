@@ -36,5 +36,26 @@ namespace FGraph.Tests
             Assert.True(mainBeta.ParentLinks.Count == 0);
             Assert.True(mainBeta.ChildLinks.Count == 0);
         }
+
+
+
+
+        [Fact]
+        public void FindTest2()
+        {
+            FGrapher f = new FGrapher();
+            f.Load("FindTest2.nodeGraph");
+            f.ProcessLinks();
+
+            Assert.True(f.TryGetNodeByName("Main/Alpha", out GraphNode mainAlpha));
+
+            Assert.True(mainAlpha.ParentLinks.Count == 2);
+            Assert.True(mainAlpha.ChildLinks.Count == 2);
+
+            Assert.True(f.TryGetNodeByName("Main/Beta", out GraphNode mainBeta));
+            Assert.True(mainBeta.ParentLinks.Count == 0);
+            Assert.True(mainBeta.ChildLinks.Count == 0);
+        }
+
     }
 }
