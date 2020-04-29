@@ -76,10 +76,7 @@
     <None Update="Parse1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="DefineTest1.mfsh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="DefineTest1.results">
+    <None Update="FindTest1.nodeGraph">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="IncludeTest2.inc">

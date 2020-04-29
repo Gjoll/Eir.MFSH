@@ -10,6 +10,10 @@ namespace FGraph
         public String Source { get; set; }
         public String Target { get; set; }
 
+        public GraphLinkByName()
+        {
+        }
+
         public GraphLinkByName(dynamic data)
         {
             this.GraphName = data.graphName;

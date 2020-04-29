@@ -11,7 +11,7 @@ namespace FGraph
 {
     public class FGrapher : ConverterBase
     {
-        public string GraphName { get; set; }
+        public string GraphName { get; set; } = null;
 
         public string OutputDir
         {
@@ -24,6 +24,21 @@ namespace FGraph
         List<GraphLinkByName> graphLinkByNames = new List<GraphLinkByName>();
 
         public bool DebugFlag { get; set; } = false;
+
+        public FGrapher()
+        {
+        }
+
+        public bool TryGetNodeByName(String name, out GraphNode node) => this.graphNodes.TryGetValue(name, out node);
+
+        public bool IsGraphMember(String graphName)
+        {
+            if (String.IsNullOrEmpty(this.GraphName))
+                return true;
+            if (String.IsNullOrEmpty(graphName))
+                return true;
+            return String.Compare(this.GraphName, graphName) == 0;
+        }
 
         void LoadDir(String path)
         {
@@ -53,9 +68,9 @@ namespace FGraph
         }
 
 
-        void LoadItem(String type, dynamic value)
+        public void LoadItem(String type, dynamic value)
         {
-            if (value.graphName != this.GraphName)
+            if (!IsGraphMember((String) value.graphName))
                 return;
 
             switch (type)
@@ -98,7 +113,7 @@ namespace FGraph
             ProcessLinks();
         }
 
-        void ProcessLinks()
+        public void ProcessLinks()
         {
             foreach (GraphLinkByName link in this.graphLinkByNames)
                 ProcessLink(link);
@@ -134,6 +149,14 @@ namespace FGraph
                     $"Many to many link not supported. {link.Source}' <--> {link.Target}");
             }
 
+            foreach (GraphNode sourceNode in sources)
+            {
+                foreach (GraphNode targetNode in targets)
+                {
+                    sourceNode.AddChild(targetNode);
+                    targetNode.AddParent(sourceNode);
+                }
+            }
         }
 
     }
