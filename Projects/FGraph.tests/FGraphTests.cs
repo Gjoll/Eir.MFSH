@@ -33,7 +33,8 @@ namespace FGraph.Tests
             Assert.True(mainAlpha.ChildLinks[0].Node.NodeName == "Child/Beta");
 
             Assert.True(f.TryGetNodeByName("Main/Beta", out GraphNode mainBeta));
-
+            Assert.True(mainBeta.ParentLinks.Count == 0);
+            Assert.True(mainBeta.ChildLinks.Count == 0);
         }
     }
 }
