@@ -1,4 +1,4 @@
-using MFSH;
+using FGraph;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,11 +8,12 @@ using Xunit;
 
 namespace FGraph.Tests
 {
-    public class UnitTest1
+    public class FGraphTests
     {
         [Fact]
         public void FindTest1()
         {
+            FGrapher f = new FGrapher();
         }
     }
 }

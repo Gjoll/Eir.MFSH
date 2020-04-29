@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FGraph
 {
-    class FGrapher : ConverterBase
+    public class FGrapher : ConverterBase
     {
         public string GraphName { get; set; }
 
@@ -45,7 +45,7 @@ namespace FGraph
             }
         }
 
-        void LoadItem(dynamic item)
+        public void LoadItem(dynamic item)
         {
             JObject j = item as JObject;
             foreach (KeyValuePair<String, JToken> kvp in j)

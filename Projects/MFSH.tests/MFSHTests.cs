@@ -8,7 +8,7 @@ using Xunit;
 
 namespace MFSH.Tests
 {
-    public class UnitTest1
+    public class MFSHTests
     {
         /// <summary>
         /// Getx text w/o carriage returns. Makes comparisons easier.
