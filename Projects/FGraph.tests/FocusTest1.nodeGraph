@@ -3,35 +3,40 @@
         "graphNode": {
             "graphName": "focus",
             "nodeName": "Parent/Alpha",
-            "displayName": "P/Alpha"
+            "displayName": "P/Alpha",
+            "cssClass": "parentNode"
         }
     },
     {
         "graphNode": {
             "graphName": "focus",
             "nodeName": "Parent/Beta",
-            "displayName": "P/Beta"
+            "displayName": "P/Beta",
+            "cssClass": "parentNode"
         }
     },
     {
         "graphNode": {
             "graphName": "focus",
             "nodeName": "Main/Alpha",
-            "displayName": "Main"
+            "displayName": "Main",
+            "cssClass": "mainNode"
         }
     },
     {
         "graphNode": {
             "graphName": "focus",
             "nodeName": "Child/Alpha",
-            "displayName": "C/Alpha"
+            "displayName": "C/Alpha",
+            "cssClass": "childNode"
         }
     },
     {
         "graphNode": {
             "graphName": "focus",
             "nodeName": "Child/Beta",
-            "displayName": "C/Alpha"
+            "displayName": "C/Alpha",
+            "cssClass":  "childNode" 
         }
     },
     {

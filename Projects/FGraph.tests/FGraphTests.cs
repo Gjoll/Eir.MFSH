@@ -1,4 +1,5 @@
 using FGraph;
+using SVGLib;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -61,7 +62,7 @@ namespace FGraph.Tests
             f.Load("FocusTest1.nodeGraph");
             f.OutputDir = @"c:\Temp\FGraphTests";
             f.ProcessLinks();
-            f.RenderFocusGraphs();
+            f.RenderFocusGraphs("FocusTest1.css");
             f.SaveAll();
         }
     }

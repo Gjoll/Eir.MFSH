@@ -13,19 +13,22 @@ namespace FGraph
 {
     public partial class FGrapher
     {
-        public void RenderFocusGraphs()
+        public void RenderFocusGraphs(String cssFile)
         {
             foreach (GraphNodeWrapper node in this.graphNodes.Values)
             {
-                this.RenderFocusGraph(node, $"focus/{node.NodeName.FirstSlashPart()}");
+                this.RenderFocusGraph(cssFile, node, $"focus/{node.NodeName.FirstSlashPart()}");
             }
         }
 
-        void RenderFocusGraph(GraphNodeWrapper graphNode,
+        void RenderFocusGraph(String cssFile,
+            GraphNodeWrapper graphNode,
             String traversalName)
         {
             String name = graphNode.NodeName.Replace("/", "-");
             SvgEditor e = new SvgEditor($"FocusGraph_{name}");
+            e.AddCssFile(cssFile);
+
             this.svgEditors.Add(e);
             SENodeGroup seGroupParents = new SENodeGroup("parents", true);
             SENodeGroup seGroupFocus = new SENodeGroup("focus", true);
@@ -52,6 +55,7 @@ namespace FGraph
             //$if (linkFlag)
             //$    hRef = this.HRef(mapNode);
             SENode node = new SENode(0, color, annotations, hRef);
+            node.Class = graphNode.CssClass;
 
             String displayName = graphNode.DisplayName;
 

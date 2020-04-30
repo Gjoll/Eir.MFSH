@@ -38,6 +38,8 @@ namespace FGraph
         public float RectRx { get; set; } = 0.25f;
         public float RectRy { get; set; } = 0.25f;
 
+        List<String> cssFiles = new List<string>();
+
         String ToPx(float value) => $"{15 * value}";
 
         float screenX = -1;
@@ -53,6 +55,13 @@ namespace FGraph
             this.root = this.doc.CreateNewDocument();
             this.CreateArrowStart();
             this.CreateArrowEnd();
+        }
+
+        public void AddCssFile(String cssFile)
+        {
+            this.cssFiles.Add(cssFile);
+            String cssCmd = $"type=\"text/css\" href=\"{Path.GetFileName(cssFile)}\" ";
+            this.doc.StyleSheets.Add(cssCmd);
         }
 
         void CreateArrowEnd()
@@ -195,6 +204,7 @@ namespace FGraph
             colHeight = 0;
 
             SvgGroup g = this.doc.AddGroup(null);
+            g.Class = group.Class;
             float col1ScreenX = screenX;
             float col1ScreenY = screenY;
             float col1Width = 0;
@@ -323,6 +333,17 @@ namespace FGraph
                 colHeight = col2Height;
         }
 
+        String GetClass(params String[] cssClassNames)
+        {
+            foreach (String cssClassName in cssClassNames)
+            {
+                if (String.IsNullOrWhiteSpace(cssClassName) == false)
+                    return cssClassName;
+            }
+
+            return null;
+        }
+
         void Render(SvgGroup parentGroup,
             SENode node,
             float screenX,
@@ -337,6 +358,7 @@ namespace FGraph
             width = node.Width * CharMod + 2 * this.BorderMargin;
 
             SvgGroup g = this.doc.AddGroup(parentGroup);
+            g.Class = parentGroup.Class;
             g.Transform = $"translate({this.ToPx(screenX)} {this.ToPx(screenY)})";
             SvgRect square;
 
@@ -352,6 +374,7 @@ namespace FGraph
                 square = this.doc.AddRect(g);
             }
 
+            square.Class = node.Class;
             square.Stroke = Color.Black;
             square.StrokeWidth = this.ToPx(this.BorderWidth);
             square.RX = this.ToPx(this.RectRx);
@@ -385,6 +408,7 @@ namespace FGraph
                 {
                     t = this.doc.AddText(g);
                 }
+                t.Class = GetClass(line.Class, node.Class);
 
                 t.X = this.ToPx(width / 2);
                 t.Y = this.ToPx(textY);
@@ -406,6 +430,13 @@ namespace FGraph
             if (Directory.Exists(outputDir) == false)
                 Directory.CreateDirectory(outputDir);
             this.doc.SaveToFile(path);
+            foreach (String cssFile in this.cssFiles)
+            {
+                String outputCssPath = Path.Combine(outputDir, Path.GetFileName(cssFile));
+                if (File.Exists(outputCssPath))
+                    File.Delete(outputCssPath);
+                File.Copy(cssFile, Path.Combine(outputDir, Path.GetFileName(cssFile)));
+            }
         }
     }
 }

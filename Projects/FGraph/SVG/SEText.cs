@@ -6,6 +6,7 @@ namespace FGraph
 {
     public class SEText
     {
+        public String Class { get; set; }
         public String Text { get; set; }
         public String HRef { get; set; }
         public String Title { get; set; }

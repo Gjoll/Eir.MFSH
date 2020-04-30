@@ -13,6 +13,7 @@ namespace FGraph
         public List<SEText> TextLines = new List<SEText>();
         public Color FillColor { get; }
         public String HRef { get; }
+        public String Class { get; set; }
 
         public float Width
         {

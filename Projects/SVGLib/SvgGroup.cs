@@ -9,22 +9,34 @@
 // --------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
 
 namespace SVGLib
 {
-	/// <summary>
-	/// It represents the group SVG element.
-	/// </summary>
-	public class SvgGroup : SvgElement
-	{
-		/// <summary>
-		/// It constructs a group element with no attribute.
-		/// </summary>
-		/// <param name="doc">SVG document.</param>
-		public SvgGroup(SvgDoc doc):base(doc)
-		{
-			m_sElementName = "g";
-			m_ElementType = _SvgElementType.typeGroup;
-		}
-	}
+    /// <summary>
+    /// It represents the group SVG element.
+    /// </summary>
+    public class SvgGroup : SvgElement
+    {
+        /// <summary>
+        /// This attribute assigns a (CSS) class name or set of class names to an element.
+        /// </summary>
+        [Category("Style")]
+        [Description("This attribute assigns a (CSS) class name or set of class names to an element.")]
+        public string Class
+        {
+            get => GetAttributeStringValue(SvgAttribute._SvgAttribute.attrStyle_Class);
+            set => SetAttributeValue(SvgAttribute._SvgAttribute.attrStyle_Class, value);
+        }
+
+        /// <summary>
+        /// It constructs a group element with no attribute.
+        /// </summary>
+        /// <param name="doc">SVG document.</param>
+        public SvgGroup(SvgDoc doc) : base(doc)
+        {
+            m_sElementName = "g";
+            m_ElementType = _SvgElementType.typeGroup;
+        }
+    }
 }

@@ -14,6 +14,7 @@ using System.Collections;
 using System.IO;
 using System.Xml;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace SVGLib
 {
@@ -39,6 +40,8 @@ namespace SVGLib
 
         private string m_sXmlDeclaration;
         private string m_sXmlDocType;
+
+        public List<string> StyleSheets = new List<string>();
 
         // ---------- PRIVATE PROPERTIES END
 
@@ -176,8 +179,15 @@ namespace SVGLib
                                 break;
 
                             case XmlNodeType.ProcessingInstruction:
-
-                                err.Log("Unexpected item: " + reader.Value, ErrH._LogPriority.Warning);
+                                switch (reader.Name)
+                                {
+                                    case "xml-stylesheet":
+                                        this.StyleSheets.Add(reader.Value);
+                                        break;
+                                    default:
+                                        err.Log("Unexpected item: " + reader.Value, ErrH._LogPriority.Warning);
+                                        break;
+                                }
                                 break;
 
                             case XmlNodeType.Comment:
@@ -324,9 +334,9 @@ namespace SVGLib
             string sXML;
 
             sXML = m_sXmlDeclaration + "\r\n";
-            sXML += m_sXmlDocType;
-            sXML += "\r\n";
-
+            foreach (String styleSheet in this.StyleSheets)
+                sXML += $"<?xml-stylesheet {styleSheet}?>\r\n";
+            sXML += m_sXmlDocType + "\r\n";
             sXML += m_root.GetXML();
 
             return sXML;

@@ -9,6 +9,8 @@ namespace FGraph
     [DebuggerDisplay("{this.Title} [{this.nodes.Count}/{this.children.Count}]")]
     public class SENodeGroup
     {
+        public String Class { get; set; }
+
         /// <summary>
         /// For debugging only.
         /// </summary>
