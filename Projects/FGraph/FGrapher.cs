@@ -121,7 +121,7 @@ namespace FGraph
             RenderGroupParents(node, focusGroup, traversalName);
         }
 
-        void RenderGroupParents(GraphNode node,
+        GraphItemGroup RenderGroupParents(GraphNode node,
             GraphItemGroup focusGroup,
             String traversalName)
         {
@@ -142,7 +142,9 @@ namespace FGraph
             }
 
             if (parentGroup.Nodes.Count == 0)
-                return;
+                return null;
+
+            return parentGroup;
         }
 
         public void Process()
