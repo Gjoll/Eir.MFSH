@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FGraph
 {
-    public class FGrapher : ConverterBase
+    public partial class FGrapher : ConverterBase
     {
         public string GraphName { get; set; } = null;
 
@@ -20,8 +20,10 @@ namespace FGraph
         }
         private string outputDir;
 
-        Dictionary<String, GraphNode> graphNodes = new Dictionary<string, GraphNode>();
-        List<GraphLinkByName> graphLinkByNames = new List<GraphLinkByName>();
+        Dictionary<String, GraphNodeWrapper> graphNodes = new Dictionary<string, GraphNodeWrapper>();
+        List<GraphLinkWrapper> graphLink = new List<GraphLinkWrapper>();
+
+        List<SvgEditor> svgEditors = new List<SvgEditor>();
 
         public bool DebugFlag { get; set; } = false;
 
@@ -29,7 +31,7 @@ namespace FGraph
         {
         }
 
-        public bool TryGetNodeByName(String name, out GraphNode node) => this.graphNodes.TryGetValue(name, out node);
+        public bool TryGetNodeByName(String name, out GraphNodeWrapper node) => this.graphNodes.TryGetValue(name, out node);
 
         public bool IsGraphMember(String graphName)
         {
@@ -53,14 +55,14 @@ namespace FGraph
             using (StreamReader r = new StreamReader(path))
             {
                 string json = r.ReadToEnd();
-                dynamic array = JsonConvert.DeserializeObject(json);
+                JArray array = JsonConvert.DeserializeObject<JArray>(json);
 
-                foreach (dynamic item in array)
+                foreach (var item in array)
                     LoadItem(item);
             }
         }
 
-        public void LoadItem(dynamic item)
+        public void LoadItem(JToken item)
         {
             JObject j = item as JObject;
             foreach (KeyValuePair<String, JToken> kvp in j)
@@ -68,18 +70,18 @@ namespace FGraph
         }
 
 
-        public void LoadItem(String type, dynamic value)
+        public void LoadItem(String type, JToken value)
         {
             switch (type)
             {
                 case "graphNode":
-                    GraphNode node = new GraphNode(value);
+                    GraphNodeWrapper node = new GraphNodeWrapper(value);
                     this.graphNodes.Add(node.NodeName, node);
                     break;
 
                 case "graphLinkByName":
-                    GraphLinkByName link = new GraphLinkByName(value);
-                    this.graphLinkByNames.Add(link);
+                    GraphLinkByNameWrapper link = new GraphLinkByNameWrapper(value);
+                    this.graphLink.Add(link);
                     break;
 
                 default:
@@ -104,48 +106,6 @@ namespace FGraph
                     $"{path} not found");
             }
         }
-        public void RenderFocusGraphs()
-        {
-            foreach (GraphNode node in this.graphNodes.Values)
-            {
-                this.RenderGraph(node, $"focus/{node.NodeName.FirstSlashPart()}");
-            }
-        }
-
-        void RenderGraph(GraphNode node,
-            String traversalName)
-        {
-            GraphItemGroup focusGroup = new GraphItemGroup();
-            focusGroup.Nodes.Add(node);
-
-            RenderGroupParents(node, focusGroup, traversalName);
-        }
-
-        GraphItemGroup RenderGroupParents(GraphNode node,
-            GraphItemGroup focusGroup,
-            String traversalName)
-        {
-            HashSet<GraphNode> parentNodes = new HashSet<GraphNode>();
-            parentNodes.Add(node);
-
-            GraphItemGroup parentGroup = new GraphItemGroup();
-            foreach (GraphNode.Link parentLink in node.ParentLinks)
-            {
-                if (
-                    (parentLink.TraversalName == traversalName) &&
-                    (parentNodes.Contains(parentLink.Node) == false)
-                    )
-                {
-                    parentNodes.Add(parentLink.Node);  // dont add same node twice...
-                    parentGroup.Nodes.Add(parentLink.Node);
-                }
-            }
-
-            if (parentGroup.Nodes.Count == 0)
-                return null;
-
-            return parentGroup;
-        }
 
         public void Process()
         {
@@ -154,15 +114,15 @@ namespace FGraph
 
         public void ProcessLinks()
         {
-            foreach (GraphLinkByName link in this.graphLinkByNames)
+            foreach (GraphLinkByNameWrapper link in this.graphLink)
                 ProcessLink(link);
         }
 
-        List<GraphNode> FindNamedNodes(String name)
+        List<GraphNodeWrapper> FindNamedNodes(String name)
         {
-            List<GraphNode> retVal = new List<GraphNode>();
+            List<GraphNodeWrapper> retVal = new List<GraphNodeWrapper>();
             Regex r = new Regex(name);
-            foreach (GraphNode graphNode in graphNodes.Values)
+            foreach (GraphNodeWrapper graphNode in graphNodes.Values)
             {
                 if (r.IsMatch(graphNode.NodeName))
                     retVal.Add(graphNode);
@@ -177,10 +137,23 @@ namespace FGraph
             return retVal;
         }
 
-        void ProcessLink(GraphLinkByName link)
+        void ProcessLink(GraphLinkWrapper link)
         {
-            List<GraphNode> sources = FindNamedNodes(link.Source);
-            List<GraphNode> targets = FindNamedNodes(link.Target);
+            switch (link)
+            {
+                case GraphLinkByNameWrapper linkByName:
+                    ProcessLink(linkByName);
+                    break;
+
+                default:
+                    throw new NotImplementedException($"Unimplemented link type.");
+            }
+        }
+
+        void ProcessLink(GraphLinkByNameWrapper link)
+        {
+            List<GraphNodeWrapper> sources = FindNamedNodes(link.Source);
+            List<GraphNodeWrapper> targets = FindNamedNodes(link.Target);
             if ((sources.Count > 1) && (targets.Count > 1))
             {
                 this.ConversionError("FGrapher",
@@ -188,15 +161,22 @@ namespace FGraph
                     $"Many to many link not supported. {link.Source}' <--> {link.Target}");
             }
 
-            foreach (GraphNode sourceNode in sources)
+            foreach (GraphNodeWrapper sourceNode in sources)
             {
-                foreach (GraphNode targetNode in targets)
+                foreach (GraphNodeWrapper targetNode in targets)
                 {
-                    sourceNode.AddChild(link.TraversalName, targetNode);
-                    targetNode.AddParent(link.TraversalName, sourceNode);
+                    sourceNode.AddChild(link, targetNode);
+                    targetNode.AddParent(link, sourceNode);
                 }
             }
         }
 
+        public void SaveAll()
+        {
+            foreach (SvgEditor svgEditor in this.svgEditors)
+            {
+                svgEditor.Save($"{this.outputDir}\\{svgEditor.Name}.svg");
+            }
+        }
     }
 }

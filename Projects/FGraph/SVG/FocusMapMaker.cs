@@ -42,7 +42,7 @@ namespace FGraph
                 return;
             //Debug.Assert(focusNode.Name != "SectionFindingsLeftBreast");
 
-            SvgEditor e = new SvgEditor();
+            SvgEditor e = new SvgEditor("");
             SENodeGroup parentsGroup = new SENodeGroup("parents", true);
             SENodeGroup focusGroup = new SENodeGroup("focus", true);
             SENodeGroup childrenGroup = new SENodeGroup("children", true);

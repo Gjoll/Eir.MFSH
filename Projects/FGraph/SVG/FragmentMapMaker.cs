@@ -99,7 +99,7 @@ namespace FGraph
 
         void GraphNode(FragmentNode fragmentNode)
         {
-            SvgEditor e = new SvgEditor();
+            SvgEditor e = new SvgEditor("");
             SENodeGroup parentsGroup = new SENodeGroup("parents", false);
             SENodeGroup focusGroup = new SENodeGroup("focus", false);
             SENodeGroup childrenGroup = new SENodeGroup("children", false);

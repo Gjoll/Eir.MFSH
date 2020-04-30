@@ -14,7 +14,7 @@ namespace FGraph
     /// </summary>
     class ResourceMapMaker : MapMaker
     {
-        public SvgEditor SvgEditor = new SvgEditor();
+        public SvgEditor SvgEditor = new SvgEditor("");
         FileCleaner fc;
 
         public ResourceMapMaker(FileCleaner fc,

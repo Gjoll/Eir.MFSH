@@ -79,6 +79,11 @@ namespace FGraph
             this.children.Add(nodeGroup);
         }
 
+        public void AppendChildren(IEnumerable<SENodeGroup> nodeGroups)
+        {
+            this.children.AddRange(nodeGroups);
+        }
+
         public SENodeGroup AppendChild(String title, bool showCardinality)
         {
             SENodeGroup retVal = new SENodeGroup(title, showCardinality);

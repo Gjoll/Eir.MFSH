@@ -24,6 +24,8 @@ namespace FGraph
         SvgDoc doc;
         SvgRoot root;
 
+        public String Name { get; set; }
+
         //public String RenderTestPoint;
         public float BorderWidth { get; set; } = 0.125f;
         public float LineHeight { get; set; } = 1.25f;
@@ -44,8 +46,9 @@ namespace FGraph
         float maxWidth = 0;
         float maxHeight = 0;
 
-        public SvgEditor()
+        public SvgEditor(String name)
         {
+            this.Name = name;
             this.doc = new SvgDoc();
             this.root = this.doc.CreateNewDocument();
             this.CreateArrowStart();
@@ -399,6 +402,9 @@ namespace FGraph
 
         public void Save(String path)
         {
+            String outputDir = Path.GetDirectoryName(Path.GetFullPath(path));
+            if (Directory.Exists(outputDir) == false)
+                Directory.CreateDirectory(outputDir);
             this.doc.SaveToFile(path);
         }
     }
