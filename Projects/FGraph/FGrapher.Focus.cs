@@ -37,7 +37,7 @@ namespace FGraph
             seGroupFocus.AppendChild(seGroupChildren);
 
             {
-                SENode seNode = this.CreateNode(graphNode, Color.White, null);
+                SENode seNode = this.CreateNode(graphNode, null);
                 seGroupFocus.AppendNode(seNode);
             }
 
@@ -48,13 +48,12 @@ namespace FGraph
         }
 
         protected SENode CreateNode(GraphNodeWrapper graphNode,
-            Color color,
             String[] annotations)
         {
             String hRef = null;
             //$if (linkFlag)
             //$    hRef = this.HRef(mapNode);
-            SENode node = new SENode(0, color, annotations, hRef);
+            SENode node = new SENode(0, annotations, hRef);
             node.Class = graphNode.CssClass;
 
             String displayName = graphNode.DisplayName;
@@ -84,7 +83,7 @@ namespace FGraph
                     )
                 {
                     String[] annotations = new String[0];	//$
-                    yield return CreateNode(parentLink.Node, parentLink.Traversal.BackgroundColor, annotations);
+                    yield return CreateNode(parentLink.Node, annotations);
                 }
             }
         }
@@ -107,7 +106,7 @@ namespace FGraph
                 {
                     String[] annotations = new String[0];	//$
                     SENodeGroup childContainer = new SENodeGroup("Child", true);
-                    SENode child = CreateNode(childLink.Node, childLink.Traversal.BackgroundColor, annotations);
+                    SENode child = CreateNode(childLink.Node, annotations);
                     childContainer.AppendNode(child);
                     yield return childContainer;
                 }

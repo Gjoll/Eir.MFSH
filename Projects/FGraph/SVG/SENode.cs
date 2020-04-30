@@ -11,7 +11,7 @@ namespace FGraph
     {
         private float width;
         public List<SEText> TextLines = new List<SEText>();
-        public Color FillColor { get; }
+        public Color FillColor { get; } = Color.White;
         public String HRef { get; }
         public String Class { get; set; }
 
@@ -32,12 +32,10 @@ namespace FGraph
         public String OutgoingAnnotation { get; set; }
 
         public SENode(float width,
-            Color fillColor,
             String[] annotations,
             String hRef = null)
         {
             this.Width = width;
-            this.FillColor = fillColor;
             if (annotations != null)
             {
                 if ((annotations.Length > 0) && (annotations[0] != null))
@@ -47,6 +45,14 @@ namespace FGraph
             }
 
             this.HRef = hRef;
+        }
+
+        public SENode(float width,
+            Color fillColor,
+            String[] annotations,
+            String hRef = null) : this(width, annotations, hRef)
+        {
+            this.FillColor = fillColor;
         }
 
         public SENode()
