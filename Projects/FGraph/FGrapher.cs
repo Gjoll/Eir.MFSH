@@ -46,7 +46,7 @@ namespace FGraph
         {
             foreach (String subDir in Directory.GetDirectories(path))
                 LoadDir(subDir);
-            foreach (String file in Directory.GetFiles(path))
+            foreach (String file in Directory.GetFiles(path, "*.nodeGraph"))
                 LoadFile(file);
         }
 
@@ -109,6 +109,8 @@ namespace FGraph
 
         public void Process()
         {
+            if (String.IsNullOrEmpty(this.OutputDir) == true)
+                throw new Exception($"Output not set");
             ProcessLinks();
         }
 
