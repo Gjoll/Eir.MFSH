@@ -1,49 +1,42 @@
 [
     {
         "graphNode": {
-            "graphName": "focus",
             "nodeName": "Parent/Alpha",
             "displayName": "-"
         }
     },
     {
         "graphNode": {
-            "graphName": "focus",
             "nodeName": "Parent/Beta",
             "displayName": "-"
         }
     },
     {
         "graphNode": {
-            "graphName": "focus",
             "nodeName": "Main/Alpha",
             "displayName": "-"
         }
     },
     {
         "graphNode": {
-            "graphName": "focus",
             "nodeName": "Main/Beta",
             "displayName": "-"
         }
     },
     {
         "graphNode": {
-            "graphName": "focus",
             "nodeName": "Child/Alpha",
             "displayName": "-"
         }
     },
     {
         "graphNode": {
-            "graphName": "focus",
             "nodeName": "Child/Beta",
             "displayName": "-"
         }
     },
     {
         "graphLinkByName": {
-            "graphName": "focus",
             "traversalName": "-",
             "source": "Parent/*",
             "target": "Main/Alpha",
@@ -52,7 +45,6 @@
     },
     {
         "graphLinkByName": {
-            "graphName": "focus",
             "traversalName": "-",
              "source": "Main/Alpha",
             "target": "Child/*",

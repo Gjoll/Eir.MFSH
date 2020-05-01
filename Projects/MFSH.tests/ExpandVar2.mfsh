@@ -1,7 +1,6 @@
 #macro Alpha(AlphaName)
   `{
   `  "graphNode" : {
-  `  "graphName" : "AlphaName",
   `  }
   `},
 #end

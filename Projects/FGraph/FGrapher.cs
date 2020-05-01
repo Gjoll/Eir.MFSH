@@ -33,15 +33,6 @@ namespace FGraph
 
         public bool TryGetNodeByName(String name, out GraphNodeWrapper node) => this.graphNodes.TryGetValue(name, out node);
 
-        public bool IsGraphMember(String graphName)
-        {
-            if (String.IsNullOrEmpty(this.GraphName))
-                return true;
-            if (String.IsNullOrEmpty(graphName))
-                return true;
-            return String.Compare(this.GraphName, graphName) == 0;
-        }
-
         void LoadDir(String path)
         {
             foreach (String subDir in Directory.GetDirectories(path))
@@ -177,7 +168,8 @@ namespace FGraph
         {
             foreach (SvgEditor svgEditor in this.svgEditors)
             {
-                svgEditor.Save($"{this.outputDir}\\{svgEditor.Name}.svg");
+                String fileName = svgEditor.Name.Replace(":", "-");
+                svgEditor.Save($"{this.outputDir}\\{fileName}.svg");
             }
         }
     }

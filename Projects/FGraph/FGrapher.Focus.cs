@@ -38,6 +38,7 @@ namespace FGraph
 
             {
                 SENode seNode = this.CreateNode(graphNode, null);
+                seNode.Class = "focus";
                 seGroupFocus.AppendNode(seNode);
             }
 

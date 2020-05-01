@@ -8,11 +8,8 @@ namespace FGraph
 {
     public class GraphWrapper
     {
-        public String GraphName { get; set; }
-
         public GraphWrapper(JToken data)
         {
-            this.GraphName = this.RequiredValue("GraphLinkByName.graphName", data["graphName"]);
         }
 
         public Color RequiredColorValue(String name, JToken value)
