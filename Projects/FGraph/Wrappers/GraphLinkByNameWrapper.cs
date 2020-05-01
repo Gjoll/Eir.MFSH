@@ -12,8 +12,8 @@ namespace FGraph
 
         public GraphLinkByNameWrapper(JToken data) : base(data)
         {
-            this.Source = this.RequiredValue("GraphLinkByName.source", data["source"]);
-            this.Target = this.RequiredValue("GraphLinkByName.target", data["target"]);
+            this.Source = this.RequiredValue(data, "source");
+            this.Target = this.RequiredValue(data, "target");
         }
     }
 }

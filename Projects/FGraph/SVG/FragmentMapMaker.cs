@@ -87,7 +87,11 @@ namespace FGraph
                 hRef = $"./{fragMapName}";
             }
 
-            SENode node = new SENode(0, color, null, hRef);
+            SENode node = new SENode
+            {
+                FillColor = color,
+                HRef = hRef
+            } ;
             foreach (String titlePart in mapNode.MapName)
             {
                 String s = titlePart.Trim();

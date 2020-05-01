@@ -34,12 +34,13 @@ namespace FGraph
 
         SENodeGroup CreateNodes(String reportUrl)
         {
-            ResourceMap.Node mapNode = this.map.GetNode(reportUrl);
-            SENodeGroup rootGroup = new SENodeGroup("root", false);
-            SENode rootNode = this.CreateResourceNode(mapNode, this.focusColor, null);
-            rootGroup.AppendNode(rootNode);
-            this.AddChildren(mapNode, rootGroup);
-            return rootGroup;
+            //ResourceMap.Node mapNode = this.map.GetNode(reportUrl);
+            //SENodeGroup rootGroup = new SENodeGroup("root", false);
+            //SENode rootNode = this.CreateResourceNode(mapNode, this.focusColor, null);
+            //rootGroup.AppendNode(rootNode);
+            //this.AddChildren(mapNode, rootGroup);
+            //return rootGroup;
+            throw new NotImplementedException();
         }
     }
 }

@@ -107,7 +107,7 @@ namespace FGraph
 
         public void ProcessLinks()
         {
-            foreach (GraphLinkByNameWrapper link in this.graphLink)
+            foreach (GraphLinkWrapper link in this.graphLink)
                 ProcessLink(link);
         }
 

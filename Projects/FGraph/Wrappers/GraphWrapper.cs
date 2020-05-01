@@ -12,28 +12,29 @@ namespace FGraph
         {
         }
 
-        public Color RequiredColorValue(String name, JToken value)
+        public Color RequiredColorValue(JToken value, String name)
         {
-            return Color.FromName(RequiredValue(name, value));
+            return Color.FromName(RequiredValue(value, name));
         }
 
-        public Color OptionalColorValue(String name, JToken value)
+        public Color OptionalColorValue(JToken value, String name)
         {
             if (value?.Value<String>() == null)
                 return Color.White;
-            return Color.FromName(RequiredValue(name, value));
+            return Color.FromName(RequiredValue(value, name));
         }
 
-        public String RequiredValue(String name, JToken value)
+        public String RequiredValue(JToken value, String name)
         {
-            if (String.IsNullOrWhiteSpace(value?.Value<String>()))
+            String retVal = OptionalValue(value, name);
+            if (String.IsNullOrEmpty(retVal))
                 throw new Exception($"Required value for '{name} is missing");
-            return value.Value<String>();
+            return retVal;
         }
 
-        public String OptionalValue(String name, JToken value)
+        public String OptionalValue(JToken value, String name)
         {
-            return value?.Value<String>();
+            return value?[name]?.Value<String>();
         }
 
     }

@@ -42,14 +42,14 @@ namespace FGraph
                 dynamic link2 = links2[i];
                 if (link1.LinkType.ToObject<String>() != link2.LinkType.ToObject<String>())
                     return true;
-                if (link1.LinkTarget.ToObject<String>() != (String) link2.LinkTarget.ToObject<String>())
+                if (link1.LinkTarget.ToObject<String>() != (String)link2.LinkTarget.ToObject<String>())
                     return true;
             }
 
             return false;
         }
 
-        String[] linkTypes = new string[] {SVGGlobal.ExtensionType, SVGGlobal.TargetType, SVGGlobal.ComponentType};
+        String[] linkTypes = new string[] { SVGGlobal.ExtensionType, SVGGlobal.TargetType, SVGGlobal.ComponentType };
 
         /*
          * Add children. If two adjacent children have same children, then dont create each in a seperate
@@ -66,14 +66,17 @@ namespace FGraph
             dynamic link,
             bool linkFlag = true)
         {
-            return CreateResourceNode(mapNode,
-                this.LinkTypeColor(link),
-                new String[] {link.CardinalityLeft?.ToString()},
-                linkFlag);
+            throw new NotImplementedException();
+            //return CreateResourceNode(mapNode,
+            //    this.LinkTypeColor(link),
+            //    new String[] { link.CardinalityLeft?.ToString() },
+            //    linkFlag);
         }
 
         protected SENode CreateResourceNode(ResourceMap.Node mapNode,
             Color color,
+            String incomingAnnotation,
+            String outgoingAnnotation,
             String[] annotations,
             bool linkFlag = true)
         {
@@ -81,7 +84,14 @@ namespace FGraph
             String hRef = null;
             if (linkFlag)
                 hRef = this.HRef(mapNode);
-            SENode node = new SENode(0, color, annotations, hRef);
+            SENode node = new SENode
+            {
+                FillColor = color,
+                HRef = hRef,
+                LhsAnnotation = incomingAnnotation,
+                RhsAnnotation = outgoingAnnotation
+            };
+
             foreach (String titlePart in mapNode.MapName)
             {
                 String s = titlePart.Trim();
@@ -215,56 +225,56 @@ namespace FGraph
             String linkSource = link.LinkSource.ToObject<String>();
             String componentHRef = link.ComponentHRef.ToObject<String>().Replace("{SDName}", linkSource.LastUriPart());
 
-            SENode node = new SENode(0,
-                this.componentColor,
-                new String[] {link.CardinalityLeft?.ToString(), link.CardinalityRight?.ToString()},
-                componentHRef);
-            node.AddTextLine(linkTargetUrl, componentHRef);
+            //SENode node = new SENode(0,
+            //    this.componentColor,
+            //    new String[] { link.CardinalityLeft?.ToString(), link.CardinalityRight?.ToString() },
+            //    componentHRef);
+            //node.AddTextLine(linkTargetUrl, componentHRef);
 
-            String types = link.Types?.ToObject<String>();
-            if (String.IsNullOrEmpty(types) == false)
-                node.AddTextLine(types, componentHRef);
-            SENodeGroup componentGroup = new SENodeGroup(node.AllText(), this.showCardinality);
-            group.AppendChild(componentGroup);
-            componentGroup.AppendNode(node);
+            //String types = link.Types?.ToObject<String>();
+            //if (String.IsNullOrEmpty(types) == false)
+            //    node.AddTextLine(types, componentHRef);
+            //SENodeGroup componentGroup = new SENodeGroup(node.AllText(), this.showCardinality);
+            //group.AppendChild(componentGroup);
+            //componentGroup.AppendNode(node);
 
-            JArray references = (JArray) link.References;
-            if (references != null)
-            {
-                SENodeGroup refGroup = new SENodeGroup("ref", true);
-                componentGroup.AppendChild(refGroup);
+            //JArray references = (JArray)link.References;
+            //if (references != null)
+            //{
+            //    SENodeGroup refGroup = new SENodeGroup("ref", true);
+            //    componentGroup.AppendChild(refGroup);
 
-                foreach (JValue item in references)
-                {
-                    String reference = item.ToObject<String>();
-                    SENode refNode;
-                    //$if (reference.ToLower().StartsWith(Global.BreastRadBaseUrl))
-                    {
-                        if (this.map.TryGetNode(reference, out ResourceMap.Node refMapNode) == false)
-                            throw new Exception($"Component resource '{reference}' not found!");
-                        refNode = this.CreateResourceNode(refMapNode,
-                            this.ReferenceColor(refMapNode),
-                            new String[0],
-                            true);
+            //    foreach (JValue item in references)
+            //    {
+            //        String reference = item.ToObject<String>();
+            //        SENode refNode;
+            //        //$if (reference.ToLower().StartsWith(Global.BreastRadBaseUrl))
+            //        {
+            //            if (this.map.TryGetNode(reference, out ResourceMap.Node refMapNode) == false)
+            //                throw new Exception($"Component resource '{reference}' not found!");
+            //            //refNode = this.CreateResourceNode(refMapNode,
+            //            //    this.ReferenceColor(refMapNode),
+            //            //    new String[0],
+            //            //    true);
 
-                        if (ShowChildren(link))
-                        {
-                            var childMapNode = this.map.GetNode(reference);
-                            this.AddChildren(childMapNode, refGroup);
-                        }
-                    }
-                    //$else
-                    {
-                        refNode = new SENode(0,
-                            this.fhirColor,
-                            new String[0],
-                            reference);
-                        refNode.AddTextLine(reference.LastUriPart(), reference);
-                    }
+            //            if (ShowChildren(link))
+            //            {
+            //                var childMapNode = this.map.GetNode(reference);
+            //                this.AddChildren(childMapNode, refGroup);
+            //            }
+            //        }
+            //        //$else
+            //        {
+            //            refNode = new SENode(0,
+            //                this.fhirColor,
+            //                new String[0],
+            //                reference);
+            //            refNode.AddTextLine(reference.LastUriPart(), reference);
+            //        }
 
-                    refGroup.AppendNode(refNode);
-                }
-            }
+            //        refGroup.AppendNode(refNode);
+                //}
+            //}
         }
     }
 }

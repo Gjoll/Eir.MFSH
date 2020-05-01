@@ -9,68 +9,24 @@ namespace FGraph
     [DebuggerDisplay("{AllText()}{Annotations()}")]
     public class SENode
     {
-        private float width;
         public List<SEText> TextLines = new List<SEText>();
-        public Color FillColor { get; } = Color.White;
-        public String HRef { get; }
+        public Color FillColor { get; set; } = Color.White;
         public String Class { get; set; }
 
-        public float Width
-        {
-            get => this.width;
-            set => this.width = value;
-        }
+        public float Width { get; set; } = 0;
+
+        public String HRef { get; set; }
+
 
         /// <summary>
         /// Annotation on the line coming into the node (at line end);
         /// </summary>
-        public String IncomingAnnotation { get; set; }
+        public String LhsAnnotation { get; set; }
 
         /// <summary>
         /// Annotation on the line leaving the node (at start of outgoing line);
         /// </summary>
-        public String OutgoingAnnotation { get; set; }
-
-        public SENode(float width,
-            String[] annotations,
-            String hRef = null)
-        {
-            this.Width = width;
-            if (annotations != null)
-            {
-                if ((annotations.Length > 0) && (annotations[0] != null))
-                    this.IncomingAnnotation = annotations[0];
-                if ((annotations.Length > 1) && (annotations[1] != null))
-                    this.OutgoingAnnotation = annotations[1];
-            }
-
-            this.HRef = hRef;
-        }
-
-        public SENode(float width,
-            Color fillColor,
-            String[] annotations,
-            String hRef = null) : this(width, annotations, hRef)
-        {
-            this.FillColor = fillColor;
-        }
-
-        public SENode()
-        {
-        }
-
-        public String Annotations()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("-");
-            if (String.IsNullOrEmpty(this.IncomingAnnotation) == false)
-                sb.Append(this.IncomingAnnotation);
-            sb.Append("-");
-            if (String.IsNullOrEmpty(this.OutgoingAnnotation) == false)
-                sb.Append(this.OutgoingAnnotation);
-
-            return sb.ToString();
-        }
+        public String RhsAnnotation { get; set; }
 
         public String AllText()
         {

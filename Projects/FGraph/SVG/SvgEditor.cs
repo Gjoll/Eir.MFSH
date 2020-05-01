@@ -229,13 +229,13 @@ namespace FGraph
                 startConnectors.Add(new EndPoint
                 {
                     Location = new PointF(screenX + nodeWidth, col1ScreenY + nodeHeight / 2),
-                    Annotation = node.OutgoingAnnotation
+                    Annotation = node.RhsAnnotation
                 });
 
                 endConnectors.Add(new EndPoint
                 {
                     Location = new PointF(screenX, col1ScreenY + nodeHeight / 2),
-                    Annotation = node.IncomingAnnotation
+                    Annotation = node.LhsAnnotation
                 });
                 col1Height += nodeHeight + this.NodeGapY;
                 col1ScreenY += nodeHeight + this.NodeGapY;

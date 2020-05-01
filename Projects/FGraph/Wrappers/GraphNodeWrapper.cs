@@ -13,6 +13,7 @@ namespace FGraph
         {
             public GraphLinkWrapper Traversal { get; set; }
             public GraphNodeWrapper Node { get; set; }
+            public String Annotation { get; set; }
         }
         public String NodeName { get; set; }
         public String DisplayName { get; set; }
@@ -23,9 +24,9 @@ namespace FGraph
 
         public GraphNodeWrapper(JToken data) : base(data)
         {
-            this.NodeName = this.RequiredValue("GraphNode.nodeName", data["nodeName"]);
-            this.DisplayName = this.RequiredValue("GraphNode.displayName", data["displayName"]);
-            this.CssClass = this.OptionalValue("GraphNode.cssClass", data["cssClass"]);
+            this.NodeName = this.RequiredValue(data, "nodeName");
+            this.DisplayName = this.RequiredValue(data, "displayName");
+            this.CssClass = this.OptionalValue(data, "cssClass");
         }
 
         public void AddChild(GraphLinkWrapper gLink, GraphNodeWrapper child)
@@ -33,7 +34,8 @@ namespace FGraph
             Link link = new Link
             {
                 Node = child,
-                Traversal = gLink
+                Traversal = gLink,
+                Annotation = gLink.TargetText
             };
             this.ChildLinks.Add(link);
         }
@@ -43,7 +45,8 @@ namespace FGraph
             Link link = new Link
             {
                 Node = parent,
-                Traversal = gLink
+                Traversal = gLink,
+                Annotation = gLink.SourceText
             };
             this.ParentLinks.Add(link);
         }

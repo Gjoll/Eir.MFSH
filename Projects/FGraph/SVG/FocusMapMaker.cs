@@ -49,8 +49,8 @@ namespace FGraph
             parentsGroup.AppendChild(focusGroup);
             focusGroup.AppendChild(childrenGroup);
             {
-                SENode node = this.CreateResourceNode(focusNode, Color.White, null, false);
-                focusGroup.AppendNode(node);
+                //SENode node = this.CreateResourceNode(focusNode, Color.White, null, false);
+                //focusGroup.AppendNode(node);
             }
             {
                 HashSet<String> alreadyLinkedResources = new HashSet<string>();
@@ -68,10 +68,10 @@ namespace FGraph
                         throw new Exception($"Resource '{parentNode.ResourceUrl}' not found!");
 
                     alreadyLinkedResources.Add(parentNode.ResourceUrl);
-                    SENode node = this.CreateResourceNode(parentNode, this.ReferenceColor(parentMapNode),
-                        new String[] {null, link.CardinalityLeft?.ToString()},
-                        true);
-                    parents.Add(node);
+                    //SENode node = this.CreateResourceNode(parentNode, this.ReferenceColor(parentMapNode),
+                    //    new String[] {null, link.CardinalityLeft?.ToString()},
+                    //    true);
+                    //parents.Add(node);
                 }
 
                 List<SENode> componentParents = new List<SENode>();
@@ -125,10 +125,12 @@ namespace FGraph
                             String componentHRef = link.ComponentHRef.ToObject<String>()
                                 .Replace("{SDName}", linkSource.LastUriPart());
 
-                            SENode node = new SENode(0,
-                                LinkTypeColor(link),
-                                new String[] {link.CardinalityLeft?.ToString()},
-                                componentHRef);
+                            SENode node = new SENode();
+                            //0,
+                            //        LinkTypeColor(link),
+                            //        new String[] {link.CardinalityLeft?.ToString()})
+                            //    .HRef(componentHRef)
+                            //    ;
                             node.AddTextLine(link.LocalName.ToObject<String>(), componentHRef);
                             node.AddTextLine("extension", componentHRef);
 
@@ -139,32 +141,33 @@ namespace FGraph
                             {
                                 SENodeGroup extGroup = new SENodeGroup("extension", true);
                                 nodeGroup.AppendChild(extGroup);
-                                SENode extNode;
+                                //SENode extNode;
                                 String extUrl = link.LinkTarget.ToObject<String>().Trim();
                                 //$if (extUrl.ToLower().StartsWith(Global.BreastRadBaseUrl))
                                 {
-                                    if (this.map.TryGetNode(extUrl, out ResourceMap.Node targetNode) == false)
-                                        throw new Exception($"Component resource '{extUrl}' not found!");
-                                    extNode = this.CreateResourceNode(targetNode, this.ReferenceColor(targetNode),
-                                        new String[] {link.CardinalityLeft?.ToString()},
-                                        true);
+                                    //if (this.map.TryGetNode(extUrl, out ResourceMap.Node targetNode) == false)
+                                    //    throw new Exception($"Component resource '{extUrl}' not found!");
+                                    //extNode = this.CreateResourceNode(targetNode, this.ReferenceColor(targetNode),
+                                    //    new String[] {link.CardinalityLeft?.ToString()},
+                                    //    true);
                                 }
                                 //$else
                                 {
-                                    String name = "";
+                                    //String name = "";
                                     //$String name = extUrl.LastUriPart()
                                     //        .TrimStart("StructureDefinition-")
                                     //        .TrimStart("ValueSet-")
                                     //        .TrimEnd(".html")
                                     //    ;
-                                    extNode = new SENode(0,
-                                        this.fhirColor,
-                                        new String[] {link.CardinalityLeft?.ToString()},
-                                        extUrl);
-                                    extNode.AddTextLine(name, extUrl);
+                                    //extNode = new SENode
+                                    //        (0,
+                                    //    this.fhirColor,
+                                    //    new String[] {link.CardinalityLeft?.ToString()},
+                                    //    extUrl);
+                                    //extNode.AddTextLine(name, extUrl);
                                 }
 
-                                extGroup.AppendNode(extNode);
+                                //extGroup.AppendNode(extNode);
                             }
                         }
                             break;
