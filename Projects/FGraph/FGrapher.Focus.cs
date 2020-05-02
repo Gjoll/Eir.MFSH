@@ -23,10 +23,10 @@ namespace FGraph
         }
 
         void RenderFocusGraph(String cssFile,
-            GraphNodeWrapper graphNode,
+            GraphNodeWrapper focusGraphNode,
             String traversalName)
         {
-            String name = graphNode.NodeName.Replace("/", "-");
+            String name = focusGraphNode.NodeName.Replace("/", "-");
             SvgEditor e = new SvgEditor($"FocusGraph_{name}");
             e.AddCssFile(cssFile);
 
@@ -37,12 +37,14 @@ namespace FGraph
             seGroupParents.AppendChild(seGroupFocus);
             seGroupFocus.AppendChild(seGroupChildren);
 
-            SENode seNode = this.CreateNode(graphNode);
-            seNode.Class = "focus";
-            seGroupFocus.AppendNode(seNode);
+            SENode focusSENode = this.CreateNode(focusGraphNode);
+            focusSENode.Class = "focus";
+            seGroupFocus.AppendNode(focusSENode);
 
-            seGroupParents.AppendNodes(TraverseParents(graphNode, seNode, "focus/*", 1));
-            seGroupFocus.AppendChildren(TraverseChildren(graphNode, seNode, "focus/*", 1));
+            seGroupParents.AppendNodes(TraverseParents(focusGraphNode, focusSENode, "focus/*", 1));
+            if (focusGraphNode.GraphValues)
+                CreateNodeValues(focusGraphNode, seGroupFocus, focusSENode);
+            seGroupFocus.AppendChildren(TraverseChildren(focusGraphNode, focusSENode, "focus/*", 1));
 
             e.Render(seGroupParents, true);
         }
@@ -75,23 +77,10 @@ namespace FGraph
         String ResolveCardinality(GraphNodeWrapper node,
             String elementId)
         {
-            String profileName = elementId.FirstPathPart();
-            if (this.profiles.TryGetValue(profileName, out var sDef) == false)
-            {
-                this.ConversionError("FGrapher",
-                    "ResolveCardinality",
-                    $"Can not find profile '{profileName}' referenced in annotation source.");
-                return null;
-            }
-
-            ElementDefinition e = sDef.FindElement(elementId);
+            ElementDefinition e = FindElementDefinition(elementId);
             if (e == null)
-            {
-                this.ConversionError("FGrapher",
-                    "ResolveCardinality",
-                    $"Can not find profile 'element {elementId}' referenced in annotation source.");
                 return null;
-            }
+
             if (e.Min.HasValue == false)
             {
                 this.ConversionError("FGrapher",
@@ -123,7 +112,6 @@ namespace FGraph
                 default:
                     return annotationSource;
             }
-            return null;
         }
 
         IEnumerable<SENode> TraverseParents(GraphNodeWrapper focusNode,
@@ -170,10 +158,50 @@ namespace FGraph
                 {
                     SENodeGroup childContainer = new SENodeGroup("Child", true);
                     SENode child = CreateNode(childLink.Node);
+                    if (childLink.Node.GraphValues)
+                        CreateNodeValues(childLink.Node, childContainer, child);
                     childContainer.AppendNode(child);
                     yield return childContainer;
                 }
             }
         }
+
+        void CreateNodeValues(GraphNodeWrapper graphNode,
+            SENodeGroup group,
+            SENode seNode)
+        {
+            ElementDefinition e = graphNode.ElementDef();
+            if (e == null)
+                return;
+            if (e.Binding != null)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (e.Pattern!= null)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (e.Fixed!= null)
+            {
+                throw new NotImplementedException();
+            }
+
+            foreach (var typeRef in e.Type)
+            {
+                switch (typeRef.Code)
+                {
+                    case "Reference":
+                        foreach (var targetRef in typeRef.TargetProfile)
+                        {
+                            throw new NotImplementedException();
+                        }
+                        break;
+                }
+            }
+
+        }
+
     }
 }

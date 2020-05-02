@@ -8,8 +8,11 @@ namespace FGraph
 {
     public class GraphWrapper
     {
-        public GraphWrapper(JToken data)
+        protected FGrapher fGraph;
+
+        public GraphWrapper(FGrapher fGraph, JToken data)
         {
+            this.fGraph = fGraph;
         }
 
         public Color RequiredColorValue(JToken value, String name)
@@ -32,18 +35,25 @@ namespace FGraph
             return retVal;
         }
 
-        public Int32 OptionalIntValue(JToken value, String name, Int32 defaultValue)
-        {
-            String optionalValue = this.OptionalValue(value, name);
-            if (String.IsNullOrEmpty(optionalValue))
-                return defaultValue;
-            return Int32.Parse(optionalValue);
-        }
-
         public String OptionalValue(JToken value, String name)
         {
             return value?[name]?.Value<String>();
         }
 
+        public Int32 OptionalIntValue(JToken value, String name, Int32 defaultValue)
+        {
+            Int32? retVal = value?[name]?.Value<Int32>();
+            if (retVal.HasValue)
+                return retVal.Value;
+            return defaultValue;
+        }
+
+        public Boolean OptionalBoolValue(JToken value, String name, bool defaultValue = false)
+        {
+            bool? retVal = value?[name]?.Value<Boolean>();
+            if (retVal.HasValue)
+                return retVal.Value;
+            return defaultValue;
+        }
     }
 }

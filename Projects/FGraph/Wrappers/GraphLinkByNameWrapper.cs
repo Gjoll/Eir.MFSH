@@ -10,7 +10,7 @@ namespace FGraph
         public String Source { get; set; }
         public String Target { get; set; }
 
-        public GraphLinkByNameWrapper(JToken data) : base(data)
+        public GraphLinkByNameWrapper(FGrapher fGraph, JToken data) : base(fGraph, data)
         {
             this.Source = this.RequiredValue(data, "source");
             this.Target = this.RequiredValue(data, "target");

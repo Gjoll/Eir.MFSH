@@ -140,12 +140,12 @@ namespace FGraph
             switch (type)
             {
                 case "graphNode":
-                    GraphNodeWrapper node = new GraphNodeWrapper(value);
+                    GraphNodeWrapper node = new GraphNodeWrapper(this, value);
                     this.graphNodes.Add(node.NodeName, node);
                     break;
 
                 case "graphLinkByName":
-                    GraphLinkByNameWrapper link = new GraphLinkByNameWrapper(value);
+                    GraphLinkByNameWrapper link = new GraphLinkByNameWrapper(this, value);
                     this.graphLink.Add(link);
                     break;
 
@@ -245,6 +245,28 @@ namespace FGraph
                 String fileName = svgEditor.Name.Replace(":", "-");
                 svgEditor.Save($"{this.outputDir}\\{fileName}.svg");
             }
+        }
+
+        public ElementDefinition FindElementDefinition(String elementId)
+        {
+            String profileName = elementId.FirstPathPart();
+            if (this.profiles.TryGetValue(profileName, out var sDef) == false)
+            {
+                this.ConversionError("FGrapher",
+                    "FindElementDefinition",
+                    $"Can not find profile '{profileName}' referenced in annotation source.");
+                return null;
+            }
+
+            ElementDefinition e = sDef.FindElement(elementId);
+            if (e == null)
+            {
+                this.ConversionError("FGrapher",
+                    "FindElementDefinition",
+                    $"Can not find profile 'element {elementId}' referenced in annotation source.");
+                return null;
+            }
+            return e;
         }
     }
 }

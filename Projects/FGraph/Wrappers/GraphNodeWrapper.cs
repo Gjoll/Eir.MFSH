@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Hl7.Fhir.Model;
 using Newtonsoft.Json.Linq;
 
 namespace FGraph
@@ -15,23 +16,26 @@ namespace FGraph
             public GraphNodeWrapper Node { get; set; }
         }
         public String NodeName { get; set; }
-        public String AnchorPath { get; set; }
+        public String ElementId { get; set; }
         public String DisplayName { get; set; }
         public String CssClass { get; set; }
+        public bool GraphValues { get; set; }
 
+        private ElementDefinition elementDef;
         public List<Link> ParentLinks { get; } = new List<Link>();
         public List<Link> ChildLinks { get; } = new List<Link>();
         public String LhsAnnotationText { get; set; }
         public String RhsAnnotationText { get; set; }
 
-        public GraphNodeWrapper(JToken data) : base(data)
+        public GraphNodeWrapper(FGrapher fGraph, JToken data) : base(fGraph, data)
         {
             this.NodeName = this.RequiredValue(data, "nodeName");
             this.DisplayName = this.RequiredValue(data, "displayName");
             this.CssClass = this.OptionalValue(data, "cssClass");
-            this.AnchorPath = this.RequiredValue(data, "anchorPath");
+            this.ElementId = this.RequiredValue(data, "elementId");
             this.LhsAnnotationText = this.OptionalValue(data, "lhsAnnotationText");
             this.RhsAnnotationText = this.OptionalValue(data, "rhsAnnotationText");
+            this.GraphValues = this.OptionalBoolValue(data, "graphValues");
         }
 
         public void AddChild(GraphLinkWrapper gLink, GraphNodeWrapper child)
@@ -53,5 +57,13 @@ namespace FGraph
             };
             this.ParentLinks.Add(link);
         }
+
+        public ElementDefinition ElementDef()
+        {
+            if (this.elementDef == null)
+                this.elementDef = this.fGraph.FindElementDefinition(this.ElementId);
+            return this.elementDef;
+        }
+
     }
 }
