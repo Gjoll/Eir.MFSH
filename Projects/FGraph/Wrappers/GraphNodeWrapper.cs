@@ -13,9 +13,9 @@ namespace FGraph
         {
             public GraphLinkWrapper Traversal { get; set; }
             public GraphNodeWrapper Node { get; set; }
-            public String Annotation { get; set; }
         }
         public String NodeName { get; set; }
+        public String AnchorPath { get; set; }
         public String DisplayName { get; set; }
         public String CssClass { get; set; }
 
@@ -27,6 +27,7 @@ namespace FGraph
             this.NodeName = this.RequiredValue(data, "nodeName");
             this.DisplayName = this.RequiredValue(data, "displayName");
             this.CssClass = this.OptionalValue(data, "cssClass");
+            this.AnchorPath = this.RequiredValue(data, "anchorPath");
         }
 
         public void AddChild(GraphLinkWrapper gLink, GraphNodeWrapper child)
@@ -34,8 +35,7 @@ namespace FGraph
             Link link = new Link
             {
                 Node = child,
-                Traversal = gLink,
-                Annotation = gLink.TargetText
+                Traversal = gLink
             };
             this.ChildLinks.Add(link);
         }
@@ -45,8 +45,7 @@ namespace FGraph
             Link link = new Link
             {
                 Node = parent,
-                Traversal = gLink,
-                Annotation = gLink.SourceText
+                Traversal = gLink
             };
             this.ParentLinks.Add(link);
         }

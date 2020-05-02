@@ -40,8 +40,8 @@ namespace FGraph
             seNode.Class = "focus";
             seGroupFocus.AppendNode(seNode);
 
-            seGroupParents.AppendNodes(TraverseParents(graphNode, seNode, "focus/*"));
-            seGroupFocus.AppendChildren(TraverseChildren(graphNode, seNode, "focus/*"));
+            seGroupParents.AppendNodes(TraverseParents(graphNode, seNode, "focus/*", 1));
+            seGroupFocus.AppendChildren(TraverseChildren(graphNode, seNode, "focus/*", 1));
 
             e.Render(seGroupParents, true);
         }
@@ -67,13 +67,38 @@ namespace FGraph
             return node;
         }
 
+        String ResolveCardinality(GraphNodeWrapper node,
+            String annotationSource)
+        {
+            String fhirPath = node.AnchorPath;
+            if (annotationSource.Length > 0)
+                fhirPath += $".{annotationSource}";
+            String profileName = annotationSource.FirstPathPart();
+            if (this.profiles.TryGetValue(profileName, out var sDef) == false)
+            {
+                this.ConversionError("FGrapher",
+                    "ResolveCardinality",
+                    $"Can not find profile '{profileName}' referenced in annotation source.");
+            }
+            return fhirPath;
+        }
+
+
         String ResolveAnnotation(GraphNodeWrapper node,
             GraphNodeWrapper.Link link,
             String annotationSource)
         {
             if (String.IsNullOrEmpty(annotationSource))
-                return annotationSource;
- 
+                return null;
+            switch (annotationSource[0])
+            {
+                case '^':
+                    ResolveCardinality(node, annotationSource.Substring(1));
+                    break;
+
+                default:
+                    return annotationSource;
+            }
             return null;
         }
 
@@ -115,7 +140,8 @@ namespace FGraph
 
         IEnumerable<SENode> TraverseParents(GraphNodeWrapper focusNode,
             SENode seFocusNode,
-            String traversalFilter)
+            String traversalFilter,
+            Int32 depth)
         {
             Regex r = new Regex(traversalFilter);
 
@@ -130,8 +156,8 @@ namespace FGraph
                     (parentNodes.Contains(parentLink.Node) == false)
                     )
                 {
-                    String parentAnnotation = ResolveAnnotation(parentLink.Node, parentLink, parentLink.Annotation);
-                    String focusAnnotation = ResolveAnnotation(focusNode, parentLink, parentLink.Annotation);
+                    String parentAnnotation = ResolveAnnotation(parentLink.Node, parentLink, parentLink.Traversal.SourceText);
+                    String focusAnnotation = ResolveAnnotation(focusNode, parentLink, parentLink.Traversal.TargetText);
 
                     SENode parent = CreateNode(parentLink.Node);
                     this.SetLhsAnnotation(seFocusNode, focusAnnotation);
@@ -143,7 +169,8 @@ namespace FGraph
 
         IEnumerable<SENodeGroup> TraverseChildren(GraphNodeWrapper focusNode,
             SENode seFocusNode,
-            String traversalFilter)
+            String traversalFilter,
+            Int32 depth)
         {
             Regex r = new Regex(traversalFilter);
 
@@ -158,8 +185,8 @@ namespace FGraph
                     (childNodes.Contains(childLink.Node) == false)
                 )
                 {
-                    String focusAnnotation = ResolveAnnotation(focusNode, childLink, childLink.Annotation);
-                    String childAnnotation = ResolveAnnotation(childLink.Node, childLink, childLink.Annotation);
+                    String focusAnnotation = ResolveAnnotation(focusNode, childLink, childLink.Traversal.SourceText);
+                    String childAnnotation = ResolveAnnotation(childLink.Node, childLink, childLink.Traversal.TargetText);
 
                     SENodeGroup childContainer = new SENodeGroup("Child", true);
                     SENode child = CreateNode(childLink.Node);

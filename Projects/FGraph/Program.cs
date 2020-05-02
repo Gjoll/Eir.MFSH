@@ -42,16 +42,22 @@ namespace FGraph
                 String arg = GetArg("arg").ToUpper();
                 switch (arg.ToLower())
                 {
+                    case "-r":
+                        this.fGrapher.LoadResources(GetArg(arg));
+                        break;
+
                     case "-g":
+                    case "-graphname":
                         if (this.fGrapher.GraphName != null)
-                            throw new Exception("-o option can only be used once.");
-                        this.fGrapher.GraphName = GetArg("-g");
+                            throw new Exception($"{arg} option can only be used once.");
+                        this.fGrapher.GraphName = GetArg(arg);
                         break;
 
                     case "-i":
+                    case "-include":
                         if (inputPath != null)
-                            throw new Exception("-i option can only be used once.");
-                        inputPath = GetArg("-i");
+                            throw new Exception($"{arg} option can only be used once.");
+                        inputPath = GetArg(arg);
                         this.fGrapher.Load(inputPath);
                         if (Directory.Exists(inputPath))
                             this.inputDir = this.inputPath;
@@ -60,13 +66,16 @@ namespace FGraph
                         break;
 
                     case "-o":
+                    case "-output":
                         if (this.fGrapher.OutputDir != null)
-                            throw new Exception("-o option can only be used once.");
-                        this.fGrapher.OutputDir = GetArg("-o");
+                            throw new Exception($"{arg}  option can only be used once.");
+                        this.fGrapher.OutputDir = GetArg(arg);
                         break;
 
-                    case "-r":
-                        this.renderings.Add(new Tuple<string, string>(GetArg("-t"), GetArg("-t")));
+                    case "-t":
+                    case "-traversal":
+                        // traversal name, CSS path
+                        this.renderings.Add(new Tuple<string, string>(GetArg(arg), GetArg(arg)));
                         break;
 
                     default:

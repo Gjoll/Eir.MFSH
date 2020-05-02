@@ -32,6 +32,14 @@ namespace FGraph
             return retVal;
         }
 
+        public Int32 OptionalIntValue(JToken value, String name, Int32 defaultValue)
+        {
+            String optionalValue = this.OptionalValue(value, name);
+            if (String.IsNullOrEmpty(optionalValue))
+                return defaultValue;
+            return Int32.Parse(optionalValue);
+        }
+
         public String OptionalValue(JToken value, String name)
         {
             return value?[name]?.Value<String>();

@@ -2,7 +2,7 @@
   "profiles": {
     "FGraph": {
       "commandName": "Project",
-      "commandLineArgs": "-g focus -i GraphFiles -o Graphs -r focus FocusGraph.css",
+      "commandLineArgs": "-g focus -i GraphFiles -o Graphs -t focus FocusGraph.css -r build\\input\\profiles -r build\\input\\vocabulary",
       "workingDirectory": "C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects"
     }
   }

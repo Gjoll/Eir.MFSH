@@ -6,6 +6,9 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using Hl7.Fhir.Model;
+using System.Globalization;
+using Hl7.Fhir.Serialization;
 
 namespace FGraph
 {
@@ -20,6 +23,10 @@ namespace FGraph
         }
         private string outputDir;
 
+        Dictionary<String, StructureDefinition> profiles = new Dictionary<String, StructureDefinition>();
+        Dictionary<String, ValueSet> valueSets = new Dictionary<String, ValueSet>();
+        Dictionary<String, CodeSystem> codeSystems = new Dictionary<String, CodeSystem>();
+
         Dictionary<String, GraphNodeWrapper> graphNodes = new Dictionary<string, GraphNodeWrapper>();
         List<GraphLinkWrapper> graphLink = new List<GraphLinkWrapper>();
 
@@ -32,6 +39,70 @@ namespace FGraph
         }
 
         public bool TryGetNodeByName(String name, out GraphNodeWrapper node) => this.graphNodes.TryGetValue(name, out node);
+
+        public void LoadResources(String path)
+        {
+            path = Path.GetFullPath(path);
+            if (Directory.Exists(path) == true)
+                LoadResourceDir(path);
+            else if (File.Exists(path))
+                LoadResourceFile(path);
+            else
+            {
+                this.ConversionError("FGrapher",
+                    "LoadResources",
+                    $"{path} not found");
+            }
+        }
+
+
+        void LoadResourceDir(String path)
+        {
+            foreach (String subDir in Directory.GetDirectories(path))
+                LoadResourceDir(subDir);
+            foreach (String file in Directory.GetFiles(path, "*.json"))
+                LoadResourceFile(file);
+            foreach (String file in Directory.GetFiles(path, "*.xml"))
+                LoadResourceFile(file);
+        }
+
+
+        void LoadResourceFile(String path)
+        {
+            DomainResource domainResource;
+            switch (Path.GetExtension(path).ToUpper(CultureInfo.InvariantCulture))
+            {
+                case ".XML":
+                    {
+                        FhirXmlParser parser = new FhirXmlParser();
+                        domainResource = parser.Parse<DomainResource>(File.ReadAllText(path));
+                        break;
+                    }
+
+                case ".JSON":
+                    {
+                        FhirJsonParser parser = new FhirJsonParser();
+                        domainResource = parser.Parse<DomainResource>(File.ReadAllText(path));
+                        break;
+                    }
+
+                default:
+                    throw new Exception($"Unknown extension for serialized fhir resource '{path}'");
+            }
+
+            switch (domainResource)
+            {
+                case StructureDefinition sDef:
+                    profiles.Add(sDef.Url.LastUriPart(), sDef);
+                    break;
+                case ValueSet valueSet:
+                    valueSets.Add(valueSet.Url, valueSet);
+                    break;
+                case CodeSystem codeSystem:
+                    codeSystems.Add(codeSystem.Url, codeSystem);
+                    break;
+            }
+        }
 
         void LoadDir(String path)
         {
