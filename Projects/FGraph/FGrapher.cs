@@ -28,7 +28,8 @@ namespace FGraph
         Dictionary<String, ValueSet> valueSets = new Dictionary<String, ValueSet>();
         Dictionary<String, CodeSystem> codeSystems = new Dictionary<String, CodeSystem>();
 
-        Dictionary<String, GraphNodeWrapper> graphNodes = new Dictionary<string, GraphNodeWrapper>();
+        Dictionary<String, GraphNodeWrapper> graphNodesByName = new Dictionary<string, GraphNodeWrapper>();
+        Dictionary<String, GraphNodeWrapper> graphNodesByElementId = new Dictionary<string, GraphNodeWrapper>();
         List<GraphLinkWrapper> graphLink = new List<GraphLinkWrapper>();
 
         List<SvgEditor> svgEditors = new List<SvgEditor>();
@@ -39,7 +40,8 @@ namespace FGraph
         {
         }
 
-        public bool TryGetNodeByName(String name, out GraphNodeWrapper node) => this.graphNodes.TryGetValue(name, out node);
+        public bool TryGetNodeByName(String name, out GraphNodeWrapper node) => this.graphNodesByName.TryGetValue(name, out node);
+        public bool TryGetNodeByElementId(String name, out GraphNodeWrapper node) => this.graphNodesByElementId.TryGetValue(name, out node);
 
         public void LoadResources(String path)
         {
@@ -142,7 +144,8 @@ namespace FGraph
                 case "graphNode":
                     {
                         GraphNodeWrapper node = new GraphNodeWrapper(this, value);
-                        this.graphNodes.Add(node.NodeName, node);
+                        this.graphNodesByName.Add(node.NodeName, node);
+                        this.graphNodesByElementId.Add(node.ElementId, node);
                     }
                     break;
 
@@ -200,7 +203,7 @@ namespace FGraph
         {
             List<GraphNodeWrapper> retVal = new List<GraphNodeWrapper>();
             Regex r = new Regex(name);
-            foreach (GraphNodeWrapper graphNode in graphNodes.Values)
+            foreach (GraphNodeWrapper graphNode in this.graphNodesByName.Values)
             {
                 if (r.IsMatch(graphNode.NodeName))
                     retVal.Add(graphNode);
@@ -234,20 +237,22 @@ namespace FGraph
 
         void ProcessLink(GraphLinkByReferenceWrapper link)
         {
-            void CreateLink(GraphNodeWrapper graphNode,
+            void CreateLink(GraphNodeWrapper sourceNode,
                 String elementId)
             {
-                if (graphNode.ElementId.FirstPathPart() != elementId.FirstPathPart())
+                if (sourceNode.ElementId.FirstPathPart() != elementId.FirstPathPart())
                 {
                     this.ConversionError("FGrapher",
                         "ProcessLink",
-                        $"Invalid reference element id. ElementId '{elementId}' is not an element of source profile '{graphNode.ElementId.FirstPathPart()}");
+                        $"Invalid reference element id. ElementId '{elementId}' is not an element of source profile '{sourceNode.ElementId.FirstPathPart()}");
                     return;
                 }
 
                 ElementDefinition e = FindElementDefinition(elementId);
                 if (e == null)
                     return;
+
+                sourceNode.RhsAnnotationText = $"{e.Min.Value}..{e.Max}";
                 if (e.Binding != null)
                 {
                     this.ConversionWarn("FGrapher",
@@ -274,11 +279,19 @@ namespace FGraph
                     switch (typeRef.Code)
                     {
                         case "Reference":
-                            foreach (var targetRef in typeRef.TargetProfile)
+                            foreach (String targetRef in typeRef.TargetProfile)
                             {
-                                this.ConversionWarn("FGrapher",
-                                    "ProcessLink",
-                                    $"ElementId '{elementId}' target reference is not implemented");
+                                String profileName = targetRef.LastUriPart();
+                                if (this.TryGetNodeByElementId(profileName, out GraphNodeWrapper targetNode) == false)
+                                {
+                                    this.ConversionError("FGrapher",
+                                        "FindElementDefinition",
+                                        $"Can not find profile '{profileName}' referenced in annotation source.");
+                                    return;
+                                }
+
+                                sourceNode.AddChild(link, targetNode);
+                                targetNode.AddParent(link, sourceNode);
                             }
                             break;
                     }

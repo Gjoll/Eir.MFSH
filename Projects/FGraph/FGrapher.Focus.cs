@@ -16,7 +16,7 @@ namespace FGraph
     {
         public void RenderFocusGraphs(String cssFile)
         {
-            foreach (GraphNodeWrapper node in this.graphNodes.Values)
+            foreach (GraphNodeWrapper node in this.graphNodesByName.Values)
             {
                 this.RenderFocusGraph(cssFile, node, $"focus/{node.NodeName.FirstSlashPart()}");
             }
