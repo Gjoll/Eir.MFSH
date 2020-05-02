@@ -19,7 +19,6 @@ namespace FGraph
         public String ElementId { get; set; }
         public String DisplayName { get; set; }
         public String CssClass { get; set; }
-        public bool GraphValues { get; set; }
 
         private ElementDefinition elementDef;
         public List<Link> ParentLinks { get; } = new List<Link>();
@@ -35,7 +34,6 @@ namespace FGraph
             this.ElementId = this.RequiredValue(data, "elementId");
             this.LhsAnnotationText = this.OptionalValue(data, "lhsAnnotationText");
             this.RhsAnnotationText = this.OptionalValue(data, "rhsAnnotationText");
-            this.GraphValues = this.OptionalBoolValue(data, "graphValues");
         }
 
         public void AddChild(GraphLinkWrapper gLink, GraphNodeWrapper child)

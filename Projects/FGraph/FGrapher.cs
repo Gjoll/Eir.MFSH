@@ -140,13 +140,24 @@ namespace FGraph
             switch (type)
             {
                 case "graphNode":
-                    GraphNodeWrapper node = new GraphNodeWrapper(this, value);
-                    this.graphNodes.Add(node.NodeName, node);
+                    {
+                        GraphNodeWrapper node = new GraphNodeWrapper(this, value);
+                        this.graphNodes.Add(node.NodeName, node);
+                    }
+                    break;
+
+                case "graphLinkByReference":
+                    {
+                        GraphLinkByReferenceWrapper link = new GraphLinkByReferenceWrapper(this, value);
+                        this.graphLink.Add(link);
+                    }
                     break;
 
                 case "graphLinkByName":
-                    GraphLinkByNameWrapper link = new GraphLinkByNameWrapper(this, value);
-                    this.graphLink.Add(link);
+                    {
+                        GraphLinkByNameWrapper link = new GraphLinkByNameWrapper(this, value);
+                        this.graphLink.Add(link);
+                    }
                     break;
 
                 default:
@@ -212,8 +223,77 @@ namespace FGraph
                     ProcessLink(linkByName);
                     break;
 
+                case GraphLinkByReferenceWrapper linkByRef:
+                    ProcessLink(linkByRef);
+                    break;
+
                 default:
                     throw new NotImplementedException($"Unimplemented link type.");
+            }
+        }
+
+        void ProcessLink(GraphLinkByReferenceWrapper link)
+        {
+            void CreateLink(GraphNodeWrapper graphNode,
+                String elementId)
+            {
+                if (graphNode.ElementId.FirstPathPart() != elementId.FirstPathPart())
+                {
+                    this.ConversionError("FGrapher",
+                        "ProcessLink",
+                        $"Invalid reference element id. ElementId '{elementId}' is not an element of source profile '{graphNode.ElementId.FirstPathPart()}");
+                    return;
+                }
+
+                ElementDefinition e = FindElementDefinition(elementId);
+                if (e == null)
+                    return;
+                if (e.Binding != null)
+                {
+                    this.ConversionWarn("FGrapher",
+                        "ProcessLink",
+                        $"ElementId '{elementId}' binding reference is not implemented");
+                }
+
+                if (e.Pattern != null)
+                {
+                    this.ConversionWarn("FGrapher",
+                        "ProcessLink",
+                        $"ElementId '{elementId}' pattern reference is not implemented");
+                }
+
+                if (e.Fixed != null)
+                {
+                    this.ConversionWarn("FGrapher",
+                        "ProcessLink",
+                        $"ElementId '{elementId}' fixed reference is not implemented");
+                }
+
+                foreach (var typeRef in e.Type)
+                {
+                    switch (typeRef.Code)
+                    {
+                        case "Reference":
+                            foreach (var targetRef in typeRef.TargetProfile)
+                            {
+                                this.ConversionWarn("FGrapher",
+                                    "ProcessLink",
+                                    $"ElementId '{elementId}' target reference is not implemented");
+                            }
+                            break;
+                    }
+                }
+            }
+
+            List<GraphNodeWrapper> sources = FindNamedNodes(link.Source);
+
+            foreach (GraphNodeWrapper sourceNode in sources)
+            {
+                // make absolute element id.
+                String elementId = link.ElementId;
+                if (elementId.StartsWith("."))
+                    elementId = sourceNode.ElementId + elementId;
+                CreateLink(sourceNode, elementId);
             }
         }
 

@@ -42,8 +42,6 @@ namespace FGraph
             seGroupFocus.AppendNode(focusSENode);
 
             seGroupParents.AppendNodes(TraverseParents(focusGraphNode, focusSENode, "focus/*", 1));
-            if (focusGraphNode.GraphValues)
-                CreateNodeValues(focusGraphNode, seGroupFocus, focusSENode);
             seGroupFocus.AppendChildren(TraverseChildren(focusGraphNode, focusSENode, "focus/*", 1));
 
             e.Render(seGroupParents, true);
@@ -158,50 +156,10 @@ namespace FGraph
                 {
                     SENodeGroup childContainer = new SENodeGroup("Child", true);
                     SENode child = CreateNode(childLink.Node);
-                    if (childLink.Node.GraphValues)
-                        CreateNodeValues(childLink.Node, childContainer, child);
                     childContainer.AppendNode(child);
                     yield return childContainer;
                 }
             }
         }
-
-        void CreateNodeValues(GraphNodeWrapper graphNode,
-            SENodeGroup group,
-            SENode seNode)
-        {
-            ElementDefinition e = graphNode.ElementDef();
-            if (e == null)
-                return;
-            if (e.Binding != null)
-            {
-                throw new NotImplementedException();
-            }
-
-            if (e.Pattern!= null)
-            {
-                throw new NotImplementedException();
-            }
-
-            if (e.Fixed!= null)
-            {
-                throw new NotImplementedException();
-            }
-
-            foreach (var typeRef in e.Type)
-            {
-                switch (typeRef.Code)
-                {
-                    case "Reference":
-                        foreach (var targetRef in typeRef.TargetProfile)
-                        {
-                            throw new NotImplementedException();
-                        }
-                        break;
-                }
-            }
-
-        }
-
     }
 }
