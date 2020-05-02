@@ -11,9 +11,11 @@ namespace FGraph
         {
             String baseName = sd.Snapshot.Element[0].Path;
             Int32 index = id.IndexOf('.');
-            if (index < 0)
-                throw new Exception("Invalid id '{id}'");
-            String normName = baseName + id.Substring(index);
+            String normName;
+            if (index > 0)
+                normName = baseName + id.Substring(index);
+            else
+                normName = baseName;
             foreach (ElementDefinition e in sd.Snapshot.Element)
             {
                 if (e.ElementId == normName)

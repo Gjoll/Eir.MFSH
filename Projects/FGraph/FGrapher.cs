@@ -304,7 +304,9 @@ namespace FGraph
             {
                 // make absolute element id.
                 String elementId = link.ElementId;
-                if (elementId.StartsWith("."))
+                if (String.IsNullOrEmpty(elementId))
+                    elementId = sourceNode.ElementId;
+                else if (elementId.StartsWith("."))
                     elementId = sourceNode.ElementId + elementId;
                 CreateLink(sourceNode, elementId);
             }

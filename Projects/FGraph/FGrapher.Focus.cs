@@ -18,15 +18,16 @@ namespace FGraph
         {
             foreach (GraphNodeWrapper node in this.graphNodesByName.Values)
             {
-                this.RenderFocusGraph(cssFile, node, $"focus/{node.NodeName.FirstSlashPart()}");
+                if (node.ElementId.Contains('.') == false)
+                    this.RenderFocusGraph(node.ElementId, cssFile, node, $"focus/{node.NodeName.FirstSlashPart()}");
             }
         }
 
-        void RenderFocusGraph(String cssFile,
+        void RenderFocusGraph(String name,
+            String cssFile,
             GraphNodeWrapper focusGraphNode,
             String traversalName)
         {
-            String name = focusGraphNode.NodeName.Replace("/", "-");
             SvgEditor e = new SvgEditor($"FocusGraph_{name}");
             e.AddCssFile(cssFile);
 
@@ -150,6 +151,7 @@ namespace FGraph
             foreach (GraphNodeWrapper.Link childLink in focusNode.ChildLinks)
             {
                 if (
+                    (childLink.Traversal.Depth <= depth) &&
                     (r.IsMatch(childLink.Traversal.TraversalName)) &&
                     (childNodes.Contains(childLink.Node) == false)
                 )
@@ -157,6 +159,11 @@ namespace FGraph
                     SENodeGroup childContainer = new SENodeGroup("Child", true);
                     SENode child = CreateNode(childLink.Node);
                     childContainer.AppendNode(child);
+
+                    childContainer.AppendChildren(TraverseChildren(childLink.Node,
+                        child, 
+                        traversalFilter,
+                        depth - childLink.Traversal.Depth));
                     yield return childContainer;
                 }
             }

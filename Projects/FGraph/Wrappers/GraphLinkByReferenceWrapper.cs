@@ -26,7 +26,7 @@ namespace FGraph
         public GraphLinkByReferenceWrapper(FGrapher fGraph, JToken data) : base(fGraph, data)
         {
             this.Source = this.RequiredValue(data, "source");
-            this.ElementId = this.RequiredValue(data, "elementId");
+            this.ElementId = this.OptionalValue(data, "elementId");
         }
     }
 }
