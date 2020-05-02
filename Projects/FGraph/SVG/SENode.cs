@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FGraph
 {
-    [DebuggerDisplay("{AllText()}{Annotations()}")]
+    [DebuggerDisplay("{AllText()}/{LhsAnnotation}/{RhsAnnotation}")]
     public class SENode
     {
         public List<SEText> TextLines = new List<SEText>();

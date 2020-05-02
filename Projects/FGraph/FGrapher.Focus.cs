@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using System.Drawing;
 using FGraph.Extensions;
+using Hl7.Fhir.Model;
 
 namespace FGraph
 {
@@ -64,28 +65,52 @@ namespace FGraph
                 String s = titlePart.Trim();
                 node.AddTextLine(s, hRef);
             }
+
+            node.LhsAnnotation = ResolveAnnotation(graphNode, graphNode.LhsAnnotationText);
+            node.RhsAnnotation = ResolveAnnotation(graphNode, graphNode.RhsAnnotationText);
+            
             return node;
         }
 
         String ResolveCardinality(GraphNodeWrapper node,
-            String annotationSource)
+            String elementId)
         {
-            String fhirPath = node.AnchorPath;
-            if (annotationSource.Length > 0)
-                fhirPath += $".{annotationSource}";
-            String profileName = annotationSource.FirstPathPart();
+            String profileName = elementId.FirstPathPart();
             if (this.profiles.TryGetValue(profileName, out var sDef) == false)
             {
                 this.ConversionError("FGrapher",
                     "ResolveCardinality",
                     $"Can not find profile '{profileName}' referenced in annotation source.");
+                return null;
             }
-            return fhirPath;
+
+            ElementDefinition e = sDef.FindElement(elementId);
+            if (e == null)
+            {
+                this.ConversionError("FGrapher",
+                    "ResolveCardinality",
+                    $"Can not find profile 'element {elementId}' referenced in annotation source.");
+                return null;
+            }
+            if (e.Min.HasValue == false)
+            {
+                this.ConversionError("FGrapher",
+                    "ResolveCardinality",
+                    $"element {elementId}' min cardinality is empty");
+                return null;
+            }
+            if (String.IsNullOrWhiteSpace(e.Max) == true)
+            {
+                this.ConversionError("FGrapher",
+                    "ResolveCardinality",
+                    $"element {elementId}' max cardinality is empty");
+                return null;
+            }
+            return $"{e.Min.Value}..{e.Max}";
         }
 
 
         String ResolveAnnotation(GraphNodeWrapper node,
-            GraphNodeWrapper.Link link,
             String annotationSource)
         {
             if (String.IsNullOrEmpty(annotationSource))
@@ -93,49 +118,12 @@ namespace FGraph
             switch (annotationSource[0])
             {
                 case '^':
-                    ResolveCardinality(node, annotationSource.Substring(1));
-                    break;
+                    return ResolveCardinality(node, annotationSource.Substring(1));
 
                 default:
                     return annotationSource;
             }
             return null;
-        }
-
-        void SetLhsAnnotation(SENode node, String text)
-        {
-            //text = "lhs";
-            if (String.IsNullOrEmpty(text))
-                return;
-
-            if (String.IsNullOrEmpty(node.LhsAnnotation) == false)
-            {
-                if (String.Compare(node.LhsAnnotation, text, StringComparison.InvariantCulture) != 0)
-                {
-                    this.ConversionWarn("FGrapher",
-                        "SetLHSAnnotation",
-                        $"Node {node.AllText()}. LHS Annotation '{node.LhsAnnotation}' overwritten by '{text}");
-                }
-            }
-            node.LhsAnnotation = text;
-        }
-
-        void SetRhsAnnotation(SENode node, String text)
-        {
-            //text = "rhs";
-            if (String.IsNullOrEmpty(text))
-                return;
-
-            if (String.IsNullOrEmpty(node.RhsAnnotation) == false)
-            {
-                if (String.Compare(node.RhsAnnotation, text, StringComparison.InvariantCulture) != 0)
-                {
-                    this.ConversionWarn("FGrapher",
-                        "SetRhsAnnotation",
-                        $"Node {node.AllText()}. RHS Annotation '{node.RhsAnnotation}' overwritten by '{text}");
-                }
-            }
-            node.RhsAnnotation = text;
         }
 
         IEnumerable<SENode> TraverseParents(GraphNodeWrapper focusNode,
@@ -156,12 +144,7 @@ namespace FGraph
                     (parentNodes.Contains(parentLink.Node) == false)
                     )
                 {
-                    String parentAnnotation = ResolveAnnotation(parentLink.Node, parentLink, parentLink.Traversal.SourceText);
-                    String focusAnnotation = ResolveAnnotation(focusNode, parentLink, parentLink.Traversal.TargetText);
-
                     SENode parent = CreateNode(parentLink.Node);
-                    this.SetLhsAnnotation(seFocusNode, focusAnnotation);
-                    this.SetRhsAnnotation(parent, parentAnnotation);
                     yield return parent;
                 }
             }
@@ -185,18 +168,12 @@ namespace FGraph
                     (childNodes.Contains(childLink.Node) == false)
                 )
                 {
-                    String focusAnnotation = ResolveAnnotation(focusNode, childLink, childLink.Traversal.SourceText);
-                    String childAnnotation = ResolveAnnotation(childLink.Node, childLink, childLink.Traversal.TargetText);
-
                     SENodeGroup childContainer = new SENodeGroup("Child", true);
                     SENode child = CreateNode(childLink.Node);
-                    this.SetRhsAnnotation(seFocusNode, focusAnnotation);
-                    this.SetLhsAnnotation(child, childAnnotation);
                     childContainer.AppendNode(child);
                     yield return childContainer;
                 }
             }
         }
-
     }
 }

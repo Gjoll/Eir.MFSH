@@ -21,6 +21,8 @@ namespace FGraph
 
         public List<Link> ParentLinks { get; } = new List<Link>();
         public List<Link> ChildLinks { get; } = new List<Link>();
+        public String LhsAnnotationText { get; set; }
+        public String RhsAnnotationText { get; set; }
 
         public GraphNodeWrapper(JToken data) : base(data)
         {
@@ -28,6 +30,8 @@ namespace FGraph
             this.DisplayName = this.RequiredValue(data, "displayName");
             this.CssClass = this.OptionalValue(data, "cssClass");
             this.AnchorPath = this.RequiredValue(data, "anchorPath");
+            this.LhsAnnotationText = this.OptionalValue(data, "lhsAnnotationText");
+            this.RhsAnnotationText = this.OptionalValue(data, "rhsAnnotationText");
         }
 
         public void AddChild(GraphLinkWrapper gLink, GraphNodeWrapper child)

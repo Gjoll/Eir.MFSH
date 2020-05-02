@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Hl7.Fhir.Model;
 using System.Globalization;
 using Hl7.Fhir.Serialization;
+using FhirKhit.Tools.R4;
 
 namespace FGraph
 {
@@ -93,6 +94,8 @@ namespace FGraph
             switch (domainResource)
             {
                 case StructureDefinition sDef:
+                    if (sDef.Snapshot == null)
+                        SnapshotCreator.Create(sDef);
                     profiles.Add(sDef.Url.LastUriPart(), sDef);
                     break;
                 case ValueSet valueSet:
