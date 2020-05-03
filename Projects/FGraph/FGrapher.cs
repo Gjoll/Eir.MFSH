@@ -248,15 +248,19 @@ namespace FGraph
                     return;
                 }
 
-                ElementDefinition e = FindElementDefinition(elementId);
-                if (e == null)
+                ElementDefinition elementDiff = this.FindDiffElement(elementId);
+                if (elementDiff == null)
                     return;
 
-                if (e.Binding != null)
+                ElementDefinition elementSnap = this.FindSnapElement(elementId);
+                if (elementSnap == null)
+                    return;
+
+                if (elementDiff.Binding != null)
                 {
                     GraphNodeWrapper targetNode = new GraphNodeWrapper(this);
-                    targetNode.DisplayName = e.Binding.ValueSet.LastPathPart();
-                    if (this.valueSets.TryGetValue(e.Binding.ValueSet, out ValueSet vs) == true)
+                    targetNode.DisplayName = elementDiff.Binding.ValueSet.LastPathPart();
+                    if (this.valueSets.TryGetValue(elementDiff.Binding.ValueSet, out ValueSet vs) == true)
                     {
                         targetNode.DisplayName = vs.Name;
                     }
@@ -266,28 +270,44 @@ namespace FGraph
                     targetNode.AddParent(link, 0, sourceNode);
                 }
 
-                if (e.Pattern != null)
+                if (elementDiff.Pattern != null)
                 {
+                    GraphNodeWrapper targetNode = new GraphNodeWrapper(this);
+                    targetNode.LhsAnnotationText = "pattern";
+                    sourceNode.AddChild(link, 0, targetNode);
+                    targetNode.AddParent(link, 0, sourceNode);
+
+                    switch (elementDiff.Pattern)
+                    {
+                        case CodeableConcept codeableConcept:
+                            targetNode.DisplayName += elementDiff.Pattern.ToString();
+                            break;
+
+                        default:
+                            targetNode.DisplayName += elementDiff.Pattern.ToString();
+                            break;
+                    }
+
                     this.ConversionWarn("FGrapher",
                         "ProcessLink",
                         $"ElementId '{elementId}' pattern reference is not implemented");
                 }
 
-                if (e.Fixed != null)
+                if (elementDiff.Fixed != null)
                 {
                     this.ConversionWarn("FGrapher",
                         "ProcessLink",
                         $"ElementId '{elementId}' fixed reference is not implemented");
                 }
 
-                foreach (var typeRef in e.Type)
+                foreach (var typeRef in elementDiff.Type)
                 {
                     switch (typeRef.Code)
                     {
                         case "Reference":
                             foreach (String targetRef in typeRef.TargetProfile)
                             {
-                                sourceNode.RhsAnnotationText = $"{e.Min.Value}..{e.Max}";
+                                sourceNode.RhsAnnotationText = $"{elementSnap.Min.Value}..{elementSnap.Max}";
                                 String profileName = targetRef.LastUriPart();
                                 if (this.TryGetNodeByElementId(profileName, out GraphNodeWrapper targetNode) == false)
                                 {
@@ -349,22 +369,48 @@ namespace FGraph
             }
         }
 
-        public ElementDefinition FindElementDefinition(String elementId)
+        public ElementDefinition FindSnapElement(String elementId)
         {
+            const String fcn = "FindDiffElement";
+
             String profileName = elementId.FirstPathPart();
             if (this.profiles.TryGetValue(profileName, out var sDef) == false)
             {
                 this.ConversionError("FGrapher",
-                    "FindElementDefinition",
+                    fcn,
                     $"Can not find profile '{profileName}' referenced in annotation source.");
                 return null;
             }
 
-            ElementDefinition e = sDef.FindElement(elementId);
+            ElementDefinition e = sDef.FindSnapElement(elementId);
             if (e == null)
             {
                 this.ConversionError("FGrapher",
-                    "FindElementDefinition",
+                    fcn,
+                    $"Can not find profile 'element {elementId}' referenced in annotation source.");
+                return null;
+            }
+            return e;
+        }
+
+        public ElementDefinition FindDiffElement(String elementId)
+        {
+            const String fcn = "FindDiffElement";
+
+            String profileName = elementId.FirstPathPart();
+            if (this.profiles.TryGetValue(profileName, out var sDef) == false)
+            {
+                this.ConversionError("FGrapher",
+                    fcn,
+                    $"Can not find profile '{profileName}' referenced in annotation source.");
+                return null;
+            }
+
+            ElementDefinition e = sDef.FindDiffElement(elementId);
+            if (e == null)
+            {
+                this.ConversionError("FGrapher",
+                    fcn,
                     $"Can not find profile 'element {elementId}' referenced in annotation source.");
                 return null;
             }

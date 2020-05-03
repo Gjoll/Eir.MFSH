@@ -98,7 +98,7 @@ namespace FGraph
         String ResolveCardinality(GraphNodeWrapper node,
             String elementId)
         {
-            ElementDefinition e = FindElementDefinition(elementId);
+            ElementDefinition e = this.FindSnapElement(elementId);
             if (e == null)
                 return null;
 

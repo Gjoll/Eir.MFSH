@@ -22,7 +22,6 @@ namespace FGraph
         public String DisplayName { get; set; }
         public String CssClass { get; set; }
 
-        private ElementDefinition elementDef;
         public List<Link> ParentLinks { get; } = new List<Link>();
         public List<Link> ChildLinks { get; } = new List<Link>();
         public String LhsAnnotationText { get; set; }
@@ -64,13 +63,5 @@ namespace FGraph
             };
             this.ParentLinks.Add(link);
         }
-
-        public ElementDefinition ElementDef()
-        {
-            if (this.elementDef == null)
-                this.elementDef = this.fGraph.FindElementDefinition(this.ElementId);
-            return this.elementDef;
-        }
-
     }
 }
