@@ -16,7 +16,7 @@ namespace FGraph
     {
         public void RenderFocusGraphs(String cssFile)
         {
-            foreach (GraphNodeWrapper node in this.graphNodesByName.Values)
+            foreach (GraphNode node in this.graphNodesByName.Values)
             {
                 if (node.ElementId.Contains('.') == false)
                     this.RenderFocusGraph(node.ElementId, cssFile, node, $"focus/{node.NodeName.FirstSlashPart()}");
@@ -25,7 +25,7 @@ namespace FGraph
 
         void RenderFocusGraph(String name,
             String cssFile,
-            GraphNodeWrapper focusGraphNode,
+            GraphNode focusGraphNode,
             String traversalName)
         {
             SvgEditor e = new SvgEditor($"FocusGraph_{name}");
@@ -70,7 +70,7 @@ namespace FGraph
             return node;
         }
 
-        protected SENode CreateNode(GraphNodeWrapper graphNode)
+        protected SENode CreateNode(GraphNode graphNode)
         {
             String hRef = null;
             //$if (linkFlag)
@@ -95,7 +95,7 @@ namespace FGraph
             return node;
         }
 
-        String ResolveCardinality(GraphNodeWrapper node,
+        String ResolveCardinality(GraphNode node,
             String elementId)
         {
             ElementDefinition e = this.FindSnapElement(elementId);
@@ -120,7 +120,7 @@ namespace FGraph
         }
 
 
-        String ResolveAnnotation(GraphNodeWrapper node,
+        String ResolveAnnotation(GraphNode node,
             String annotationSource)
         {
             if (String.IsNullOrEmpty(annotationSource))
@@ -135,18 +135,18 @@ namespace FGraph
             }
         }
 
-        IEnumerable<SENode> TraverseParents(GraphNodeWrapper focusNode,
+        IEnumerable<SENode> TraverseParents(GraphNode focusNode,
             SENode seFocusNode,
             String traversalFilter,
             Int32 depth)
         {
             Regex r = new Regex(traversalFilter);
 
-            HashSet<GraphNodeWrapper> parentNodes = new HashSet<GraphNodeWrapper>();
+            HashSet<GraphNode> parentNodes = new HashSet<GraphNode>();
             parentNodes.Add(focusNode);
             focusNode.ParentLinks.SortByTraversalName();
 
-            foreach (GraphNodeWrapper.Link parentLink in focusNode.ParentLinks)
+            foreach (GraphNode.Link parentLink in focusNode.ParentLinks)
             {
                 if (
                     (r.IsMatch(parentLink.Traversal.TraversalName)) &&
@@ -159,18 +159,18 @@ namespace FGraph
             }
         }
 
-        IEnumerable<SENodeGroup> TraverseChildren(GraphNodeWrapper focusNode,
+        IEnumerable<SENodeGroup> TraverseChildren(GraphNode focusNode,
             SENode seFocusNode,
             String traversalFilter,
             Int32 depth)
         {
             Regex r = new Regex(traversalFilter);
 
-            HashSet<GraphNodeWrapper> childNodes = new HashSet<GraphNodeWrapper>();
+            HashSet<GraphNode> childNodes = new HashSet<GraphNode>();
             childNodes.Add(focusNode);
             focusNode.ChildLinks.SortByTraversalName();
 
-            foreach (GraphNodeWrapper.Link childLink in focusNode.ChildLinks)
+            foreach (GraphNode.Link childLink in focusNode.ChildLinks)
             {
                 if (
                     (childLink.Depth <= depth) &&

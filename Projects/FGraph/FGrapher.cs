@@ -28,9 +28,9 @@ namespace FGraph
         Dictionary<String, ValueSet> valueSets = new Dictionary<String, ValueSet>();
         Dictionary<String, CodeSystem> codeSystems = new Dictionary<String, CodeSystem>();
 
-        Dictionary<String, GraphNodeWrapper> graphNodesByName = new Dictionary<string, GraphNodeWrapper>();
-        Dictionary<String, GraphNodeWrapper> graphNodesByElementId = new Dictionary<string, GraphNodeWrapper>();
-        List<GraphLinkWrapper> graphLink = new List<GraphLinkWrapper>();
+        Dictionary<String, GraphNode> graphNodesByName = new Dictionary<string, GraphNode>();
+        Dictionary<String, GraphNode> graphNodesByElementId = new Dictionary<string, GraphNode>();
+        List<GraphLink> graphLink = new List<GraphLink>();
 
         List<SvgEditor> svgEditors = new List<SvgEditor>();
 
@@ -40,8 +40,8 @@ namespace FGraph
         {
         }
 
-        public bool TryGetNodeByName(String name, out GraphNodeWrapper node) => this.graphNodesByName.TryGetValue(name, out node);
-        public bool TryGetNodeByElementId(String name, out GraphNodeWrapper node) => this.graphNodesByElementId.TryGetValue(name, out node);
+        public bool TryGetNodeByName(String name, out GraphNode node) => this.graphNodesByName.TryGetValue(name, out node);
+        public bool TryGetNodeByElementId(String name, out GraphNode node) => this.graphNodesByElementId.TryGetValue(name, out node);
 
         public void LoadResources(String path)
         {
@@ -143,7 +143,7 @@ namespace FGraph
             {
                 case "graphNode":
                     {
-                        GraphNodeWrapper node = new GraphNodeWrapper(this, value);
+                        GraphNode node = new GraphNode(this, value);
                         this.graphNodesByName.Add(node.NodeName, node);
                         this.graphNodesByElementId.Add(node.ElementId, node);
                     }
@@ -151,14 +151,14 @@ namespace FGraph
 
                 case "graphLinkByReference":
                     {
-                        GraphLinkByReferenceWrapper link = new GraphLinkByReferenceWrapper(this, value);
+                        GraphLinkByReference link = new GraphLinkByReference(this, value);
                         this.graphLink.Add(link);
                     }
                     break;
 
                 case "graphLinkByName":
                     {
-                        GraphLinkByNameWrapper link = new GraphLinkByNameWrapper(this, value);
+                        GraphLinkByName link = new GraphLinkByName(this, value);
                         this.graphLink.Add(link);
                     }
                     break;
@@ -195,15 +195,15 @@ namespace FGraph
 
         public void ProcessLinks()
         {
-            foreach (GraphLinkWrapper link in this.graphLink)
+            foreach (GraphLink link in this.graphLink)
                 ProcessLink(link);
         }
 
-        List<GraphNodeWrapper> FindNamedNodes(String name)
+        List<GraphNode> FindNamedNodes(String name)
         {
-            List<GraphNodeWrapper> retVal = new List<GraphNodeWrapper>();
+            List<GraphNode> retVal = new List<GraphNode>();
             Regex r = new Regex(name);
-            foreach (GraphNodeWrapper graphNode in this.graphNodesByName.Values)
+            foreach (GraphNode graphNode in this.graphNodesByName.Values)
             {
                 if (r.IsMatch(graphNode.NodeName))
                     retVal.Add(graphNode);
@@ -218,15 +218,15 @@ namespace FGraph
             return retVal;
         }
 
-        void ProcessLink(GraphLinkWrapper link)
+        void ProcessLink(GraphLink link)
         {
             switch (link)
             {
-                case GraphLinkByNameWrapper linkByName:
+                case GraphLinkByName linkByName:
                     ProcessLink(linkByName);
                     break;
 
-                case GraphLinkByReferenceWrapper linkByRef:
+                case GraphLinkByReference linkByRef:
                     ProcessLink(linkByRef);
                     break;
 
@@ -235,9 +235,9 @@ namespace FGraph
             }
         }
 
-        void ProcessLink(GraphLinkByReferenceWrapper link)
+        void ProcessLink(GraphLinkByReference link)
         {
-            void CreateLink(GraphNodeWrapper sourceNode,
+            void CreateLink(GraphNode sourceNode,
                 String elementId)
             {
                 if (sourceNode.ElementId.FirstPathPart() != elementId.FirstPathPart())
@@ -258,7 +258,7 @@ namespace FGraph
 
                 if (elementDiff.Binding != null)
                 {
-                    GraphNodeWrapper targetNode = new GraphNodeWrapper(this);
+                    GraphNode targetNode = new GraphNode(this);
                     targetNode.DisplayName = elementDiff.Binding.ValueSet.LastPathPart();
                     if (this.valueSets.TryGetValue(elementDiff.Binding.ValueSet, out ValueSet vs) == true)
                     {
@@ -272,7 +272,7 @@ namespace FGraph
 
                 if (elementDiff.Pattern != null)
                 {
-                    GraphNodeWrapper targetNode = new GraphNodeWrapper(this);
+                    GraphNode targetNode = new GraphNode(this);
                     targetNode.LhsAnnotationText = "pattern";
                     sourceNode.AddChild(link, 0, targetNode);
                     targetNode.AddParent(link, 0, sourceNode);
@@ -309,7 +309,7 @@ namespace FGraph
                             {
                                 sourceNode.RhsAnnotationText = $"{elementSnap.Min.Value}..{elementSnap.Max}";
                                 String profileName = targetRef.LastUriPart();
-                                if (this.TryGetNodeByElementId(profileName, out GraphNodeWrapper targetNode) == false)
+                                if (this.TryGetNodeByElementId(profileName, out GraphNode targetNode) == false)
                                 {
                                     this.ConversionError("FGrapher",
                                         "FindElementDefinition",
@@ -325,9 +325,9 @@ namespace FGraph
                 }
             }
 
-            List<GraphNodeWrapper> sources = FindNamedNodes(link.Source);
+            List<GraphNode> sources = FindNamedNodes(link.Source);
 
-            foreach (GraphNodeWrapper sourceNode in sources)
+            foreach (GraphNode sourceNode in sources)
             {
                 // make absolute element id.
                 String elementId = link.ElementId;
@@ -339,10 +339,10 @@ namespace FGraph
             }
         }
 
-        void ProcessLink(GraphLinkByNameWrapper link)
+        void ProcessLink(GraphLinkByName link)
         {
-            List<GraphNodeWrapper> sources = FindNamedNodes(link.Source);
-            List<GraphNodeWrapper> targets = FindNamedNodes(link.Target);
+            List<GraphNode> sources = FindNamedNodes(link.Source);
+            List<GraphNode> targets = FindNamedNodes(link.Target);
             if ((sources.Count > 1) && (targets.Count > 1))
             {
                 this.ConversionError("FGrapher",
@@ -350,9 +350,9 @@ namespace FGraph
                     $"Many to many link not supported. {link.Source}' <--> {link.Target}");
             }
 
-            foreach (GraphNodeWrapper sourceNode in sources)
+            foreach (GraphNode sourceNode in sources)
             {
-                foreach (GraphNodeWrapper targetNode in targets)
+                foreach (GraphNode targetNode in targets)
                 {
                     sourceNode.AddChild(link, link.Depth, targetNode);
                     targetNode.AddParent(link, link.Depth, sourceNode);

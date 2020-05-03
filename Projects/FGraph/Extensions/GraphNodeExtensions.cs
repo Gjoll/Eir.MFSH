@@ -6,7 +6,7 @@ namespace FGraph.Extensions
 {
     public static class GraphNodeExtensions
     {
-        public static void SortByTraversalName(this List<GraphNodeWrapper.Link> links)
+        public static void SortByTraversalName(this List<GraphNode.Link> links)
         {
             links.Sort((a, b) => { return String.Compare(a.Traversal.TraversalName, b.Traversal.TraversalName); });
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FGraph
 {
-    class GraphLinkByReferenceWrapper : GraphLinkWrapper
+    class GraphLinkByReference : GraphLink
     {
         /// <summary>
         /// Regex name of sources.
@@ -23,7 +23,7 @@ namespace FGraph
         /// </summary>
         public String ElementId { get; set; }
 
-        public GraphLinkByReferenceWrapper(FGrapher fGraph, JToken data) : base(fGraph, data)
+        public GraphLinkByReference(FGrapher fGraph, JToken data) : base(fGraph, data)
         {
             this.Source = this.RequiredValue(data, "source");
             this.ElementId = this.OptionalValue(data, "elementId");

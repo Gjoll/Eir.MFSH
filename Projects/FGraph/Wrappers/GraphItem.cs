@@ -6,11 +6,11 @@ using System.Text;
 
 namespace FGraph
 {
-    public class GraphWrapper
+    public class GraphItem
     {
         protected FGrapher fGraph;
 
-        public GraphWrapper(FGrapher fGraph)
+        public GraphItem(FGrapher fGraph)
         {
             this.fGraph = fGraph;
         }

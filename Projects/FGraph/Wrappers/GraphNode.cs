@@ -8,12 +8,12 @@ using Newtonsoft.Json.Linq;
 namespace FGraph
 {
     [DebuggerDisplay("{NodeName}")]
-    public class GraphNodeWrapper : GraphWrapper
+    public class GraphNode : GraphItem
     {
         public class Link
         {
-            public GraphLinkWrapper Traversal { get; set; }
-            public GraphNodeWrapper Node { get; set; }
+            public GraphLink Traversal { get; set; }
+            public GraphNode Node { get; set; }
             public Int32 Depth { get; set; }
         }
 
@@ -27,12 +27,12 @@ namespace FGraph
         public String LhsAnnotationText { get; set; }
         public String RhsAnnotationText { get; set; }
 
-        public GraphNodeWrapper(FGrapher fGraph) : base(fGraph)
+        public GraphNode(FGrapher fGraph) : base(fGraph)
         {
         }
 
 
-        public GraphNodeWrapper(FGrapher fGraph, JToken data) : base(fGraph)
+        public GraphNode(FGrapher fGraph, JToken data) : base(fGraph)
         {
             this.NodeName = this.RequiredValue(data, "nodeName");
             this.DisplayName = this.RequiredValue(data, "displayName");
@@ -42,7 +42,7 @@ namespace FGraph
             this.RhsAnnotationText = this.OptionalValue(data, "rhsAnnotationText");
         }
 
-        public void AddChild(GraphLinkWrapper gLink, Int32 depth, GraphNodeWrapper child)
+        public void AddChild(GraphLink gLink, Int32 depth, GraphNode child)
         {
             Link link = new Link
             {
@@ -53,7 +53,7 @@ namespace FGraph
             this.ChildLinks.Add(link);
         }
 
-        public void AddParent(GraphLinkWrapper gLink, Int32 depth, GraphNodeWrapper parent)
+        public void AddParent(GraphLink gLink, Int32 depth, GraphNode parent)
         {
             Link link = new Link
             {
