@@ -10,7 +10,7 @@ namespace FGraph
     {
         protected FGrapher fGraph;
 
-        public GraphWrapper(FGrapher fGraph, JToken data)
+        public GraphWrapper(FGrapher fGraph)
         {
             this.fGraph = fGraph;
         }

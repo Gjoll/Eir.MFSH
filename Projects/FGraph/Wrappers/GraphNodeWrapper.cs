@@ -14,7 +14,9 @@ namespace FGraph
         {
             public GraphLinkWrapper Traversal { get; set; }
             public GraphNodeWrapper Node { get; set; }
+            public Int32 Depth { get; set; }
         }
+
         public String NodeName { get; set; }
         public String ElementId { get; set; }
         public String DisplayName { get; set; }
@@ -26,7 +28,12 @@ namespace FGraph
         public String LhsAnnotationText { get; set; }
         public String RhsAnnotationText { get; set; }
 
-        public GraphNodeWrapper(FGrapher fGraph, JToken data) : base(fGraph, data)
+        public GraphNodeWrapper(FGrapher fGraph) : base(fGraph)
+        {
+        }
+
+
+        public GraphNodeWrapper(FGrapher fGraph, JToken data) : base(fGraph)
         {
             this.NodeName = this.RequiredValue(data, "nodeName");
             this.DisplayName = this.RequiredValue(data, "displayName");
@@ -36,22 +43,24 @@ namespace FGraph
             this.RhsAnnotationText = this.OptionalValue(data, "rhsAnnotationText");
         }
 
-        public void AddChild(GraphLinkWrapper gLink, GraphNodeWrapper child)
+        public void AddChild(GraphLinkWrapper gLink, Int32 depth, GraphNodeWrapper child)
         {
             Link link = new Link
             {
                 Node = child,
-                Traversal = gLink
+                Traversal = gLink,
+                Depth = depth
             };
             this.ChildLinks.Add(link);
         }
 
-        public void AddParent(GraphLinkWrapper gLink, GraphNodeWrapper parent)
+        public void AddParent(GraphLinkWrapper gLink, Int32 depth, GraphNodeWrapper parent)
         {
             Link link = new Link
             {
                 Node = parent,
-                Traversal = gLink
+                Traversal = gLink,
+                Depth = depth
             };
             this.ParentLinks.Add(link);
         }

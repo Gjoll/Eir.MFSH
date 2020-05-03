@@ -48,6 +48,28 @@ namespace FGraph
             e.Render(seGroupParents, true);
         }
 
+        protected SENode CreateNodeBinding(ElementDefinition.ElementDefinitionBindingComponent binding)
+        {
+            String hRef = null;
+            //$if (linkFlag)
+            //$    hRef = this.HRef(mapNode);
+            SENode node = new SENode
+            {
+                HRef = hRef
+            };
+            node.Class = "valueSet";
+
+            String displayName = binding.ValueSet.LastPathPart();
+            if (this.valueSets.TryGetValue(binding.ValueSet, out ValueSet vs) == false)
+            {
+                displayName = vs.Name;
+            }
+            node.AddTextLine(displayName, hRef);
+            node.AddTextLine("ValueSet", hRef);
+            node.LhsAnnotation = "bind";
+            return node;
+        }
+
         protected SENode CreateNode(GraphNodeWrapper graphNode)
         {
             String hRef = null;
@@ -151,7 +173,7 @@ namespace FGraph
             foreach (GraphNodeWrapper.Link childLink in focusNode.ChildLinks)
             {
                 if (
-                    (childLink.Traversal.Depth <= depth) &&
+                    (childLink.Depth <= depth) &&
                     (r.IsMatch(childLink.Traversal.TraversalName)) &&
                     (childNodes.Contains(childLink.Node) == false)
                 )
@@ -163,7 +185,7 @@ namespace FGraph
                     childContainer.AppendChildren(TraverseChildren(childLink.Node,
                         child, 
                         traversalFilter,
-                        depth - childLink.Traversal.Depth));
+                        depth - childLink.Depth));
                     yield return childContainer;
                 }
             }

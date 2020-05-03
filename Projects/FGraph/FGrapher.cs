@@ -252,12 +252,18 @@ namespace FGraph
                 if (e == null)
                     return;
 
-                sourceNode.RhsAnnotationText = $"{e.Min.Value}..{e.Max}";
                 if (e.Binding != null)
                 {
-                    this.ConversionWarn("FGrapher",
-                        "ProcessLink",
-                        $"ElementId '{elementId}' binding reference is not implemented");
+                    GraphNodeWrapper targetNode = new GraphNodeWrapper(this);
+                    targetNode.DisplayName = e.Binding.ValueSet.LastPathPart();
+                    if (this.valueSets.TryGetValue(e.Binding.ValueSet, out ValueSet vs) == true)
+                    {
+                        targetNode.DisplayName = vs.Name;
+                    }
+                    targetNode.DisplayName += "/ValueSet";
+                    targetNode.LhsAnnotationText = "bind";
+                    sourceNode.AddChild(link, 0, targetNode);
+                    targetNode.AddParent(link, 0, sourceNode);
                 }
 
                 if (e.Pattern != null)
@@ -281,6 +287,7 @@ namespace FGraph
                         case "Reference":
                             foreach (String targetRef in typeRef.TargetProfile)
                             {
+                                sourceNode.RhsAnnotationText = $"{e.Min.Value}..{e.Max}";
                                 String profileName = targetRef.LastUriPart();
                                 if (this.TryGetNodeByElementId(profileName, out GraphNodeWrapper targetNode) == false)
                                 {
@@ -290,8 +297,8 @@ namespace FGraph
                                     return;
                                 }
 
-                                sourceNode.AddChild(link, targetNode);
-                                targetNode.AddParent(link, sourceNode);
+                                sourceNode.AddChild(link, link.Depth, targetNode);
+                                targetNode.AddParent(link, link.Depth, sourceNode);
                             }
                             break;
                     }
@@ -327,8 +334,8 @@ namespace FGraph
             {
                 foreach (GraphNodeWrapper targetNode in targets)
                 {
-                    sourceNode.AddChild(link, targetNode);
-                    targetNode.AddParent(link, sourceNode);
+                    sourceNode.AddChild(link, link.Depth, targetNode);
+                    targetNode.AddParent(link, link.Depth, sourceNode);
                 }
             }
         }
