@@ -16,19 +16,24 @@ namespace FGraph
     {
         public void RenderFocusGraphs(String cssFile)
         {
-            foreach (GraphNode node in this.graphNodesByName.Values)
+            foreach (GraphNode node in this.graphNodesByAnchor.Values)
             {
-                if (node.ElementId.Contains('.') == false)
-                    this.RenderFocusGraph(node.ElementId, cssFile, node, $"focus/{node.NodeName.FirstSlashPart()}");
+                // Only render top level (profile) nodes.
+                if (
+                    (node.Anchor != null) &&
+                    (String.IsNullOrEmpty(node.Anchor.Item))
+                    )
+                    this.RenderFocusGraph(cssFile,
+                        node,
+                        $"focus/{node.Anchor.Url.LastUriPart()}");
             }
         }
 
-        void RenderFocusGraph(String name,
-            String cssFile,
+        void RenderFocusGraph(String cssFile,
             GraphNode focusGraphNode,
             String traversalName)
         {
-            SvgEditor e = new SvgEditor($"FocusGraph_{name}");
+            SvgEditor e = new SvgEditor($"FocusGraph_{focusGraphNode.Anchor.Url.LastUriPart()}");
             e.AddCssFile(cssFile);
 
             this.svgEditors.Add(e);
@@ -91,7 +96,7 @@ namespace FGraph
 
             node.LhsAnnotation = ResolveAnnotation(graphNode, graphNode.LhsAnnotationText);
             node.RhsAnnotation = ResolveAnnotation(graphNode, graphNode.RhsAnnotationText);
-            
+
             return node;
         }
 
@@ -183,7 +188,7 @@ namespace FGraph
                     childContainer.AppendNode(child);
 
                     childContainer.AppendChildren(TraverseChildren(childLink.Node,
-                        child, 
+                        child,
                         traversalFilter,
                         depth - childLink.Depth));
                     yield return childContainer;

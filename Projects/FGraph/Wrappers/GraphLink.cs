@@ -13,8 +13,8 @@ namespace FGraph
 
         public GraphLink(FGrapher fGraph, JToken data) : base(fGraph)
         {
-            this.TraversalName = this.RequiredValue(data, "traversalName");
-            this.Depth = this.OptionalIntValue(data, "depth", 1);
+            this.TraversalName = data.RequiredValue("traversalName");
+            this.Depth = data.OptionalIntValue("depth", 1);
         }
     }
 }

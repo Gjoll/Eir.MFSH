@@ -17,6 +17,8 @@ namespace FGraph
     {
         public string GraphName { get; set; } = null;
 
+        public string BaseUrl { get; set; }
+
         public string OutputDir
         {
             get => this.outputDir;
@@ -29,9 +31,9 @@ namespace FGraph
         Dictionary<String, CodeSystem> codeSystems = new Dictionary<String, CodeSystem>();
 
         Dictionary<String, GraphNode> graphNodesByName = new Dictionary<string, GraphNode>();
-        Dictionary<String, GraphNode> graphNodesByElementId = new Dictionary<string, GraphNode>();
-        List<GraphLink> graphLink = new List<GraphLink>();
+        Dictionary<GraphAnchor, GraphNode> graphNodesByAnchor = new Dictionary<GraphAnchor, GraphNode>();
 
+        List<GraphLink> graphLinks = new List<GraphLink>();
         List<SvgEditor> svgEditors = new List<SvgEditor>();
 
         public bool DebugFlag { get; set; } = false;
@@ -41,7 +43,13 @@ namespace FGraph
         }
 
         public bool TryGetNodeByName(String name, out GraphNode node) => this.graphNodesByName.TryGetValue(name, out node);
-        public bool TryGetNodeByElementId(String name, out GraphNode node) => this.graphNodesByElementId.TryGetValue(name, out node);
+        public bool TryGetNodeByAnchor(GraphAnchor anchor, out GraphNode node) => this.graphNodesByAnchor.TryGetValue(anchor, out node);
+
+
+        public bool TryGetProfile(String url, out StructureDefinition sd) => this.profiles.TryGetValue(url, out sd);
+        public bool TryGetValueSet(String url, out ValueSet vs) => this.valueSets.TryGetValue(url, out vs);
+        public bool TryGetProfile(String url, out CodeSystem cs) => this.codeSystems.TryGetValue(url, out cs);
+
 
         public void LoadResources(String path)
         {
@@ -93,20 +101,33 @@ namespace FGraph
                     throw new Exception($"Unknown extension for serialized fhir resource '{path}'");
             }
 
+            String resourceUrl = null;
             switch (domainResource)
             {
                 case StructureDefinition sDef:
                     if (sDef.Snapshot == null)
                         SnapshotCreator.Create(sDef);
-                    profiles.Add(sDef.Url.LastUriPart(), sDef);
+                    resourceUrl = sDef.Url;
+                    profiles.Add(sDef.Url, sDef);
                     break;
+
                 case ValueSet valueSet:
+                    resourceUrl = valueSet.Url;
                     valueSets.Add(valueSet.Url, valueSet);
                     break;
+
                 case CodeSystem codeSystem:
+                    resourceUrl = codeSystem.Url;
                     codeSystems.Add(codeSystem.Url, codeSystem);
                     break;
             }
+
+            // We expect to only load resources all with the same base resoruce name.
+            String rBaseUrl = resourceUrl.FhirBaseUrl();
+            if (this.BaseUrl == null)
+                this.BaseUrl = rBaseUrl;
+            else if (String.Compare(this.BaseUrl, rBaseUrl, StringComparison.InvariantCulture) != 0)
+                throw new Exception("Resource '{resourceUrl}' does not have base url '{this.BaseUrl}'");
         }
 
         void LoadDir(String path)
@@ -145,21 +166,22 @@ namespace FGraph
                     {
                         GraphNode node = new GraphNode(this, value);
                         this.graphNodesByName.Add(node.NodeName, node);
-                        this.graphNodesByElementId.Add(node.ElementId, node);
+                        if (node.Anchor != null)
+                            this.graphNodesByAnchor.Add(node.Anchor, node);
                     }
                     break;
 
                 case "graphLinkByReference":
                     {
                         GraphLinkByReference link = new GraphLinkByReference(this, value);
-                        this.graphLink.Add(link);
+                        this.graphLinks.Add(link);
                     }
                     break;
 
                 case "graphLinkByName":
                     {
                         GraphLinkByName link = new GraphLinkByName(this, value);
-                        this.graphLink.Add(link);
+                        this.graphLinks.Add(link);
                     }
                     break;
 
@@ -190,12 +212,14 @@ namespace FGraph
         {
             if (String.IsNullOrEmpty(this.OutputDir) == true)
                 throw new Exception($"Output not set");
+            if (String.IsNullOrEmpty(this.BaseUrl) == true)
+                throw new Exception($"BaseUrl not set");
             ProcessLinks();
         }
 
         public void ProcessLinks()
         {
-            foreach (GraphLink link in this.graphLink)
+            foreach (GraphLink link in this.graphLinks)
                 ProcessLink(link);
         }
 
@@ -240,11 +264,15 @@ namespace FGraph
             void CreateLink(GraphNode sourceNode,
                 String elementId)
             {
-                if (sourceNode.ElementId.FirstPathPart() != elementId.FirstPathPart())
+                GraphAnchor anchor = sourceNode.Anchor;
+                if (
+                    (anchor != null) &&
+                    (anchor.Url != elementId.FirstPathPart())
+                    )
                 {
                     this.ConversionError("FGrapher",
                         "ProcessLink",
-                        $"Invalid reference element id. ElementId '{elementId}' is not an element of source profile '{sourceNode.ElementId.FirstPathPart()}");
+                        $"Invalid reference element id. ElementId '{elementId}' is not an element of source profile '{anchor.Url}");
                     return;
                 }
 
@@ -308,12 +336,12 @@ namespace FGraph
                             foreach (String targetRef in typeRef.TargetProfile)
                             {
                                 sourceNode.RhsAnnotationText = $"{elementSnap.Min.Value}..{elementSnap.Max}";
-                                String profileName = targetRef.LastUriPart();
-                                if (this.TryGetNodeByElementId(profileName, out GraphNode targetNode) == false)
+                                GraphAnchor targetAnchor = new GraphAnchor(targetRef, null);
+                                if (this.TryGetNodeByAnchor(targetAnchor, out GraphNode targetNode) == false)
                                 {
                                     this.ConversionError("FGrapher",
                                         "FindElementDefinition",
-                                        $"Can not find profile '{profileName}' referenced in annotation source.");
+                                        $"Can not find target '{targetRef}' referenced in annotation source.");
                                     return;
                                 }
 
@@ -329,13 +357,26 @@ namespace FGraph
 
             foreach (GraphNode sourceNode in sources)
             {
-                // make absolute element id.
-                String elementId = link.ElementId;
-                if (String.IsNullOrEmpty(elementId))
-                    elementId = sourceNode.ElementId;
-                else if (elementId.StartsWith("."))
-                    elementId = sourceNode.ElementId + elementId;
-                CreateLink(sourceNode, elementId);
+                void Link()
+                {
+                    String linkElementId = link.ElementId;
+
+                    if (
+                        (String.IsNullOrEmpty(linkElementId)) ||
+                        (linkElementId.StartsWith("."))
+                    )
+                    {
+                        if (sourceNode.Anchor == null)
+                            return;
+                        GraphAnchor anchor = sourceNode.Anchor;
+                        if (anchor == null)
+                            return;
+                        throw new NotImplementedException();
+                        //$linkElementId = anchor.ElementId + anchor.ElementId;
+                    }
+                    CreateLink(sourceNode, linkElementId);
+                }
+                Link();
             }
         }
 

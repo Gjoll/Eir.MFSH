@@ -78,6 +78,13 @@ namespace FGraph
                         this.renderings.Add(new Tuple<string, string>(GetArg(arg), GetArg(arg)));
                         break;
 
+                    case "-u":
+                    case "-url":
+                        if (this.fGrapher.BaseUrl!= null)
+                            throw new Exception($"{arg}  option can only be used once.");
+                        this.fGrapher.BaseUrl = GetArg(arg);
+                        break;
+
                     default:
                         throw new Exception($"Unknown arg {arg}");
                 }

@@ -12,8 +12,8 @@ namespace FGraph
 
         public GraphLinkByName(FGrapher fGraph, JToken data) : base(fGraph, data)
         {
-            this.Source = this.RequiredValue(data, "source");
-            this.Target = this.RequiredValue(data, "target");
+            this.Source = data.RequiredValue("source");
+            this.Target = data.RequiredValue("target");
         }
     }
 }
