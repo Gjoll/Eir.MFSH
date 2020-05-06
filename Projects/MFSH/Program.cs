@@ -14,6 +14,23 @@ namespace MFSH
 {
     class Program
     {
+        class Options
+        {
+            public class Define
+            {
+                public String name { get; set; }
+                public String value{ get; set; }
+            };
+
+            public String baseInputDir { get; set; }
+            public String baseOutputDir  { get; set; }
+            public String baseUrl { get; set; }
+            public String[] includeDirs { get; set; }
+            public String[] mfshPaths { get; set; }
+            public Define[] defines { get; set; }
+        }
+
+        Options options;
         MFsh mfsh;
 
         public Program()
@@ -30,42 +47,8 @@ namespace MFSH
             if (File.Exists(path) == false)
                 throw new Exception($"Options file {path} not found");
             String json = File.ReadAllText(path);
-            JObject options = JsonConvert.DeserializeObject<JObject>(json); ;
-            foreach (KeyValuePair<String, JToken> option in options)
-            {
-                switch (option.Key)
-                {
-                    case "baseInputDir":
-                        this.mfsh.BaseInputDir = option.Value.Value<String>();
-                        break;
-
-                    case "baseOutputDir":
-                        this.mfsh.BaseOutputDir = option.Value.Value<String>();
-                        break;
-
-                    case "baseUrl":
-                        this.mfsh.BaseUrl = option.Value.Value<String>();
-                        break;
-
-                    case "defines":
-                        foreach (Tuple<String, String> t in option.Value.GetTuples())
-                            this.mfsh.GlobalVars.Set(t.Item1, t.Item2);
-                        break;
-
-                    case "includeDirs":
-                        this.mfsh.IncludeDirs.AddRange(option.Value.GetStrings());
-                        break;
-
-                    case "mfshPaths":
-                        this.mfsh.Paths.AddRange(option.Value.GetStrings());
-                        break;
-
-                    default:
-                        throw new Exception($"Unknown option {option.Key}");
-                }
-            }
+            this.options = JsonConvert.DeserializeObject<Options>(json);
         }
-
         void ParseArguments(String[] args)
         {
             switch (args.Length)
@@ -83,8 +66,23 @@ namespace MFSH
 
         bool Process()
         {
-            if (String.IsNullOrEmpty(this.mfsh.BaseUrl) == true)
-                throw new Exception($"BaseUrl not set (-u option)");
+            if (options.baseInputDir == null)
+                throw new Exception("Missing 'baseInputDir  ' option setting");
+            this.mfsh.BaseInputDir = options.baseInputDir;
+
+            if (options.baseOutputDir == null)
+                throw new Exception("Missing 'baseOutputDir  ' option setting");
+            this.mfsh.BaseOutputDir = options.baseOutputDir;
+
+            if (options.baseUrl == null)
+                throw new Exception("Missing 'baseUrl' option setting");
+            this.mfsh.BaseUrl = options.baseUrl;
+
+            foreach (Options.Define define in this.options.defines)
+                this.mfsh.GlobalVars.Set(define.name, define.value);
+
+            this.mfsh.IncludeDirs.AddRange(options.includeDirs);
+            this.mfsh.Paths.AddRange(options.mfshPaths);
 
             this.mfsh.Process();
             this.mfsh.SaveAll();

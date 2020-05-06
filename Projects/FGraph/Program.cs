@@ -9,14 +9,14 @@ namespace FGraph
 {
     class Program
     {
-        class Rendering
-        {
-            public String name { get; set; }
-            public String cssFile { get; set; }
-        };
-
         class Options
         {
+            public class Rendering
+            {
+                public String name { get; set; }
+                public String cssFile { get; set; }
+            };
+
             public String graphName { get; set; }
             public String inputPath { get; set; }
             public String outputDir { get; set; }
@@ -34,66 +34,6 @@ namespace FGraph
             this.fGrapher.ConsoleLogging();
         }
 
-        //void ParseArguments(String[] args)
-        //{
-        //    Int32 i = 0;
-
-        //    String GetArg(String errorMsg)
-        //    {
-        //        if (i >= args.Length)
-        //            throw new Exception($"Missing {errorMsg} parameter");
-
-        //        String arg = args[i++].Trim();
-        //        if (arg.Length > 0)
-        //        {
-        //            if ((arg[0] == '"') && (arg[arg.Length - 1] == '"'))
-        //                arg = arg.Substring(1, arg.Length - 2);
-        //        }
-
-        //        return arg;
-        //    }
-
-        //    while (i < args.Length)
-        //    {
-        //        String arg = GetArg("arg").ToUpper();
-        //        switch (arg.ToLower())
-        //        {
-        //            case "-r":
-        //                this.fGrapher.LoadResources(GetArg(arg));
-        //                break;
-
-        //            case "-g":
-        //            case "-graphname":
-        //                if (this.fGrapher.GraphName != null)
-        //                    throw new Exception($"{arg} option can only be used once.");
-        //                this.fGrapher.GraphName = GetArg(arg);
-        //                break;
-
-        //            case "-o":
-        //            case "-output":
-        //                if (this.fGrapher.OutputDir != null)
-        //                    throw new Exception($"{arg}  option can only be used once.");
-        //                this.fGrapher.OutputDir = GetArg(arg);
-        //                break;
-
-        //            case "-t":
-        //            case "-traversal":
-        //                // traversal name, CSS path
-        //                this.renderings.Add(new Tuple<string, string>(GetArg(arg), GetArg(arg)));
-        //                break;
-
-        //            case "-u":
-        //            case "-url":
-        //                if (this.fGrapher.BaseUrl!= null)
-        //                    throw new Exception($"{arg}  option can only be used once.");
-        //                this.fGrapher.BaseUrl = GetArg(arg);
-        //                break;
-
-        //            default:
-        //                throw new Exception($"Unknown arg {arg}");
-        //        }
-        //    }
-        //}
 
         //void CreateOptions(String path)
         //{
@@ -159,7 +99,7 @@ namespace FGraph
                 this.fGrapher.LoadResources(resourcePath);
 
             this.fGrapher.Process();
-            foreach (Rendering rendering in this.options.traversals)
+            foreach (Options.Rendering rendering in this.options.traversals)
             {
                 bool Exists(String dir, ref String relativePath)
                 {
