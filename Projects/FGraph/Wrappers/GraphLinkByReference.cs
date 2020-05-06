@@ -21,12 +21,12 @@ namespace FGraph
         /// i.e. if the source record has an element id of 'ProfileName.alpha.beta' and
         /// elementId is ".delta' then the full element id is 'ProfileName.alpha.beta.delta'
         /// </summary>
-        public String ElementId { get; set; }
+        public String Item { get; set; }
 
         public GraphLinkByReference(FGrapher fGraph, JToken data) : base(fGraph, data)
         {
             this.Source = data.RequiredValue("source");
-            this.ElementId = data.OptionalValue("elementId");
+            this.Item = data.OptionalValue("item");
         }
     }
 }

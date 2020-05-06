@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Eir.DevTools" Version="1.14.0" />
+    <PackageReference Include="Eir.DevTools" Version="1.16.0" />
     <PackageReference Include="Eir.FhirKhit.R4" Version="1.0.0" />
     <PackageReference Include="Hl7.Fhir.R4" Version="1.6.0" />
     <PackageReference Include="Hl7.Fhir.Serialization" Version="1.6.0" />

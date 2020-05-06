@@ -30,7 +30,7 @@ namespace FGraph
         public GraphAnchor(JToken data)
         {
             this.Url = data.RequiredValue("url");
-            this.Item= data.OptionalValue("id");
+            this.Item= data.OptionalValue("item");
         }
 
         public bool Equals(GraphAnchor other)
@@ -56,6 +56,12 @@ namespace FGraph
         /// This must be overridden in all child classes.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode() => throw new Exception("Must be overridden in chils class(s)");
+        public override int GetHashCode()
+        {
+            Int32 retVal = this.Url.GetHashCode();
+            if (this.Item != null)
+                retVal ^= this.Item.GetHashCode();
+            return retVal;
+        }
     }
 }

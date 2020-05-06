@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -40,6 +41,18 @@ namespace FGraph
 
         public FGrapher()
         {
+        }
+
+        public override void ConversionError(string className, string method, string msg)
+        {
+            Debugger.Break();
+            base.ConversionError(className, method, msg);
+        }
+
+        public override void ConversionWarn(string className, string method, string msg)
+        {
+            Debugger.Break();
+            base.ConversionWarn(className, method, msg);
         }
 
         public bool TryGetNodeByName(String name, out GraphNode node) => this.graphNodesByName.TryGetValue(name, out node);
@@ -214,6 +227,7 @@ namespace FGraph
                 throw new Exception($"Output not set");
             if (String.IsNullOrEmpty(this.BaseUrl) == true)
                 throw new Exception($"BaseUrl not set");
+
             ProcessLinks();
         }
 
@@ -261,26 +275,47 @@ namespace FGraph
 
         void ProcessLink(GraphLinkByReference link)
         {
+            const String fcn = "ProcessLink";
+
             void CreateLink(GraphNode sourceNode,
-                String elementId)
+                String linkElementId)
             {
                 GraphAnchor anchor = sourceNode.Anchor;
-                if (
-                    (anchor != null) &&
-                    (anchor.Url != elementId.FirstPathPart())
-                    )
+                if (anchor == null)
                 {
-                    this.ConversionError("FGrapher",
-                        "ProcessLink",
-                        $"Invalid reference element id. ElementId '{elementId}' is not an element of source profile '{anchor.Url}");
+                    this.ConversionError("FGrapher", fcn, $"Node {sourceNode.NodeName} anchor is null");
                     return;
                 }
 
-                ElementDefinition elementDiff = this.FindDiffElement(elementId);
-                if (elementDiff == null)
-                    return;
+                /*
+                 * If link element is is null or starts with '.', then prepend the anchor item id to it.
+                 */
+                if (
+                    (String.IsNullOrEmpty(linkElementId)) ||
+                    (linkElementId.StartsWith("."))
+                )
+                    linkElementId = anchor.Item + linkElementId;
 
-                ElementDefinition elementSnap = this.FindSnapElement(elementId);
+                if (this.profiles.TryGetValue(anchor.Url, out StructureDefinition sDef) == false)
+                {
+                    this.ConversionError("FGrapher",
+                        fcn,
+                        $"Node {sourceNode.NodeName}. Can not find profile '{anchor.Url}'");
+                    return;
+                }
+
+                // put in base path part (i.e. SnapShot.Element[0])
+                linkElementId = $"{sDef.BaseDefinition.LastUriPart()}.{linkElementId}";
+                ElementDefinition elementDiff = sDef.FindDiffElement(linkElementId);
+                if (elementDiff == null)
+                {
+                    this.ConversionError("FGrapher",
+                        fcn,
+                        $"Node {sourceNode.NodeName}. Can not find profile 'element {linkElementId}' referenced.");
+                    return;
+                }
+
+                ElementDefinition elementSnap = sDef.FindSnapElement(linkElementId);
                 if (elementSnap == null)
                     return;
 
@@ -317,15 +352,15 @@ namespace FGraph
                     }
 
                     this.ConversionWarn("FGrapher",
-                        "ProcessLink",
-                        $"ElementId '{elementId}' pattern reference is not implemented");
+                        fcn,
+                        $"ElementId '{linkElementId}' pattern reference is not implemented");
                 }
 
                 if (elementDiff.Fixed != null)
                 {
                     this.ConversionWarn("FGrapher",
                         "ProcessLink",
-                        $"ElementId '{elementId}' fixed reference is not implemented");
+                        $"ElementId '{linkElementId}' fixed reference is not implemented");
                 }
 
                 foreach (var typeRef in elementDiff.Type)
@@ -337,14 +372,7 @@ namespace FGraph
                             {
                                 sourceNode.RhsAnnotationText = $"{elementSnap.Min.Value}..{elementSnap.Max}";
                                 GraphAnchor targetAnchor = new GraphAnchor(targetRef, null);
-                                if (this.TryGetNodeByAnchor(targetAnchor, out GraphNode targetNode) == false)
-                                {
-                                    this.ConversionError("FGrapher",
-                                        "FindElementDefinition",
-                                        $"Can not find target '{targetRef}' referenced in annotation source.");
-                                    return;
-                                }
-
+                                GraphNode targetNode = GetTargetNode(targetAnchor);
                                 sourceNode.AddChild(link, link.Depth, targetNode);
                                 targetNode.AddParent(link, link.Depth, sourceNode);
                             }
@@ -354,40 +382,47 @@ namespace FGraph
             }
 
             List<GraphNode> sources = FindNamedNodes(link.Source);
-
             foreach (GraphNode sourceNode in sources)
-            {
-                void Link()
-                {
-                    String linkElementId = link.ElementId;
-
-                    if (
-                        (String.IsNullOrEmpty(linkElementId)) ||
-                        (linkElementId.StartsWith("."))
-                    )
-                    {
-                        if (sourceNode.Anchor == null)
-                            return;
-                        GraphAnchor anchor = sourceNode.Anchor;
-                        if (anchor == null)
-                            return;
-                        throw new NotImplementedException();
-                        //$linkElementId = anchor.ElementId + anchor.ElementId;
-                    }
-                    CreateLink(sourceNode, linkElementId);
-                }
-                Link();
-            }
+                CreateLink(sourceNode, link.Item);
         }
+
+        GraphNode GetTargetNode(GraphAnchor targetAnchor)
+        {
+            if (this.TryGetNodeByAnchor(targetAnchor, out GraphNode targetNode) == true)
+                return targetNode;
+
+            if (targetAnchor.Url.StartsWith("http://hl7.org/fhir"))
+            {
+                targetNode = new GraphNode(this)
+                {
+                    NodeName = $"fhir/{targetAnchor.Url.LastUriPart()}",
+                    DisplayName = "{targetAnchor.Url.LastUriPart()}",
+                    CssClass = "fhirResource",
+                    Anchor = targetAnchor
+                };
+                this.graphNodesByName.Add(targetNode.NodeName, targetNode);
+                if (targetNode.Anchor != null)
+                    this.graphNodesByAnchor.Add(targetNode.Anchor, targetNode);
+                return targetNode;
+            }
+
+            this.ConversionError("FGrapher",
+                "GetTargetNode",
+                $"Can not find target '{targetAnchor.Url}'.");
+            return null;
+        }
+
 
         void ProcessLink(GraphLinkByName link)
         {
+            const String fcn = "ProcessLink";
+
             List<GraphNode> sources = FindNamedNodes(link.Source);
             List<GraphNode> targets = FindNamedNodes(link.Target);
             if ((sources.Count > 1) && (targets.Count > 1))
             {
                 this.ConversionError("FGrapher",
-                    "ProcessLink",
+                    fcn,
                     $"Many to many link not supported. {link.Source}' <--> {link.Target}");
             }
 
@@ -408,54 +443,6 @@ namespace FGraph
                 String fileName = svgEditor.Name.Replace(":", "-");
                 svgEditor.Save($"{this.outputDir}\\{fileName}.svg");
             }
-        }
-
-        public ElementDefinition FindSnapElement(String elementId)
-        {
-            const String fcn = "FindDiffElement";
-
-            String profileName = elementId.FirstPathPart();
-            if (this.profiles.TryGetValue(profileName, out var sDef) == false)
-            {
-                this.ConversionError("FGrapher",
-                    fcn,
-                    $"Can not find profile '{profileName}' referenced in annotation source.");
-                return null;
-            }
-
-            ElementDefinition e = sDef.FindSnapElement(elementId);
-            if (e == null)
-            {
-                this.ConversionError("FGrapher",
-                    fcn,
-                    $"Can not find profile 'element {elementId}' referenced in annotation source.");
-                return null;
-            }
-            return e;
-        }
-
-        public ElementDefinition FindDiffElement(String elementId)
-        {
-            const String fcn = "FindDiffElement";
-
-            String profileName = elementId.FirstPathPart();
-            if (this.profiles.TryGetValue(profileName, out var sDef) == false)
-            {
-                this.ConversionError("FGrapher",
-                    fcn,
-                    $"Can not find profile '{profileName}' referenced in annotation source.");
-                return null;
-            }
-
-            ElementDefinition e = sDef.FindDiffElement(elementId);
-            if (e == null)
-            {
-                this.ConversionError("FGrapher",
-                    fcn,
-                    $"Can not find profile 'element {elementId}' referenced in annotation source.");
-                return null;
-            }
-            return e;
         }
     }
 }

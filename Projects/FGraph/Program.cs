@@ -8,7 +8,6 @@ namespace FGraph
     class Program
     {
         FGrapher fGrapher;
-        String inputPath = null;
         String inputDir= null;
         List<Tuple<String, String>> renderings = new List<Tuple<String, String>>();
 
@@ -55,14 +54,14 @@ namespace FGraph
 
                     case "-i":
                     case "-include":
-                        if (inputPath != null)
+                        if (inputDir != null)
                             throw new Exception($"{arg} option can only be used once.");
-                        inputPath = GetArg(arg);
+                        String inputPath = GetArg(arg);
                         this.fGrapher.Load(inputPath);
                         if (Directory.Exists(inputPath))
-                            this.inputDir = this.inputPath;
+                            this.inputDir = inputPath;
                         else
-                            this.inputDir = Path.GetDirectoryName(this.inputPath);
+                            this.inputDir = Path.GetDirectoryName(inputPath);
                         break;
 
                     case "-o":
@@ -108,7 +107,7 @@ namespace FGraph
                 String cssFile = rendering.Item2;
                 if (
                     (!Exists(Path.GetFullPath("."), ref cssFile)) &&
-                    (!Exists(this.inputPath, ref cssFile))
+                    (!Exists(this.inputDir, ref cssFile))
                 )
                     throw new Exception($"Css file '{cssFile}' not found");
 

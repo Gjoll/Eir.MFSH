@@ -103,24 +103,44 @@ namespace FGraph
         String ResolveCardinality(GraphNode node,
             String elementId)
         {
-            ElementDefinition e = this.FindSnapElement(elementId);
-            if (e == null)
+            const String fcn = "ResolveCardinality";
+
+            GraphAnchor anchor = node.Anchor;
+            if (anchor == null)
+            {
+                this.ConversionError("FGrapher", fcn, $"Anchor is null");
                 return null;
+            }
+
+            if (this.profiles.TryGetValue(anchor.Url, out StructureDefinition sDef) == false)
+            {
+                this.ConversionError("FGrapher", fcn, $"StructureDefinition {anchor.Url} not found");
+                return null;
+            }
+
+            ElementDefinition e = sDef.FindSnapElement(elementId);
+            if (e == null)
+            {
+                this.ConversionError("FGrapher", fcn, $"Element {elementId} not found");
+                return null;
+            }
 
             if (e.Min.HasValue == false)
             {
                 this.ConversionError("FGrapher",
-                    "ResolveCardinality",
+                    fcn,
                     $"element {elementId}' min cardinality is empty");
                 return null;
             }
+
             if (String.IsNullOrWhiteSpace(e.Max) == true)
             {
                 this.ConversionError("FGrapher",
-                    "ResolveCardinality",
+                    fcn,
                     $"element {elementId}' max cardinality is empty");
                 return null;
             }
+
             return $"{e.Min.Value}..{e.Max}";
         }
 

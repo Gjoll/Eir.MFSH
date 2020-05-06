@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; } = true;
+        public bool DebugFlag { get; set; } = false;
         public List<String> IncludeDirs;
 
         // dir containing file being parsed. Usd for local includes.
@@ -46,6 +46,9 @@ namespace MFSH
 
         public const String FSHSuffix = ".fsh";
         public const String MFSHSuffix = ".mfsh";
+
+        public String BaseUrl { get; set; }
+
         public VariablesBlock GlobalVars = new VariablesBlock();
         public Dictionary<String, FileData> FileItems =
             new Dictionary<String, FileData>();
@@ -211,6 +214,9 @@ namespace MFSH
         /// </summary>
         public void Process()
         {
+            if (String.IsNullOrEmpty(this.BaseUrl) == true)
+                throw new Exception($"BaseUrl not set");
+
             foreach (String path in this.Paths)
             {
                 try

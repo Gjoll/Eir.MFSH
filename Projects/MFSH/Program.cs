@@ -83,6 +83,13 @@ namespace MFSH
                         this.mfsh.BaseOutputDir = GetArg("-o");
                         break;
 
+                    case "-u":
+                    case "-url":
+                        if (this.mfsh.BaseUrl != null)
+                            throw new Exception($"{arg}  option can only be used once.");
+                        this.mfsh.BaseUrl = GetArg(arg);
+                        break;
+
                     default:
                         throw new Exception($"Unknown arg {arg}");
                 }
@@ -91,8 +98,12 @@ namespace MFSH
 
         bool Process()
         {
+            if (String.IsNullOrEmpty(this.mfsh.BaseUrl) == true)
+                throw new Exception($"BaseUrl not set (-u option)");
+
             this.mfsh.Process();
             this.mfsh.SaveAll();
+
             return this.mfsh.HasErrors == false;
         }
 
@@ -108,7 +119,9 @@ namespace MFSH
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                String[] lines = e.ToString().Replace("\r", "").Split('\n');
+                foreach (String line in lines)
+                    Console.WriteLine($"Error: {line}");
                 return -1;
             }
         }

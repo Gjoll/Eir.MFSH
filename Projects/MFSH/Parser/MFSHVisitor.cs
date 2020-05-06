@@ -282,6 +282,8 @@ namespace MFSH.Parser
         {
             String currentClass = context.NAME().GetText();
             this.Current.FrameVariables.Set("%Profile%", currentClass);
+            String url = $"{this.mfsh.BaseUrl}/StructureDefinition/{currentClass}";
+            this.Current.FrameVariables.Set("%ProfileUrl%", url);
             return null;
         }
 

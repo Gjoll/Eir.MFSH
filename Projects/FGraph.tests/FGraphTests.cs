@@ -28,9 +28,32 @@ namespace FGraph.Tests
         {
             FGrapher f = new FGrapher();
             f.LoadResources(TestFile("profiles"));
-            Assert.True(String.Compare(f.BaseUrl, "http://hl7.org/fhir/us/breast-radiology") == 0);
+            Assert.True(String.Compare(f.BaseUrl, "http://hl7.org/fhir/us/breast-radiology", StringComparison.InvariantCulture) == 0);
             Assert.True(f.TryGetProfile("http://hl7.org/fhir/us/breast-radiology/StructureDefinition/BreastRadiologyComposition", out StructureDefinition sd));
             Assert.True(String.Compare(sd.Url, "http://hl7.org/fhir/us/breast-radiology/StructureDefinition/BreastRadiologyComposition", StringComparison.InvariantCulture) == 0);
+            f.Load(TestFile("FindNodeByAnchorTest1.nodeGraph"));
+            f.ProcessLinks();
+            Debug.Assert(f.HasErrors == false);
+
+            Assert.True(f.TryGetNodeByName("BreastRadiologyComposition", out GraphNode brComposition));
+            Assert.True(brComposition.ParentLinks.Count == 0);
+            Assert.True(brComposition.ChildLinks.Count == 4);
+
+            GraphNode brCompReport = brComposition.ChildLinks[0].Node;
+            Assert.True(brCompReport.DisplayName == "Report Section");
+            Assert.True(brCompReport.ParentLinks.Count == 1);
+
+            GraphNode brCompImpressions = brComposition.ChildLinks[1].Node;
+            Assert.True(brCompImpressions.DisplayName == "Impressions Section");
+            Assert.True(brCompImpressions.ParentLinks.Count == 1);
+
+            GraphNode brCompfindingsRightBreast = brComposition.ChildLinks[2].Node;
+            Assert.True(brCompfindingsRightBreast.DisplayName == "Findings/Right Breast/Section");
+            Assert.True(brCompfindingsRightBreast.ParentLinks.Count == 1);
+            
+            GraphNode brCompfindingsLeftBreast = brComposition.ChildLinks[3].Node;
+            Assert.True(brCompfindingsLeftBreast.DisplayName == "Findings/Left Breast/Section");
+            Assert.True(brCompfindingsLeftBreast.ParentLinks.Count == 1);
         }
 
         [Fact]
@@ -78,7 +101,7 @@ namespace FGraph.Tests
         }
 
         [Fact]
-        public void usRenderTest1()
+        public void FocusRenderTest1()
         {
             FGrapher f = new FGrapher();
             f.Load(TestFile("FocusRenderTest1.nodeGraph"));
