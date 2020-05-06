@@ -10,6 +10,12 @@ namespace MFSH
     [DebuggerDisplay("{ToString()}")]
     public class FileData
     {
+        public enum RedirType
+        {
+            Json,
+            Text
+        };
+
         protected StringBuilder text = new StringBuilder();
 
         public FileData()
@@ -19,6 +25,7 @@ namespace MFSH
         public virtual void AppendText(String text) => this.text.Append(text);
         public virtual String Text() => this.text.ToString();
         public virtual String SaveText() => this.text.ToString();
+        public RedirType RelativePathType { get; set; }
         public String RelativePath { get; set; }
 
         public void ProcessVariables(VariablesBlock v)

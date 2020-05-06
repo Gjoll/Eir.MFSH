@@ -110,7 +110,15 @@ namespace MFSH.Parser
 
             var redirectContext = context.redirect();
             if (redirectContext != null)
-                s.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
+            {
+                if (redirectContext.JSONARRAY() != null)
+                    s.Data.RelativePathType = FileData.RedirType.Json;
+                else if (redirectContext.TEXT() != null)
+                    s.Data.RelativePathType = FileData.RedirType.Text;
+                else
+                    throw new Exception("Unknown redirect type");
+                s.Data.RelativePath = (String) (this.Visit(redirectContext.singleString()));
+            }
 
             return null;
         }
@@ -177,15 +185,31 @@ namespace MFSH.Parser
             if (String.IsNullOrEmpty(info.Data.RelativePath) == false)
             {
                 String rPath = parameterValues.ReplaceText(info.Data.RelativePath);
-                macroOutput = new JsonArrayData
+                switch (info.Data.RelativePathType)
                 {
-                    RelativePath = rPath
-                };
+                    case FileData.RedirType.Json:
+                        macroOutput = new JsonArrayData
+                        {
+                            RelativePath = rPath
+                        };
+                        break;
+
+                    case FileData.RedirType.Text:
+                        macroOutput = new FileData
+                        {
+                            RelativePath = rPath
+                        };
+                        break;
+
+                    default:
+                        throw new NotImplementedException();
+                }
+
                 this.Current.Redirections.Add(macroOutput);
             }
             macroOutput.AppendText(text);
 
-            // Make a copy of redir and process variables. Dont
+            // Make a copy of redir and process variables. Don't
             // change original because it may be used again.
             foreach (FileData redir in info.Redirections)
             {

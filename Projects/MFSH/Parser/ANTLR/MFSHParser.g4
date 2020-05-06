@@ -4,7 +4,7 @@ options { tokenVocab=MFSHLexer; }
 
 document    :   command* EOF;
 command: fshLine | apply | end | include |  macro | profile | use;
-P
+
 fshLine: FSHLINE anyString;
 
 apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
@@ -12,7 +12,7 @@ end: END ;
 include: INCLUDE anyString ;
 macro: MACRO NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
 profile: PROFILE NAME;
-redirect: GT JSONARRAY OPAR singleString CPAR ;
+redirect: GT (JSONARRAY | TEXT) OPAR singleString CPAR ;
 use: USE anyString ;
 
 anyString:  singleString | multiLineString;

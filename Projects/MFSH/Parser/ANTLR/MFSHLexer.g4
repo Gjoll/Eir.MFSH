@@ -7,6 +7,7 @@ INCLUDE: 'include';
 JSONARRAY: 'jsonArray';
 MACRO: 'macro';
 PROFILE: 'profile';
+TEXT: 'text';
 USE: 'use';
 
 STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"';

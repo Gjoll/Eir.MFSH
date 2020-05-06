@@ -277,24 +277,34 @@ namespace FGraph
         GraphNode CreateFhirPrimitiveNode(String type,
             Element fhirElement)
         {
+            String System(String system)
+            {
+                if (system.StartsWith("http://"))
+                    system = system.Substring(7);
+                else if (system.StartsWith("https://"))
+                    system = system.Substring(8);
+                return system;
+            }
+
             GraphNode targetNode = new GraphNode(this);
             targetNode.LhsAnnotationText = $"{type} ";
 
             switch (fhirElement)
             {
                 case CodeableConcept codeableConcept:
-                    String system = codeableConcept.Coding[0].System;
-                    if (system.StartsWith("http://"))
-                        system = system.Substring(7);
-                    else if (system.StartsWith("https://"))
-                        system = system.Substring(8);
-                    targetNode.DisplayName += $"{codeableConcept.Coding[0].Code}/{system}";
-                    targetNode.HRef = codeableConcept.Coding[0].System;
+                    {
+                        String system = System(codeableConcept.Coding[0].System);
+                        targetNode.DisplayName += $"{codeableConcept.Coding[0].Code}/{system}";
+                        targetNode.HRef = codeableConcept.Coding[0].System;
+                    }
                     break;
 
                 case Coding coding:
-                    targetNode.DisplayName += $"{coding.Code}/{coding.System}";
-                    targetNode.HRef = coding.System;
+                    {
+                        String system = System(coding.System);
+                        targetNode.DisplayName += $"{coding.Code}/{system}";
+                        targetNode.HRef = coding.System;
+                    }
                     break;
 
                 case Code code:
@@ -321,7 +331,7 @@ namespace FGraph
             return targetNode;
         }
 
-        
+
         void ProcessLink(GraphLinkByReference link)
         {
             const String fcn = "ProcessLink";

@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.CompilerServices;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MFSH
 {
@@ -20,79 +24,57 @@ namespace MFSH
             this.mfsh.ConsoleLogging();
         }
 
+        void ParseCommands(String path)
+        {
+            String fullPath = Path.GetFullPath(path);
+            if (File.Exists(path) == false)
+                throw new Exception($"Options file {path} not found");
+            String json = File.ReadAllText(path);
+            JObject options = JsonConvert.DeserializeObject<JObject>(json); ;
+            foreach (KeyValuePair<String, JToken> option in options)
+            {
+                switch (option.Key)
+                {
+                    case "baseInputDir":
+                        this.mfsh.BaseInputDir = option.Value.Value<String>();
+                        break;
+
+                    case "baseOutputDir":
+                        this.mfsh.BaseOutputDir = option.Value.Value<String>();
+                        break;
+
+                    case "baseUrl":
+                        this.mfsh.BaseUrl = option.Value.Value<String>();
+                        break;
+
+                    case "defines":
+                        foreach (Tuple<String, String> t in option.Value.GetTuples())
+                            this.mfsh.GlobalVars.Set(t.Item1, t.Item2);
+                        break;
+
+                    case "includeDirs":
+                        this.mfsh.IncludeDirs.AddRange(option.Value.GetStrings());
+                        break;
+
+                    case "mfshPaths":
+                        this.mfsh.Paths.AddRange(option.Value.GetStrings());
+                        break;
+                }
+            }
+        }
+
         void ParseArguments(String[] args)
         {
-            Int32 i = 0;
-
-            String GetArg(String errorMsg)
+            switch (args.Length)
             {
-                if (i >= args.Length)
-                    throw new Exception($"Missing {errorMsg} parameter");
-
-                String arg = args[i++].Trim();
-                if (arg.Length > 0)
-                {
-                    if ((arg[0] == '"') && (arg[arg.Length - 1] == '"'))
-                        arg = arg.Substring(1, arg.Length - 2);
-                }
-
-                return arg;
-            }
-
-            while (i < args.Length)
-            {
-                String DirPart(String path)
-                {
-                    if (Directory.Exists(path))
-                        return path;
-                    else
-                        return Path.GetDirectoryName(path);
-                }
-
-                String arg = GetArg("arg").ToUpper();
-                switch (arg.ToLower())
-                {
-                    case "-i":
-                        this.mfsh.IncludeDirs.Add(GetArg("-i"));
-                        break;
-
-                    case "-d":
-                        {
-                            String name = GetArg("-d");
-                            String value = GetArg("-d");
-                            name = name.Replace("%%", "%");
-                            value = value.Replace("%%", "%");
-                            this.mfsh.GlobalVars.Set(name, value);
-                        }
-                        break;
-
-                    case "-b":
-                        this.mfsh.BaseInputDir = GetArg("-b");
-                        break;
-
-                    case "-p":
-                        {
-                            String pathArg = GetArg("-p");
-                            this.mfsh.Paths.Add(pathArg);
-                            if (String.IsNullOrEmpty(this.mfsh.BaseInputDir) == true)
-                                this.mfsh.BaseInputDir = DirPart(pathArg);
-                        }
-                        break;
-
-                    case "-o":
-                        this.mfsh.BaseOutputDir = GetArg("-o");
-                        break;
-
-                    case "-u":
-                    case "-url":
-                        if (this.mfsh.BaseUrl != null)
-                            throw new Exception($"{arg}  option can only be used once.");
-                        this.mfsh.BaseUrl = GetArg(arg);
-                        break;
-
-                    default:
-                        throw new Exception($"Unknown arg {arg}");
-                }
+                case 0:
+                    ParseCommands("mfsh.json");
+                    break;
+                case 1:
+                    ParseCommands(args[0]);
+                    break;
+                default:
+                    throw new Exception($"Unexpected parameters");
             }
         }
 
