@@ -26,6 +26,11 @@ namespace FGraph
         public String NodeName { get; set; }
 
         /// <summary>
+        /// HRef.
+        /// </summary>
+        public String HRef { get; set; }
+
+        /// <summary>
         /// Optional value of what we linkt his node to. Link can be to
         /// a profile, profile element, value set, code set, etc.
         /// </summary>

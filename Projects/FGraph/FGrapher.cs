@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Hl7.Fhir.Model;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Hl7.Fhir.Serialization;
 using FhirKhit.Tools.R4;
 
@@ -51,7 +52,7 @@ namespace FGraph
 
         public override void ConversionWarn(string className, string method, string msg)
         {
-            Debugger.Break();
+            //Debugger.Break();
             base.ConversionWarn(className, method, msg);
         }
 
@@ -273,6 +274,54 @@ namespace FGraph
             }
         }
 
+        GraphNode CreateFhirPrimitiveNode(String type,
+            Element fhirElement)
+        {
+            GraphNode targetNode = new GraphNode(this);
+            targetNode.LhsAnnotationText = $"{type} ";
+
+            switch (fhirElement)
+            {
+                case CodeableConcept codeableConcept:
+                    String system = codeableConcept.Coding[0].System;
+                    if (system.StartsWith("http://"))
+                        system = system.Substring(7);
+                    else if (system.StartsWith("https://"))
+                        system = system.Substring(8);
+                    targetNode.DisplayName += $"{codeableConcept.Coding[0].Code}/{system}";
+                    targetNode.HRef = codeableConcept.Coding[0].System;
+                    break;
+
+                case Coding coding:
+                    targetNode.DisplayName += $"{coding.Code}/{coding.System}";
+                    targetNode.HRef = coding.System;
+                    break;
+
+                case Code code:
+                    targetNode.DisplayName += $"{code.Value}";
+                    break;
+
+                case Integer fInteger:
+                    targetNode.DisplayName += $"{fInteger.Value}";
+                    break;
+
+                case FhirString fString:
+                    targetNode.DisplayName += $"{fString.Value}";
+                    break;
+
+                case FhirBoolean fBool:
+                    targetNode.DisplayName += $"{fBool.Value}";
+                    break;
+
+                default:
+                    targetNode.DisplayName += fhirElement.ToString();
+                    break;
+            }
+
+            return targetNode;
+        }
+
+        
         void ProcessLink(GraphLinkByReference link)
         {
             const String fcn = "ProcessLink";
@@ -335,32 +384,16 @@ namespace FGraph
 
                 if (elementDiff.Pattern != null)
                 {
-                    GraphNode targetNode = new GraphNode(this);
-                    targetNode.LhsAnnotationText = "pattern";
+                    GraphNode targetNode = CreateFhirPrimitiveNode("pattern", elementDiff.Pattern);
                     sourceNode.AddChild(link, 0, targetNode);
                     targetNode.AddParent(link, 0, sourceNode);
-
-                    switch (elementDiff.Pattern)
-                    {
-                        case CodeableConcept codeableConcept:
-                            targetNode.DisplayName += elementDiff.Pattern.ToString();
-                            break;
-
-                        default:
-                            targetNode.DisplayName += elementDiff.Pattern.ToString();
-                            break;
-                    }
-
-                    this.ConversionWarn("FGrapher",
-                        fcn,
-                        $"ElementId '{linkElementId}' pattern reference is not implemented");
                 }
 
                 if (elementDiff.Fixed != null)
                 {
-                    this.ConversionWarn("FGrapher",
-                        "ProcessLink",
-                        $"ElementId '{linkElementId}' fixed reference is not implemented");
+                    GraphNode targetNode = CreateFhirPrimitiveNode("fix", elementDiff.Fixed);
+                    sourceNode.AddChild(link, 0, targetNode);
+                    targetNode.AddParent(link, 0, sourceNode);
                 }
 
                 foreach (var typeRef in elementDiff.Type)

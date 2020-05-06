@@ -77,9 +77,7 @@ namespace FGraph
 
         protected SENode CreateNode(GraphNode graphNode)
         {
-            String hRef = null;
-            //$if (linkFlag)
-            //$    hRef = this.HRef(mapNode);
+            String hRef = graphNode.HRef;
             SENode node = new SENode
             {
                 HRef = hRef
