@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FGraph.Extensions
+namespace FGraph
 {
     public static class GraphNodeExtensions
     {

@@ -59,6 +59,9 @@ namespace MFSH
                     case "mfshPaths":
                         this.mfsh.Paths.AddRange(option.Value.GetStrings());
                         break;
+
+                    default:
+                        throw new Exception($"Unknown option {option.Key}");
                 }
             }
         }
