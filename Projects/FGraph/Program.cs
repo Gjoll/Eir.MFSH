@@ -11,13 +11,22 @@ namespace FGraph
     {
         class Rendering
         {
-            public String Name { get; set; }
-            public String CssFile { get; set; }
+            public String name { get; set; }
+            public String cssFile { get; set; }
         };
+
+        class Options
+        {
+            public String graphName { get; set; }
+            public String inputPath { get; set; }
+            public String outputDir { get; set; }
+            public String[] resourcePaths { get; set; }
+            public Rendering[] traversals { get; set; }
+        }
 
         FGrapher fGrapher;
         String inputDir = null;
-        List<Rendering> renderings = new List<Rendering>();
+        private Options options;
 
         public Program()
         {
@@ -86,68 +95,31 @@ namespace FGraph
         //    }
         //}
 
+        //void CreateOptions(String path)
+        //{
+        //    Options o = new Options();
+        //    o.graphName = "focus";
+        //    o.inputPath = "GraphFiles";
+        //    o.resourcePaths = new string[] { "build\\input\\profiles", "build\\input\\vocabulary" };
+        //    o.traversals = new Rendering[]
+        //    {
+        //            new Rendering
+        //            {
+        //                name = "focus",
+        //                cssFile = "FocusGraph.css"
+        //            }
+        //    };
+        //    String j = JsonConvert.SerializeObject(o);
+        //    File.WriteAllText(path, j);
+        //}
+
         void ParseCommands(String path)
         {
             String fullPath = Path.GetFullPath(path);
             if (File.Exists(path) == false)
                 throw new Exception($"Options file {path} not found");
             String json = File.ReadAllText(path);
-            JObject options = JsonConvert.DeserializeObject<JObject>(json); ;
-            foreach (KeyValuePair<String, JToken> option in options)
-            {
-                switch (option.Key)
-                {
-                    case "traversals":
-                        foreach (JProperty traversal in option.Value)
-                        {
-                            Rendering r = new Rendering();
-                            r.Name = traversal.Name;
-                            foreach (JObject rOption in traversal)
-                            {
-                                foreach (KeyValuePair<String, JToken> rOptionItem in rOption)
-                                {
-                                    switch (rOptionItem.Key)
-                                    {
-                                        case "cssFile":
-                                            r.CssFile = rOptionItem.Value.Value<String>();
-                                            break;
-                                        default:
-                                            throw new Exception($"Unknown option {rOptionItem.Key}");
-                                    }
-                                }
-                            }
-                        }
-                        break;
-
-                    case "outputPath":
-                        this.fGrapher.OutputDir = option.Value.Value<String>();
-                        break;
-
-                    case "inputPath":
-                        {
-                            String inputPath = option.Value.Value<String>();
-                            this.fGrapher.Load(inputPath);
-                            if (Directory.Exists(inputPath))
-                                this.inputDir = inputPath;
-                            else
-                                this.inputDir = Path.GetDirectoryName(inputPath);
-                        }
-                        break;
-
-
-                    case "graphName":
-                        this.fGrapher.GraphName = option.Value.Value<String>();
-                        break;
-
-                    case "resourcePaths":
-                        foreach (String resourcePath in option.Value.GetStrings())
-                            this.fGrapher.LoadResources(resourcePath);
-                        break;
-
-                    default:
-                        throw new Exception($"Unknown option {option.Key}");
-                }
-            }
+            this.options = JsonConvert.DeserializeObject<Options>(json);
         }
 
         void ParseArguments(String[] args)
@@ -167,8 +139,27 @@ namespace FGraph
 
         bool Process()
         {
+            if (options.outputDir == null)
+                throw new Exception("Missing 'outputDir' option setting");
+            this.fGrapher.OutputDir = options.outputDir;
+
+            if (options.inputPath == null)
+                throw new Exception("Missing 'inputPath' option setting");
+            this.fGrapher.Load(options.inputPath);
+            if (Directory.Exists(options.inputPath))
+                this.inputDir = options.inputPath;
+            else
+                this.inputDir = Path.GetDirectoryName(options.inputPath);
+
+            if (options.graphName == null)
+                throw new Exception("Missing 'graphName' option setting");
+            this.fGrapher.GraphName = options.graphName;
+
+            foreach (String resourcePath in options.resourcePaths)
+                this.fGrapher.LoadResources(resourcePath);
+
             this.fGrapher.Process();
-            foreach (Rendering rendering in this.renderings)
+            foreach (Rendering rendering in this.options.traversals)
             {
                 bool Exists(String dir, ref String relativePath)
                 {
@@ -179,20 +170,20 @@ namespace FGraph
                     return true;
                 }
 
-                String cssFile = rendering.CssFile;
+                String cssFile = rendering.cssFile;
                 if (
                     (!Exists(Path.GetFullPath("."), ref cssFile)) &&
                     (!Exists(this.inputDir, ref cssFile))
                 )
                     throw new Exception($"Css file '{cssFile}' not found");
 
-                switch (rendering.Name.ToLower())
+                switch (rendering.name.ToLower())
                 {
                     case "focus":
                         this.fGrapher.RenderFocusGraphs(cssFile);
                         break;
                     default:
-                        throw new NotImplementedException($"Rendering '{rendering.Name}' is not known");
+                        throw new NotImplementedException($"Rendering '{rendering.name}' is not known");
                 }
             }
             this.fGrapher.SaveAll();
