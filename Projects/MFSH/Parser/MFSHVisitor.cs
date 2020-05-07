@@ -185,6 +185,7 @@ namespace MFSH.Parser
             if (String.IsNullOrEmpty(info.Data.RelativePath) == false)
             {
                 String rPath = parameterValues.ReplaceText(info.Data.RelativePath);
+                rPath = this.Current.FrameVariables.ReplaceText(rPath);
                 switch (info.Data.RelativePathType)
                 {
                     case FileData.RedirType.Json:

@@ -1,8 +1,0 @@
-rect.parentNode {
-    fill: LightBlue;
-    stroke: Black;
-}
-rect.childNode {
-    fill: LightYellow;
-    stroke: Black;
-}

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "FGraph": {
-      "commandName": "Project",
-      "workingDirectory": "C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects"
-    }
-  }
-}
