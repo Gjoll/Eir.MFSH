@@ -38,6 +38,10 @@
     <None Update="PreParser\ANTLR\MFSHPreParser.tokens">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\Eir.AutoMate\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
