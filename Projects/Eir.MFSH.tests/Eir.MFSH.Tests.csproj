@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MFSH\MFSH.csproj" />
+    <ProjectReference Include="..\Eir.MFSH\Eir.MFSH.csproj" />
   </ItemGroup>
 
   <ItemGroup>
