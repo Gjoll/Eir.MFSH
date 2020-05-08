@@ -186,26 +186,11 @@ namespace MFSH.Parser
             {
                 String rPath = parameterValues.ReplaceText(info.Data.RelativePath);
                 rPath = this.Current.FrameVariables.ReplaceText(rPath);
-                switch (info.Data.RelativePathType)
+                macroOutput = new FileData
                 {
-                    case FileData.RedirType.Json:
-                        macroOutput = new JsonArrayData
-                        {
-                            RelativePath = rPath
-                        };
-                        break;
-
-                    case FileData.RedirType.Text:
-                        macroOutput = new FileData
-                        {
-                            RelativePath = rPath
-                        };
-                        break;
-
-                    default:
-                        throw new NotImplementedException();
-                }
-
+                    RelativePath = rPath,
+                    RelativePathType = info.Data.RelativePathType
+                };
                 this.Current.Redirections.Add(macroOutput);
             }
             macroOutput.AppendText(text);

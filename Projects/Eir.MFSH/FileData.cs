@@ -24,7 +24,25 @@ namespace MFSH
 
         public virtual void AppendText(String text) => this.text.Append(text);
         public virtual String Text() => this.text.ToString();
-        public virtual String SaveText() => this.text.ToString();
+
+        public virtual String SaveText()
+        {
+            switch (this.RelativePathType)
+            {
+                case RedirType.Json:
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("[\n");
+                    sb.Append(this.text.ToString());
+                    sb.Append("]\n");
+                    return sb.ToString();
+                
+                case RedirType.Text:
+                    return this.text.ToString();
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
         public RedirType RelativePathType { get; set; }
         public String RelativePath { get; set; }
 
@@ -40,19 +58,6 @@ namespace MFSH
             if (this.RelativePath != null)
                 return this.RelativePath;
             return "No Relative Path";
-        }
-    }
-
-    public class JsonArrayData: FileData
-    {
-        public override String SaveText()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("[\n");
-            sb.Append(this.text.ToString());
-            sb.Append("]\n");
-
-            return sb.ToString();
         }
     }
 }
