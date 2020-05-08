@@ -12,7 +12,10 @@ namespace MFSH
 
         public StackFrame()
         {
-            this.Data = new FileData();
+            this.Data = new FileData
+            {
+                RelativePathType = FileData.RedirType.Text
+            };
         }
     }
 }
