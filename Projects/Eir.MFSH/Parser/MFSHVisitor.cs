@@ -216,7 +216,8 @@ namespace MFSH.Parser
             {
                 FileData fd = new FileData
                 {
-                    RelativePath = redir.RelativePath
+                    RelativePath = redir.RelativePath,
+                    RelativePathType = redir.RelativePathType
                 };
                 fd.AppendText(redir.Text());
                 fd.ProcessVariables(parameterValues);

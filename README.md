@@ -6,7 +6,7 @@ FSH prepropcessor
 
 dotnet tool install --global Eir.MFSH --version {version>
 
-e.g. dotnet tool install --global Eir.MFSH --version 1.1.0
+e.g. dotnet tool install --global Eir.MFSH --version 1.2.0
 
 
 
