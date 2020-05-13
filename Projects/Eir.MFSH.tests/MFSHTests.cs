@@ -120,6 +120,9 @@ namespace MFSH.Tests
         }
 
         [Fact]
+        public void Incompatible() => ParseTestSingleError("Incompatible1.mfsh");
+
+        [Fact]
         public void ApplyOnce2() => ParseTestSingleError("ApplyOnce2.mfsh");
 
         [Fact]

@@ -6,5 +6,5 @@ Line 1
 #apply Alpha()
 #end
 
-#apply once Alpha()
+#incompatible Alpha
 #apply Beta()

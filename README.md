@@ -4,11 +4,15 @@ FSH prepropcessor
 
 ## Installation
 
+Open Visual Studio Package Manager Console, and type the following.
+
 dotnet tool install --global Eir.MFSH --version {version>
 
-e.g. dotnet tool install --global Eir.MFSH --version 1.2.1
+e.g. dotnet tool install --global Eir.MFSH --version 1.2.3
+to upgrade,
 
-
+dotnet tool uninstall --global Eir.MFSH
+dotnet tool install --global Eir.MFSH --version ...
 
 ## Command Line Option
 

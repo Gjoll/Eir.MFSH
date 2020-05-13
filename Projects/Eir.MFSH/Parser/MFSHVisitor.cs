@@ -21,6 +21,7 @@ namespace MFSH.Parser
 
         public Stack<StackFrame> state = new Stack<StackFrame>();
         public Dictionary<String, ApplyInfo> AppliedMacros = new Dictionary<String, ApplyInfo>();
+        public HashSet<String> IncompatibleMacros = new HashSet<String>();
 
         public StackFrame Current => this.state.Peek();
         public string SourceName;
@@ -100,25 +101,33 @@ namespace MFSH.Parser
         {
             const String fcn = "VisitMacro";
             TraceMsg(context, fcn);
-            MacroDefinition s = new MacroDefinition();
-            this.PushState(s);
+            MacroDefinition macroDefinition = new MacroDefinition();
+            this.PushState(macroDefinition);
             String[] names = context
                 .NAME()
                 .Select((a) => a.GetText())
                 .ToArray();
-            s.Name = names[0];
-            s.Parameters.AddRange(names.Skip(1));
+            macroDefinition.Name = names[0];
+            macroDefinition.Parameters.AddRange(names.Skip(1));
+
+            if (this.IncompatibleMacros.Contains(macroDefinition.Name))
+            {
+                this.Error(fcn,
+                    context.Start.Line.ToString(),
+                    $"Macro {macroDefinition.Name} has been marked as incompatible");
+                return false;
+            }
 
             var redirectContext = context.redirect();
             if (redirectContext != null)
             {
                 if (redirectContext.JSONARRAY() != null)
-                    s.Data.RelativePathType = FileData.RedirType.Json;
+                    macroDefinition.Data.RelativePathType = FileData.RedirType.Json;
                 else if (redirectContext.TEXT() != null)
-                    s.Data.RelativePathType = FileData.RedirType.Text;
+                    macroDefinition.Data.RelativePathType = FileData.RedirType.Text;
                 else
                     throw new Exception("Unknown redirect type");
-                s.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
+                macroDefinition.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
             }
 
             return null;
@@ -154,6 +163,25 @@ namespace MFSH.Parser
             }
 
             return true;
+        }
+
+        public override object VisitIncompatible(MFSHParser.IncompatibleContext context)
+        {
+            const String fcn = "VisitIncompatible";
+            String macroName = context.NAME().GetText();
+
+            if (this.IncompatibleMacros.Contains(macroName))
+                return null;
+            this.IncompatibleMacros.Add(macroName);
+            if (this.AppliedMacros.ContainsKey(macroName))
+            {
+                this.Error(fcn,
+                    context.Start.Line.ToString(),
+                    $"Incompatible macro {macroName} has already been applied");
+                return false;
+            }
+
+            return null;
         }
 
         public override object VisitApply(MFSHParser.ApplyContext context)
@@ -350,6 +378,7 @@ namespace MFSH.Parser
             String url = $"{this.mfsh.BaseUrl}/StructureDefinition/{currentClass}";
             this.Current.FrameVariables.Set("%ProfileUrl%", url);
             this.AppliedMacros.Clear();
+            this.IncompatibleMacros.Clear();
             return null;
         }
 

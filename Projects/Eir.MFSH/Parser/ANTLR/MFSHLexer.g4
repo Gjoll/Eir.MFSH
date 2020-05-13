@@ -4,6 +4,7 @@ APPLY: 'apply';
 END: 'end';
 FSHLINE: 'FshLine';
 INCLUDE: 'include';
+INCOMPATIBLE: 'incompatible';
 JSONARRAY: 'jsonArray';
 MACRO: 'macro';
 ONCE: 'once';
