@@ -28,6 +28,9 @@
     <None Update="ApplyOnce2 - Copy.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Incompatible2.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Incompatible1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

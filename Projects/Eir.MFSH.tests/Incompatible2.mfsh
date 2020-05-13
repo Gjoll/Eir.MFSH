@@ -1,0 +1,14 @@
+#macro Alpha()
+Line 1
+#end
+
+#macro Beta()
+#apply Alpha()
+#end
+
+#macro Delta()
+#incompatible Alpha
+#apply Beta()
+#end
+
+#apply Delta()

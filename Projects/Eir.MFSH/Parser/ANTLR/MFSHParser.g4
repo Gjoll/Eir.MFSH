@@ -3,7 +3,7 @@ parser grammar MFSHParser;
 options { tokenVocab=MFSHLexer; }
 
 document    :   command* EOF;
-command: fshLine | apply | end | include |  macro | profile | use;
+command: fshLine | apply | end | include| incompatible|  macro | profile | use;
 
 fshLine: FSHLINE anyString;
 

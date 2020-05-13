@@ -312,7 +312,7 @@ namespace MFSH.Parser
                     Error(fcn,
                         context.Start.Line.ToString(),
                         $"Unexpected '#end'");
-                    break;
+                    throw new Exception($"Unexpected '#end'");
             }
             return null;
         }

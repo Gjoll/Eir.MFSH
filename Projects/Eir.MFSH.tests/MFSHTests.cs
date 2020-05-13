@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace MFSH.Tests
@@ -110,25 +111,28 @@ namespace MFSH.Tests
         [Fact]
         public void ApplyOnce1() => ParseTest("ApplyOnce1.mfsh", "ApplyOnce1.results");
 
-        void ParseTestSingleError(String fileName)
+        void ParseTestSingleError(String fileName, String errorex)
         {
             String input = GetCleanText(fileName);
             MFsh pp = new MFsh();
             pp.TraceLogging(true, true, true);
             String results = pp.Parse(input, "test", null).Data.Text();
             Assert.True(pp.Errors.Count() == 1);
+            String error = pp.Errors.First();
+            Regex r = new Regex(errorex);
+            Assert.True(r.IsMatch(error));
         }
 
         [Fact]
-        public void Incompatible() => ParseTestSingleError("Incompatible1.mfsh");
+        public void Incompatible1() => ParseTestSingleError("Incompatible1.mfsh", "Incompatible macro Alpha has already been applied");
+        [Fact]
+        public void Incompatible2() => ParseTestSingleError("Incompatible2.mfsh", "Incompatible macro Alpha has already been applied");
 
         [Fact]
-        public void ApplyOnce2() => ParseTestSingleError("ApplyOnce2.mfsh");
+        public void ApplyOnce2() => ParseTestSingleError("ApplyOnce2.mfsh",
+            "Attempt to apply macro Alpha with once and variables");
 
         [Fact]
-        public void ApplyOnce3() => ParseTestSingleError("ApplyOnce3.mfsh");
-
-        [Fact]
-        public void ApplyOnce4() => ParseTestSingleError("ApplyOnce4.mfsh");
+        public void ApplyOnce3() => ParseTestSingleError("ApplyOnce3.mfsh", "Attempt to call macro Alpha with once = false, and previous call with once = true.");
     }
 }
