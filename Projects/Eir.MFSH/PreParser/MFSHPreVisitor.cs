@@ -53,6 +53,7 @@ namespace MFSH.PreParser
             text = text
                     .Substring(0, text.Length - 1)
                     .Replace("\"", "\\\"")
+                    .Replace("\n", "\\n")
                 ;
             this.ParsedText.Append($"FshLine \"{text}\"\n");
         }

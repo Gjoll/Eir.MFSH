@@ -91,6 +91,8 @@ namespace MFSH.Tests
         public void Parse4() => ParseTest("Parse4.mfsh", null);
 
         [Fact]
+        public void Parse5() => ParseTest("Parse5.mfsh", null);
+        [Fact]
         public void ExpandVar1() => ParseTest("ExpandVar1.mfsh", "ExpandVar1.results");
 
         [Fact]

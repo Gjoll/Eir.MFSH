@@ -12,7 +12,7 @@ PROFILE: 'profile';
 TEXT: 'text';
 USE: 'use';
 
-STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"';
+STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' . )* '"';
 MULTILINE_STRING: '"""' .*? '"""' ;
 
 OPAR: '(' ;
