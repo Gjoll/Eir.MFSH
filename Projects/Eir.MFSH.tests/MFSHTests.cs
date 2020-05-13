@@ -2,6 +2,7 @@ using MFSH;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using Xunit;
@@ -105,5 +106,26 @@ namespace MFSH.Tests
 
         [Fact]
         public void Profile1() => ParseTest("ParseProfile1.mfsh", null);
+
+        [Fact]
+        public void ApplyOnce1() => ParseTest("ApplyOnce1.mfsh", "ApplyOnce1.results");
+
+        void ParseTestSingleError(String fileName)
+        {
+            String input = GetCleanText(fileName);
+            MFsh pp = new MFsh();
+            pp.TraceLogging(true, true, true);
+            String results = pp.Parse(input, "test", null).Data.Text();
+            Assert.True(pp.Errors.Count() == 1);
+        }
+
+        [Fact]
+        public void ApplyOnce2() => ParseTestSingleError("ApplyOnce2.mfsh");
+
+        [Fact]
+        public void ApplyOnce3() => ParseTestSingleError("ApplyOnce3.mfsh");
+
+        [Fact]
+        public void ApplyOnce4() => ParseTestSingleError("ApplyOnce4.mfsh");
     }
 }

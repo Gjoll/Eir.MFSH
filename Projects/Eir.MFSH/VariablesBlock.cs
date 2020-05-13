@@ -14,6 +14,7 @@ namespace MFSH
         }
         public void Remove(String name) => this.variables.Remove(name);
         public void Add(String key, String value) => this.variables.Add(key, value);
+        public Int32 Count => this.variables.Count;
 
         public void Set(String key, String value)
         {

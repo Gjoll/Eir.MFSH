@@ -25,10 +25,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ApplyOnce4.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ApplyOnce3.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ApplyOnce2.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DefineTest2.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DefineTest2.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ApplyOnce1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ExpandVar2.results">
@@ -47,6 +59,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Parse3.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ApplyOnce1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ParseProfile1.mfsh">

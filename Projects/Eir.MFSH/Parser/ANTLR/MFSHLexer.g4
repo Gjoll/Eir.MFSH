@@ -6,6 +6,7 @@ FSHLINE: 'FshLine';
 INCLUDE: 'include';
 JSONARRAY: 'jsonArray';
 MACRO: 'macro';
+ONCE: 'once';
 PROFILE: 'profile';
 TEXT: 'text';
 USE: 'use';

@@ -7,7 +7,7 @@ command: fshLine | apply | end | include |  macro | profile | use;
 
 fshLine: FSHLINE anyString;
 
-apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
+apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 include: INCLUDE anyString ;
 macro: MACRO NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;

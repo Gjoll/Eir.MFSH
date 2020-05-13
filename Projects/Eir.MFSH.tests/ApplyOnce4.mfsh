@@ -1,0 +1,10 @@
+#macro Alpha()
+Line 1
+#end
+
+#macro Beta()
+#apply Alpha()
+#end
+
+#apply once Alpha()
+#apply Beta()

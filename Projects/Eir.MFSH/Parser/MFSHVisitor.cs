@@ -20,6 +20,7 @@ namespace MFSH.Parser
         public bool DebugFlag { get; set; } = false;
 
         public Stack<StackFrame> state = new Stack<StackFrame>();
+        public Dictionary<String, ApplyInfo> AppliedMacros = new Dictionary<String, ApplyInfo>();
 
         public StackFrame Current => this.state.Peek();
         public string SourceName;
@@ -117,7 +118,7 @@ namespace MFSH.Parser
                     s.Data.RelativePathType = FileData.RedirType.Text;
                 else
                     throw new Exception("Unknown redirect type");
-                s.Data.RelativePath = (String) (this.Visit(redirectContext.singleString()));
+                s.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
             }
 
             return null;
@@ -158,10 +159,58 @@ namespace MFSH.Parser
         public override object VisitApply(MFSHParser.ApplyContext context)
         {
             const String fcn = "VisitApply";
-            TraceMsg(context, fcn);
-
             String macroName = context.NAME().GetText();
+            string text;
             VariablesBlock parameterValues = new VariablesBlock();
+
+            // Check to se if macro has already been applied.
+            // return tru etio apply it, false to not apply it.
+            bool CheckAppliedMacros()
+            {
+                bool onceFlag = (context.ONCE() != null);
+                if (
+                    (onceFlag) &&
+                    (parameterValues.Count > 0)
+                    )
+                {
+                    this.Error(fcn,
+                        context.Start.Line.ToString(),
+                        $"Attempt to apply macro {macroName} with once and variables (once does not work with parameterized macros)");
+                    return false;
+                }
+
+                if (this.AppliedMacros.TryGetValue(macroName, out ApplyInfo appliedMacro) == false)
+                {
+                    appliedMacro = new ApplyInfo
+                    {
+                        MacroName =  macroName,
+                        OnceFlag = onceFlag
+                    };
+                    this.AppliedMacros.Add(macroName, appliedMacro);
+                    return true;
+                }
+
+                if ((onceFlag == true) && (appliedMacro.OnceFlag == true))
+                    return false;
+                if ((onceFlag == false) && (appliedMacro.OnceFlag == true))
+                {
+                    this.Error(fcn,
+                        context.Start.Line.ToString(),
+                        $"Attempt to call macro {macroName} with once = false, and previous call with once = true.");
+                    return false;
+                }
+                if ((onceFlag == true) && (appliedMacro.OnceFlag == false))
+                {
+                    this.Error(fcn,
+                        context.Start.Line.ToString(),
+                        $"Attempt to call macro {macroName} with once = true, and previous call with once = false.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            TraceMsg(context, fcn);
 
             //Debug.Assert(macroName != "GraphNode");
             if (this.mfsh.Defines.TryGetValue(macroName, out MacroDefinition info) == false)
@@ -174,9 +223,13 @@ namespace MFSH.Parser
 
             if (LoadApplyParams(parameterValues, context.anyString(), info, context.Start) == false)
                 return null;
-            string text = info.Data.Text();
+            text = info.Data.Text();
             text = parameterValues.ReplaceText(text);
             text = this.Current.FrameVariables.ReplaceText(text);
+
+            // See if macro was applied previously with once flag.
+            if (CheckAppliedMacros() == false)
+                return null;
 
             /*
              * Output of macro either goes to current output, or to a redirected target.
@@ -199,6 +252,7 @@ namespace MFSH.Parser
             // change original because it may be used again.
             foreach (FileData redir in info.Redirections)
             {
+
                 FileData fd = new FileData
                 {
                     RelativePath = redir.RelativePath,
@@ -295,6 +349,7 @@ namespace MFSH.Parser
             this.Current.FrameVariables.Set("%Profile%", currentClass);
             String url = $"{this.mfsh.BaseUrl}/StructureDefinition/{currentClass}";
             this.Current.FrameVariables.Set("%ProfileUrl%", url);
+            this.AppliedMacros.Clear();
             return null;
         }
 

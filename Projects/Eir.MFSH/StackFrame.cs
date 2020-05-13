@@ -4,6 +4,13 @@ using System.Text;
 
 namespace MFSH
 {
+    public class ApplyInfo
+    {
+        public String MacroName;
+        public String ExpandedText;
+        public bool OnceFlag = false;
+    }
+
     public class StackFrame
     {
         public VariablesBlock FrameVariables = new VariablesBlock();
