@@ -5,11 +5,9 @@ END: 'end';
 FSHLINE: 'FshLine';
 INCLUDE: 'include';
 INCOMPATIBLE: 'incompatible';
-JSONARRAY: 'jsonArray';
 MACRO: 'macro';
 ONCE: 'once';
 PROFILE: 'profile';
-TEXT: 'text';
 USE: 'use';
 
 STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' . )* '"';
