@@ -16,6 +16,8 @@ namespace MFSH
         public VariablesBlock FrameVariables = new VariablesBlock();
         public List<FileData> Redirections = new List<FileData>();
         public FileData Data;
+        public Dictionary<String, ApplyInfo> AppliedMacros = new Dictionary<String, ApplyInfo>();
+        public HashSet<String> IncompatibleMacros = new HashSet<String>();
 
         public StackFrame()
         {

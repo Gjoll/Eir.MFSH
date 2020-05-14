@@ -20,9 +20,6 @@ namespace MFSH.Parser
         public bool DebugFlag { get; set; } = false;
 
         public Stack<StackFrame> state = new Stack<StackFrame>();
-        public Dictionary<String, ApplyInfo> AppliedMacros = new Dictionary<String, ApplyInfo>();
-        public HashSet<String> IncompatibleMacros = new HashSet<String>();
-
         public StackFrame Current => this.state.Peek();
         public string SourceName;
         MFsh mfsh;
@@ -110,7 +107,7 @@ namespace MFSH.Parser
             macroDefinition.Name = names[0];
             macroDefinition.Parameters.AddRange(names.Skip(1));
 
-            if (this.IncompatibleMacros.Contains(macroDefinition.Name))
+            if (this.Current.IncompatibleMacros.Contains(macroDefinition.Name))
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),
@@ -170,10 +167,10 @@ namespace MFSH.Parser
             const String fcn = "VisitIncompatible";
             String macroName = context.NAME().GetText();
 
-            if (this.IncompatibleMacros.Contains(macroName))
+            if (this.Current.IncompatibleMacros.Contains(macroName))
                 return null;
-            this.IncompatibleMacros.Add(macroName);
-            if (this.AppliedMacros.ContainsKey(macroName))
+            this.Current.IncompatibleMacros.Add(macroName);
+            if (this.Current.AppliedMacros.ContainsKey(macroName))
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),
@@ -192,8 +189,8 @@ namespace MFSH.Parser
             VariablesBlock parameterValues = new VariablesBlock();
 
             // Check to se if macro has already been applied.
-            // return tru etio apply it, false to not apply it.
-            bool CheckAppliedMacros()
+            // return true to apply it, false to not apply it.
+            bool CheckOnce()
             {
                 bool onceFlag = (context.ONCE() != null);
                 if (
@@ -207,14 +204,14 @@ namespace MFSH.Parser
                     return false;
                 }
 
-                if (this.AppliedMacros.TryGetValue(macroName, out ApplyInfo appliedMacro) == false)
+                if (this.Current.AppliedMacros.TryGetValue(macroName, out ApplyInfo appliedMacro) == false)
                 {
                     appliedMacro = new ApplyInfo
                     {
                         MacroName =  macroName,
                         OnceFlag = onceFlag
                     };
-                    this.AppliedMacros.Add(macroName, appliedMacro);
+                    this.Current.AppliedMacros.Add(macroName, appliedMacro);
                     return true;
                 }
 
@@ -240,13 +237,44 @@ namespace MFSH.Parser
 
             TraceMsg(context, fcn);
 
-            //Debug.Assert(macroName != "GraphNode");
             if (this.mfsh.Defines.TryGetValue(macroName, out MacroDefinition info) == false)
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),
                     $"Macro {macroName} not found.");
                 return null;
+            }
+
+            // Copy each incompatible macro from applied macro to current. Check to see if any of the new
+            // incompatible entries match an already loaded macro (if so, generate error message)
+            foreach (String incompatibleMacro in info.IncompatibleMacros)
+            {
+                if (this.Current.IncompatibleMacros.Contains(incompatibleMacro) == false)
+                {
+                    if (this.Current.AppliedMacros.ContainsKey(incompatibleMacro))
+                    {
+                        this.Error(fcn,
+                            context.Start.Line.ToString(),
+                            $"Incompatible macro {incompatibleMacro} has already been applied");
+                        return false;
+                    }
+                    this.Current.IncompatibleMacros.Add(incompatibleMacro);
+                }
+            }
+
+            foreach (ApplyInfo appliedMacro in info.AppliedMacros.Values)
+            {
+                if (this.Current.AppliedMacros.Keys.Contains(appliedMacro.MacroName) == false)
+                {
+                    if (this.Current.IncompatibleMacros.Contains(appliedMacro.MacroName))
+                    {
+                        this.Error(fcn,
+                            context.Start.Line.ToString(),
+                            $"Incompatible macro {appliedMacro.MacroName} has already been applied");
+                        return false;
+                    }
+                    this.Current.AppliedMacros.Add(appliedMacro.MacroName, appliedMacro);
+                }
             }
 
             if (LoadApplyParams(parameterValues, context.anyString(), info, context.Start) == false)
@@ -256,7 +284,7 @@ namespace MFSH.Parser
             text = this.Current.FrameVariables.ReplaceText(text);
 
             // See if macro was applied previously with once flag.
-            if (CheckAppliedMacros() == false)
+            if (CheckOnce() == false)
                 return null;
 
             /*
@@ -377,8 +405,7 @@ namespace MFSH.Parser
             this.Current.FrameVariables.Set("%Profile%", currentClass);
             String url = $"{this.mfsh.BaseUrl}/StructureDefinition/{currentClass}";
             this.Current.FrameVariables.Set("%ProfileUrl%", url);
-            this.AppliedMacros.Clear();
-            this.IncompatibleMacros.Clear();
+            this.Current.IncompatibleMacros.Clear();
             return null;
         }
 
