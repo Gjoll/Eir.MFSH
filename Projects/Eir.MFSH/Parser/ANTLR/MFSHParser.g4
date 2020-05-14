@@ -13,7 +13,7 @@ include: INCLUDE anyString ;
 incompatible: INCOMPATIBLE NAME ;
 macro: MACRO NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
 profile: PROFILE NAME;
-redirect: GT (JSONARRAY | TEXT) OPAR singleString CPAR ;
+redirect: GT singleString ;
 use: USE anyString ;
 
 anyString:  singleString | multiLineString;

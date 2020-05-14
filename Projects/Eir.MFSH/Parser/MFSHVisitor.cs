@@ -117,16 +117,7 @@ namespace MFSH.Parser
 
             var redirectContext = context.redirect();
             if (redirectContext != null)
-            {
-                if (redirectContext.JSONARRAY() != null)
-                    macroDefinition.Data.RelativePathType = FileData.RedirType.Json;
-                else if (redirectContext.TEXT() != null)
-                    macroDefinition.Data.RelativePathType = FileData.RedirType.Text;
-                else
-                    throw new Exception("Unknown redirect type");
                 macroDefinition.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
-            }
-
             return null;
         }
 

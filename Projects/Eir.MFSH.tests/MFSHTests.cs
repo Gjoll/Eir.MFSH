@@ -122,7 +122,7 @@ namespace MFSH.Tests
             Assert.True(pp.Errors.Count() == 1);
             String error = pp.Errors.First();
             Regex r = new Regex(errorex);
-            Assert.True(r.IsMatch(error));
+            Assert.True(r.IsMatch(error) == true);
         }
 
         [Fact]
