@@ -25,7 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ApplyOnce2 - Copy.mfsh">
+    <None Update="ApplyOnce4.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ApplyOnce4.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Incompatible2.mfsh">

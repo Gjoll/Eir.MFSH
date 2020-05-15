@@ -1,0 +1,15 @@
+#macro Alpha()
+Line 1
+#end
+
+#macro Beta()
+#apply once Alpha()
+#end
+
+#macro Delta()
+#apply once Alpha()
+#end
+
+Profile: test
+#apply Beta()
+#apply Delta()

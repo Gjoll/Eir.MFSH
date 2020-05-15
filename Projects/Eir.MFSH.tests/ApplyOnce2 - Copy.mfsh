@@ -1,5 +1,0 @@
-#macro Alpha(pa)
-pa
-#end
-
-#apply once Alpha("Line 1")

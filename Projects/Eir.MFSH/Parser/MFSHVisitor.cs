@@ -172,9 +172,45 @@ namespace MFSH.Parser
             return null;
         }
 
+        bool CheckApplyMacro(String macroName, bool onceFlag, Int32 lineNumber)
+        {
+            const String fcn = "CheckApplyMacro";
+
+            if (this.Current.AppliedMacros.TryGetValue(macroName, out ApplyInfo appliedMacro) == false)
+            {
+                appliedMacro = new ApplyInfo
+                {
+                    MacroName = macroName,
+                    OnceFlag = onceFlag
+                };
+                this.Current.AppliedMacros.Add(macroName, appliedMacro);
+                return true;
+            }
+
+            if ((onceFlag == true) && (appliedMacro.OnceFlag == true))
+                return false;
+            if ((onceFlag == false) && (appliedMacro.OnceFlag == true))
+            {
+                this.Error(fcn,
+                    lineNumber.ToString(),
+                    $"Attempt to call macro {macroName} with once = false, and previous call with once = true.");
+                return false;
+            }
+            if ((onceFlag == true) && (appliedMacro.OnceFlag == false))
+            {
+                this.Error(fcn,
+                    lineNumber.ToString(),
+                    $"Attempt to call macro {macroName} with once = true, and previous call with once = false.");
+                return false;
+            }
+
+            return true;
+        }
+
         public override object VisitApply(MFSHParser.ApplyContext context)
         {
             const String fcn = "VisitApply";
+            MacroDefinition info;
             String macroName = context.NAME().GetText();
             string text;
             VariablesBlock parameterValues = new VariablesBlock();
@@ -195,40 +231,18 @@ namespace MFSH.Parser
                     return false;
                 }
 
-                if (this.Current.AppliedMacros.TryGetValue(macroName, out ApplyInfo appliedMacro) == false)
-                {
-                    appliedMacro = new ApplyInfo
-                    {
-                        MacroName =  macroName,
-                        OnceFlag = onceFlag
-                    };
-                    this.Current.AppliedMacros.Add(macroName, appliedMacro);
-                    return true;
-                }
+                if (CheckApplyMacro(macroName, onceFlag, context.Start.Line) == false)
+                    return false;
 
-                if ((onceFlag == true) && (appliedMacro.OnceFlag == true))
-                    return false;
-                if ((onceFlag == false) && (appliedMacro.OnceFlag == true))
-                {
-                    this.Error(fcn,
-                        context.Start.Line.ToString(),
-                        $"Attempt to call macro {macroName} with once = false, and previous call with once = true.");
-                    return false;
-                }
-                if ((onceFlag == true) && (appliedMacro.OnceFlag == false))
-                {
-                    this.Error(fcn,
-                        context.Start.Line.ToString(),
-                        $"Attempt to call macro {macroName} with once = true, and previous call with once = false.");
-                    return false;
-                }
+                foreach (ApplyInfo applyInfo in info.AppliedMacros.Values)
+                    CheckApplyMacro(applyInfo.MacroName, applyInfo.OnceFlag, context.Start.Line);
 
                 return true;
             }
 
             TraceMsg(context, fcn);
 
-            if (this.mfsh.Defines.TryGetValue(macroName, out MacroDefinition info) == false)
+            if (this.mfsh.Defines.TryGetValue(macroName, out info) == false)
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),

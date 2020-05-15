@@ -119,7 +119,7 @@ namespace MFSH.Tests
             MFsh pp = new MFsh();
             pp.TraceLogging(true, true, true);
             String results = pp.Parse(input, "test", null).Data.Text();
-            Assert.True(pp.Errors.Count() == 1);
+            Assert.True(pp.HasErrors == true);
             String error = pp.Errors.First();
             Regex r = new Regex(errorex);
             Assert.True(r.IsMatch(error) == true);
@@ -135,6 +135,10 @@ namespace MFSH.Tests
             "Attempt to apply macro Alpha with once and variables");
 
         [Fact]
-        public void ApplyOnce3() => ParseTestSingleError("ApplyOnce3.mfsh", "Attempt to call macro Alpha with once = false, and previous call with once = true.");
+        public void ApplyOnce3() => ParseTestSingleError("ApplyOnce3.mfsh",
+                                                    "Attempt to call macro Alpha with once = true, and previous call with once = false");
+
+        [Fact]
+        public void ApplyOnce4() => ParseTest("ApplyOnce4.mfsh", "ApplyOnce4.results");
     }
 }
