@@ -59,6 +59,60 @@ namespace MFSH
             this.IncludeDirs.Add(".");
         }
 
+        // Trims out 'once' macros that should not be expanded.
+        void ProcessMacroText(StackFrame frame)
+        {
+            bool eolnFlag = false;
+            StringBuilder sb = new StringBuilder();
+            String text = frame.Data.Text().Replace("\r", "");
+            bool skippingFlag = false;
+            Int32 applyStartCount = 0;
+
+            void AppendLine(String text)
+            {
+                if (skippingFlag == false)
+                {
+                    if (eolnFlag == true)
+                        sb.Append("\n");
+                    else
+                        eolnFlag = true;
+                    sb.Append(text);
+                }
+            }
+
+            void ProcessLine(String line)
+            {
+                if (line.StartsWith("#apply once "))
+                {
+                    eolnFlag = false;
+                    String macroName = line.Substring(12);
+                    if (frame.AppliedMacros.TryGetValue(macroName, out ApplyInfo appliedMacro) == false)
+                        throw new Exception($"Embedded Macro {macroName} not found");
+                    if (appliedMacro.AppliedFlag == true)
+                        skippingFlag = true;
+                    appliedMacro.AppliedFlag = true;
+                    return;
+                }
+
+                if (line.StartsWith("#end"))
+                {
+                    eolnFlag = false;
+                    if (applyStartCount == 0)
+                        skippingFlag = false;
+                    else
+                        applyStartCount -= 1;
+                    return;
+                }
+
+                AppendLine(line);
+            }
+
+            foreach (String line in text.Split("\n"))
+                ProcessLine(line);
+            sb.Append("\n");
+            frame.Data.SetText(sb.ToString());
+        }
+
         public StackFrame Parse(String fshText,
             String sourceName,
             String localDir)
@@ -67,7 +121,9 @@ namespace MFSH
             this.Defines.Clear();
             this.sources.Clear();
 
-            return SubParse(fshText, sourceName, localDir);
+            StackFrame frame =  SubParse(fshText, sourceName, localDir);
+            ProcessMacroText(frame);
+            return frame;
         }
 
 

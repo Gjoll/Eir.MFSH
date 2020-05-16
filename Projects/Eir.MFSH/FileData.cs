@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace MFSH
@@ -24,6 +25,12 @@ namespace MFSH
 
         public virtual void AppendText(String text) => this.text.Append(text);
         public virtual String Text() => this.text.ToString();
+
+        public virtual void SetText(String text)
+        {
+            this.text.Clear();
+            this.text.Append(text);
+        }
 
         public virtual String SaveText()
         {

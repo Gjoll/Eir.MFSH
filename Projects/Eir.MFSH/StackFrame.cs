@@ -7,8 +7,8 @@ namespace MFSH
     public class ApplyInfo
     {
         public String MacroName;
-        public String ExpandedText;
         public bool OnceFlag = false;
+        public bool AppliedFlag = false;
     }
 
     public class StackFrame

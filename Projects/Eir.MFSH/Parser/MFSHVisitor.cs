@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -214,12 +215,12 @@ namespace MFSH.Parser
             String macroName = context.NAME().GetText();
             string text;
             VariablesBlock parameterValues = new VariablesBlock();
+            bool onceFlag = (context.ONCE() != null);
 
             // Check to se if macro has already been applied.
             // return true to apply it, false to not apply it.
             bool CheckOnce()
             {
-                bool onceFlag = (context.ONCE() != null);
                 if (
                     (onceFlag) &&
                     (parameterValues.Count > 0)
@@ -295,19 +296,31 @@ namespace MFSH.Parser
             /*
              * Output of macro either goes to current output, or to a redirected target.
              */
-            FileData macroOutput = this.Current.Data;
             if (String.IsNullOrEmpty(info.Data.RelativePath) == false)
             {
                 String rPath = parameterValues.ReplaceText(info.Data.RelativePath);
                 rPath = this.Current.FrameVariables.ReplaceText(rPath);
-                macroOutput = new FileData
+                FileData redirOut = new FileData
                 {
                     RelativePath = rPath,
                     RelativePathType = info.Data.RelativePathType
                 };
-                this.Current.Redirections.Add(macroOutput);
+                this.Current.Redirections.Add(redirOut);
+                redirOut.AppendText(text);
             }
-            macroOutput.AppendText(text);
+            else
+            {
+                if (onceFlag == true)
+                {
+                    this.Current.Data.AppendText($"\n#apply once {macroName}\n");
+                    this.Current.Data.AppendText(text);
+                    this.Current.Data.AppendText($"\n#end\n");
+                }
+                else
+                {
+                    this.Current.Data.AppendText(text);
+                }
+            }
 
             // Make a copy of redir and process variables. Don't
             // change original because it may be used again.

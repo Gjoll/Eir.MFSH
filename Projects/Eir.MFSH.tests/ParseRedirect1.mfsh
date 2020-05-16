@@ -1,4 +1,4 @@
-#macro Alpha(pa) > jsonArray("redirect.json")
+#macro Alpha(pa) > "redirect.json"
 pa
 #end
 
