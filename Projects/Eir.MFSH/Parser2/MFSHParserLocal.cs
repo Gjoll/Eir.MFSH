@@ -11,7 +11,7 @@ namespace MFSH.Parser2
     public class MFSHParserLocal : MFSHParser
     {
         public bool DebugFlag { get; set; } = false;
-        private TokenLookup tokens = new TokenLookup(Path.Combine("Parser", "ANTLR", "MFSHParser.tokens"));
+        private TokenLookup tokens = new TokenLookup(Path.Combine("Parser2", "ANTLR", "MFSHParser.tokens"));
         public MFSHParserLocal(ITokenStream input) : base(input)
         {
         }

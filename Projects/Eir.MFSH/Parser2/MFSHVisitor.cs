@@ -20,8 +20,8 @@ namespace MFSH.Parser2
     {
         public bool DebugFlag { get; set; } = false;
 
-        public Stack<StackFrame> state = new Stack<StackFrame>();
-        public StackFrame Current => this.state.Peek();
+        public Stack<ParseBlock> state = new Stack<ParseBlock>();
+        public ParseBlock Current => this.state.Peek();
         public string SourceName;
         MFsh mfsh;
 
@@ -29,14 +29,14 @@ namespace MFSH.Parser2
         {
             this.Current.Data.AppendText(text);
         }
-        void PushState(StackFrame s)
+        void PushState(ParseBlock s)
         {
             this.state.Push(s);
         }
 
-        StackFrame PopState()
+        ParseBlock PopState()
         {
-            StackFrame s = this.state.Peek();
+            ParseBlock s = this.state.Peek();
             this.state.Pop();
             return s;
         }
@@ -46,7 +46,7 @@ namespace MFSH.Parser2
         {
             this.SourceName = sourceName;
             this.mfsh = mfsh;
-            StackFrame f = new StackFrame();
+            ParseBlock f = new ParseBlock();
             f.Data.RelativePath = "%SavePath%";
             this.PushState(f);
         }
@@ -70,55 +70,30 @@ namespace MFSH.Parser2
             return null;
         }
 
-        public override object VisitUse(MFSHParser.UseContext context)
-        {
-            const String fcn = "VisitUse";
-            TraceMsg(context, fcn);
-            String include = (String)this.VisitChildren(context.anyString());
-            ProcessInclude(include);
-            return null;
-        }
-
-        public override object VisitInclude(MFSHParser.IncludeContext context)
-        {
-            const String fcn = "VisitInclude";
-            TraceMsg(context, fcn);
-            String include = (String)this.VisitChildren(context.anyString());
-            String text = ProcessInclude(include);
-            if (text == null)
-                return null;
-            if (text.Length == 0)
-                return null;
-            if (text[^1] != '\n')
-                text += '\n';
-            this.AppendText(text);
-            return null;
-        }
-
         public override object VisitMacro(MFSHParser.MacroContext context)
         {
             const String fcn = "VisitMacro";
-            TraceMsg(context, fcn);
-            MacroDefinition macroDefinition = new MacroDefinition();
-            this.PushState(macroDefinition);
-            String[] names = context
-                .NAME()
-                .Select((a) => a.GetText())
-                .ToArray();
-            macroDefinition.Name = names[0];
-            macroDefinition.Parameters.AddRange(names.Skip(1));
+            //TraceMsg(context, fcn);
+            //MacroDefinition macroDefinition = new MacroDefinition();
+            //this.PushState(macroDefinition);
+            //String[] names = context
+            //    .NAME()
+            //    .Select((a) => a.GetText())
+            //    .ToArray();
+            //macroDefinition.Name = names[0];
+            //macroDefinition.Parameters.AddRange(names.Skip(1));
 
-            if (this.Current.IncompatibleMacros.Contains(macroDefinition.Name))
-            {
-                this.Error(fcn,
-                    context.Start.Line.ToString(),
-                    $"Macro {macroDefinition.Name} has been marked as incompatible");
-                return false;
-            }
+            //if (this.Current.IncompatibleMacros.Contains(macroDefinition.Name))
+            //{
+            //    this.Error(fcn,
+            //        context.Start.Line.ToString(),
+            //        $"Macro {macroDefinition.Name} has been marked as incompatible");
+            //    return false;
+            //}
 
-            var redirectContext = context.redirect();
-            if (redirectContext != null)
-                macroDefinition.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
+            //var redirectContext = context.redirect();
+            //if (redirectContext != null)
+            //    macroDefinition.Data.RelativePath = (String)(this.Visit(redirectContext.singleString()));
             return null;
         }
 
@@ -159,184 +134,149 @@ namespace MFSH.Parser2
             const String fcn = "VisitIncompatible";
             String macroName = context.NAME().GetText();
 
-            if (this.Current.IncompatibleMacros.Contains(macroName))
-                return null;
-            this.Current.IncompatibleMacros.Add(macroName);
-            if (this.Current.AppliedMacros.ContainsKey(macroName))
-            {
-                this.Error(fcn,
-                    context.Start.Line.ToString(),
-                    $"Incompatible macro {macroName} has already been applied");
-                return false;
-            }
+            //if (this.Current.IncompatibleMacros.Contains(macroName))
+            //    return null;
+            //this.Current.IncompatibleMacros.Add(macroName);
+            //if (this.Current.AppliedMacros.ContainsKey(macroName))
+            //{
+            //    this.Error(fcn,
+            //        context.Start.Line.ToString(),
+            //        $"Incompatible macro {macroName} has already been applied");
+            //    return false;
+            //}
 
             return null;
         }
 
-        bool CheckApplyMacro(String macroName, bool onceFlag, Int32 lineNumber)
-        {
-            const String fcn = "CheckApplyMacro";
-
-            if (this.Current.AppliedMacros.TryGetValue(macroName, out ApplyInfo appliedMacro) == false)
-            {
-                appliedMacro = new ApplyInfo
-                {
-                    MacroName = macroName,
-                    OnceFlag = onceFlag
-                };
-                this.Current.AppliedMacros.Add(macroName, appliedMacro);
-                return true;
-            }
-
-            if ((onceFlag == true) && (appliedMacro.OnceFlag == true))
-                return false;
-            if ((onceFlag == false) && (appliedMacro.OnceFlag == true))
-            {
-                this.Error(fcn,
-                    lineNumber.ToString(),
-                    $"Attempt to call macro {macroName} with once = false, and previous call with once = true.");
-                return false;
-            }
-            if ((onceFlag == true) && (appliedMacro.OnceFlag == false))
-            {
-                this.Error(fcn,
-                    lineNumber.ToString(),
-                    $"Attempt to call macro {macroName} with once = true, and previous call with once = false.");
-                return false;
-            }
-
-            return true;
-        }
-
         public override object VisitApply(MFSHParser.ApplyContext context)
         {
-            const String fcn = "VisitApply";
-            MacroDefinition info;
-            String macroName = context.NAME().GetText();
-            string text;
-            VariablesBlock parameterValues = new VariablesBlock();
-            bool onceFlag = (context.ONCE() != null);
+            //const String fcn = "VisitApply";
+            //MacroDefinition info;
+            //String macroName = context.NAME().GetText();
+            //string text;
+            //VariablesBlock parameterValues = new VariablesBlock();
+            //bool onceFlag = (context.ONCE() != null);
 
-            // Check to se if macro has already been applied.
-            // return true to apply it, false to not apply it.
-            bool CheckOnce()
-            {
-                if (
-                    (onceFlag) &&
-                    (parameterValues.Count > 0)
-                    )
-                {
-                    this.Error(fcn,
-                        context.Start.Line.ToString(),
-                        $"Attempt to apply macro {macroName} with once and variables (once does not work with parameterized macros)");
-                    return false;
-                }
+            //// Check to se if macro has already been applied.
+            //// return true to apply it, false to not apply it.
+            //bool CheckOnce()
+            //{
+            //    if (
+            //        (onceFlag) &&
+            //        (parameterValues.Count > 0)
+            //        )
+            //    {
+            //        this.Error(fcn,
+            //            context.Start.Line.ToString(),
+            //            $"Attempt to apply macro {macroName} with once and variables (once does not work with parameterized macros)");
+            //        return false;
+            //    }
 
-                if (CheckApplyMacro(macroName, onceFlag, context.Start.Line) == false)
-                    return false;
+            //    if (CheckApplyMacro(macroName, onceFlag, context.Start.Line) == false)
+            //        return false;
 
-                foreach (ApplyInfo applyInfo in info.AppliedMacros.Values)
-                    CheckApplyMacro(applyInfo.MacroName, applyInfo.OnceFlag, context.Start.Line);
+            //    foreach (ApplyInfo applyInfo in info.AppliedMacros.Values)
+            //        CheckApplyMacro(applyInfo.MacroName, applyInfo.OnceFlag, context.Start.Line);
 
-                return true;
-            }
+            //    return true;
+            //}
 
-            TraceMsg(context, fcn);
+            //TraceMsg(context, fcn);
 
-            if (this.mfsh.Defines.TryGetValue(macroName, out info) == false)
-            {
-                this.Error(fcn,
-                    context.Start.Line.ToString(),
-                    $"Macro {macroName} not found.");
-                return null;
-            }
+            //if (this.mfsh.Defines.TryGetValue(macroName, out info) == false)
+            //{
+            //    this.Error(fcn,
+            //        context.Start.Line.ToString(),
+            //        $"Macro {macroName} not found.");
+            //    return null;
+            //}
 
-            // Copy each incompatible macro from applied macro to current. Check to see if any of the new
-            // incompatible entries match an already loaded macro (if so, generate error message)
-            foreach (String incompatibleMacro in info.IncompatibleMacros)
-            {
-                if (this.Current.IncompatibleMacros.Contains(incompatibleMacro) == false)
-                {
-                    if (this.Current.AppliedMacros.ContainsKey(incompatibleMacro))
-                    {
-                        this.Error(fcn,
-                            context.Start.Line.ToString(),
-                            $"Incompatible macro {incompatibleMacro} has already been applied");
-                        return false;
-                    }
-                    this.Current.IncompatibleMacros.Add(incompatibleMacro);
-                }
-            }
+            //// Copy each incompatible macro from applied macro to current. Check to see if any of the new
+            //// incompatible entries match an already loaded macro (if so, generate error message)
+            //foreach (String incompatibleMacro in info.IncompatibleMacros)
+            //{
+            //    if (this.Current.IncompatibleMacros.Contains(incompatibleMacro) == false)
+            //    {
+            //        if (this.Current.AppliedMacros.ContainsKey(incompatibleMacro))
+            //        {
+            //            this.Error(fcn,
+            //                context.Start.Line.ToString(),
+            //                $"Incompatible macro {incompatibleMacro} has already been applied");
+            //            return false;
+            //        }
+            //        this.Current.IncompatibleMacros.Add(incompatibleMacro);
+            //    }
+            //}
 
-            foreach (ApplyInfo appliedMacro in info.AppliedMacros.Values)
-            {
-                if (this.Current.AppliedMacros.Keys.Contains(appliedMacro.MacroName) == false)
-                {
-                    if (this.Current.IncompatibleMacros.Contains(appliedMacro.MacroName))
-                    {
-                        this.Error(fcn,
-                            context.Start.Line.ToString(),
-                            $"Incompatible macro {appliedMacro.MacroName} has already been applied");
-                        return false;
-                    }
-                    this.Current.AppliedMacros.Add(appliedMacro.MacroName, appliedMacro);
-                }
-            }
+            //foreach (ApplyInfo appliedMacro in info.AppliedMacros.Values)
+            //{
+            //    if (this.Current.AppliedMacros.Keys.Contains(appliedMacro.MacroName) == false)
+            //    {
+            //        if (this.Current.IncompatibleMacros.Contains(appliedMacro.MacroName))
+            //        {
+            //            this.Error(fcn,
+            //                context.Start.Line.ToString(),
+            //                $"Incompatible macro {appliedMacro.MacroName} has already been applied");
+            //            return false;
+            //        }
+            //        this.Current.AppliedMacros.Add(appliedMacro.MacroName, appliedMacro);
+            //    }
+            //}
 
-            if (LoadApplyParams(parameterValues, context.anyString(), info, context.Start) == false)
-                return null;
-            text = info.Data.Text();
-            text = parameterValues.ReplaceText(text);
-            text = this.Current.FrameVariables.ReplaceText(text);
+            //if (LoadApplyParams(parameterValues, context.anyString(), info, context.Start) == false)
+            //    return null;
+            //text = info.Data.Text();
+            //text = parameterValues.ReplaceText(text);
+            //text = this.Current.FrameVariables.ReplaceText(text);
 
-            // See if macro was applied previously with once flag.
-            if (CheckOnce() == false)
-                return null;
+            //// See if macro was applied previously with once flag.
+            //if (CheckOnce() == false)
+            //    return null;
 
-            /*
-             * Output of macro either goes to current output, or to a redirected target.
-             */
-            if (String.IsNullOrEmpty(info.Data.RelativePath) == false)
-            {
-                String rPath = parameterValues.ReplaceText(info.Data.RelativePath);
-                rPath = this.Current.FrameVariables.ReplaceText(rPath);
-                FileData redirOut = new FileData
-                {
-                    RelativePath = rPath,
-                    RelativePathType = info.Data.RelativePathType
-                };
-                this.Current.Redirections.Add(redirOut);
-                redirOut.AppendText(text);
-            }
-            else
-            {
-                if (onceFlag == true)
-                {
-                    this.Current.Data.AppendText($"\n#apply once {macroName}\n");
-                    this.Current.Data.AppendText(text);
-                    this.Current.Data.AppendText($"\n#end\n");
-                }
-                else
-                {
-                    this.Current.Data.AppendText(text);
-                }
-            }
+            ///*
+            // * Output of macro either goes to current output, or to a redirected target.
+            // */
+            //if (String.IsNullOrEmpty(info.Data.RelativePath) == false)
+            //{
+            //    String rPath = parameterValues.ReplaceText(info.Data.RelativePath);
+            //    rPath = this.Current.FrameVariables.ReplaceText(rPath);
+            //    FileData redirOut = new FileData
+            //    {
+            //        RelativePath = rPath,
+            //        RelativePathType = info.Data.RelativePathType
+            //    };
+            //    this.Current.Redirections.Add(redirOut);
+            //    redirOut.AppendText(text);
+            //}
+            //else
+            //{
+            //    if (onceFlag == true)
+            //    {
+            //        this.Current.Data.AppendText($"\n#apply once {macroName}\n");
+            //        this.Current.Data.AppendText(text);
+            //        this.Current.Data.AppendText($"\n#end\n");
+            //    }
+            //    else
+            //    {
+            //        this.Current.Data.AppendText(text);
+            //    }
+            //}
 
-            // Make a copy of redir and process variables. Don't
-            // change original because it may be used again.
-            foreach (FileData redir in info.Redirections)
-            {
+            //// Make a copy of redir and process variables. Don't
+            //// change original because it may be used again.
+            //foreach (FileData redir in info.Redirections)
+            //{
 
-                FileData fd = new FileData
-                {
-                    RelativePath = redir.RelativePath,
-                    RelativePathType = redir.RelativePathType
-                };
-                fd.AppendText(redir.Text());
-                fd.ProcessVariables(parameterValues);
-                fd.ProcessVariables(this.Current.FrameVariables);
-                this.Current.Redirections.Add(fd);
-            }
+            //    FileData fd = new FileData
+            //    {
+            //        RelativePath = redir.RelativePath,
+            //        RelativePathType = redir.RelativePathType
+            //    };
+            //    fd.AppendText(redir.Text());
+            //    fd.ProcessVariables(parameterValues);
+            //    fd.ProcessVariables(this.Current.FrameVariables);
+            //    this.Current.Redirections.Add(fd);
+            //}
 
             return null;
         }
@@ -347,30 +287,19 @@ namespace MFSH.Parser2
             const String fcn = "VisitEnd";
             TraceMsg(context, fcn);
 
-            StackFrame s = this.PopState();
-            switch (s)
-            {
-                case MacroDefinition macroDef:
-                    this.mfsh.Defines.Add(macroDef.Name, macroDef);
-                    break;
+            //ParseBlock s = this.PopState();
+            //switch (s)
+            //{
+            //    case MacroDefinition macroDef:
+            //        this.mfsh.Defines.Add(macroDef.Name, macroDef);
+            //        break;
 
-                default:
-                    Error(fcn,
-                        context.Start.Line.ToString(),
-                        $"Unexpected '#end'");
-                    throw new Exception($"Unexpected '#end'");
-            }
-            return null;
-        }
-
-        public override object VisitFshLine(MFSHParser.FshLineContext context)
-        {
-            const String fcn = "VisitFshLine";
-            TraceMsg(context, fcn);
-
-            String line = (String)this.VisitChildren(context.anyString());
-            this.AppendText(line);
-            this.AppendText("\n");
+            //    default:
+            //        Error(fcn,
+            //            context.Start.Line.ToString(),
+            //            $"Unexpected '#end'");
+            //        throw new Exception($"Unexpected '#end'");
+            //}
             return null;
         }
 
@@ -416,69 +345,6 @@ namespace MFSH.Parser2
             return sb.ToString();
         }
 
-
-        public override object VisitProfile(MFSHParser.ProfileContext context)
-        {
-            String currentClass = context.NAME().GetText();
-            this.Current.FrameVariables.Set("%Profile%", currentClass);
-            String url = $"{this.mfsh.BaseUrl}/StructureDefinition/{currentClass}";
-            this.Current.FrameVariables.Set("%ProfileUrl%", url);
-            this.Current.IncompatibleMacros.Clear();
-            return null;
-        }
-
-        #region Non Visitor Methods
-        String FindInclude(String includeFile)
-        {
-            if (Path.IsPathRooted(includeFile))
-            {
-                if (File.Exists(includeFile) == true)
-                    return includeFile;
-            }
-
-            if (this.mfsh.LocalDir != null)
-            {
-                String localFile = Path.Combine(this.mfsh.LocalDir, includeFile);
-                if (File.Exists(localFile) == true)
-                    return localFile;
-            }
-
-            if (File.Exists(includeFile) == true)
-                return includeFile;
-            foreach (String dir in this.mfsh.IncludeDirs)
-            {
-                String path = Path.GetFullPath(Path.Combine(dir, includeFile));
-                if (File.Exists(path))
-                    return path;
-            }
-
-            throw new Exception($"Include file '{includeFile}' does not exist");
-        }
-
-        String ProcessInclude(String includeFile)
-        {
-            const String fcn = "ProcessInclude";
-
-            String includePath = this.FindInclude(includeFile);
-            if (this.mfsh.Includes.Contains(includeFile))
-                return null;
-
-            this.mfsh.Includes.Add(includeFile);
-            String fshText = File.ReadAllText(includePath);
-
-            StackFrame frame = this.mfsh.SubParse(fshText,
-                includeFile,
-                Path.GetDirectoryName(includePath));
-            if (frame.Redirections.Count > 0)
-            {
-                this.Error(fcn,
-                    "",
-                    $"Include file {includeFile} defined redirections which will not be saved");
-            }
-            return frame.Data.Text();
-        }
-
-
         void Error(String fcn,
             String location,
             String msg)
@@ -486,6 +352,5 @@ namespace MFSH.Parser2
             String fullMsg = $"{this.SourceName}, line {location}. {msg}";
             this.mfsh.ConversionError("mfsh", fcn, fullMsg);
         }
-        #endregion
     }
 }

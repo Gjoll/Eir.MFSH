@@ -1,14 +1,19 @@
 lexer grammar MFSHLexer;
 
+MFSH: [ \t]* '#' -> pushMode(MFSHMode)
+  ;
+TEXT: [ \t]* ~[#\n]* '\n' ;
+
+CR: '\r' -> skip ;
+
+
+mode MFSHMode;
+
 APPLY: 'apply';
 END: 'end';
-FSHLINE: 'FshLine';
-INCLUDE: 'include';
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
 ONCE: 'once';
-PROFILE: 'profile';
-USE: 'use';
 
 STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' . )* '"';
 MULTILINE_STRING: '"""' .*? '"""' ;
@@ -20,4 +25,8 @@ GT: '>' ;
 
 NAME: [A-Za-z][A-Za-z0-9]+ | '$' [A-Za-z][A-Za-z0-9]+ '$' | '%' [A-Za-z][A-Za-z0-9]+ '%' ;
 
-WS: [ \n\r\t]+ -> skip;
+MFSHExit: '\n' [ \t]* ~'#' -> popMode;
+MFSHCont: '\n' [ \t]* '#' -> skip;
+
+MFSHCR: '\r' -> skip ;
+MFSH_SPACE: [ \t]+ -> skip;

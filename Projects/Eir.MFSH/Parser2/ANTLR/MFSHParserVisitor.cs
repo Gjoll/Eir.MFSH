@@ -45,11 +45,23 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCommand([NotNull] MFSHParser.CommandContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.fshLine"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.data"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitFshLine([NotNull] MFSHParser.FshLineContext context);
+	Result VisitData([NotNull] MFSHParser.DataContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.mfsh"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMfsh([NotNull] MFSHParser.MfshContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.mfshCmd"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMfshCmd([NotNull] MFSHParser.MfshCmdContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.apply"/>.
 	/// </summary>
@@ -63,12 +75,6 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEnd([NotNull] MFSHParser.EndContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.include"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInclude([NotNull] MFSHParser.IncludeContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.incompatible"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -81,23 +87,11 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMacro([NotNull] MFSHParser.MacroContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.profile"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitProfile([NotNull] MFSHParser.ProfileContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.redirect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRedirect([NotNull] MFSHParser.RedirectContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.use"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitUse([NotNull] MFSHParser.UseContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.anyString"/>.
 	/// </summary>

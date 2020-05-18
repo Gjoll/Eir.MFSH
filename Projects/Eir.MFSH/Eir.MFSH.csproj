@@ -38,4 +38,13 @@
     <Folder Include="Parser\ANTLR\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Parser2\ANTLR\MFSHLexer.tokens">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser2\ANTLR\MFSHParser.tokens">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -18,7 +18,7 @@ namespace MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; } = false;
+        public bool DebugFlag { get; set; } = true;
         public List<String> IncludeDirs;
 
         // dir containing file being parsed. Usd for local includes.
@@ -130,7 +130,7 @@ namespace MFSH
         /// <summary>
         /// Parse input text.
         /// </summary>
-        public StackFrame SubParse(String fshText,
+        public StackFrame SubParse(String text,
             String sourceName,
             String localDir)
         {
@@ -140,7 +140,6 @@ namespace MFSH
                 throw new Exception($"File {sourceName} has already been processed. Recursive include look?");
             this.sources.Add(sourceName);
 
-            string text = PreParseText(fshText, sourceName);
             StackFrame retVal = ParseText(text, sourceName);
             this.LocalDir = saveLocalDir;
             return retVal;
@@ -186,36 +185,37 @@ namespace MFSH
 
         public StackFrame ParseText(String fshText, String sourceName)
         {
-            fshText = fshText.Replace("\r", "");
-            String[] inputLines = fshText.Split('\n');
+            //fshText = fshText.Replace("\r", "");
+            //String[] inputLines = fshText.Split('\n');
 
-            Parser.MFSHLexerLocal lexer = new Parser.MFSHLexerLocal(new AntlrInputStream(fshText));
-            lexer.DebugFlag = DebugFlag;
-            lexer.RemoveErrorListeners();
-            lexer.AddErrorListener(new MFSHErrorListenerLexer(this,
-                "MFsh Lexer",
-                sourceName,
-                inputLines));
+            //Parser2.MFSHLexerLocal lexer = new Parser2.MFSHLexerLocal(new AntlrInputStream(fshText));
+            //lexer.DebugFlag = DebugFlag;
+            //lexer.RemoveErrorListeners();
+            //lexer.AddErrorListener(new MFSHErrorListenerLexer(this,
+            //    "MFsh Lexer",
+            //    sourceName,
+            //    inputLines));
 
-            Parser.MFSHParserLocal parser = new Parser.MFSHParserLocal(new CommonTokenStream(lexer));
-            parser.DebugFlag = DebugFlag;
-            parser.Trace = false;
-            parser.RemoveErrorListeners();
-            parser.AddErrorListener(new MFSHErrorListenerParser(this,
-                "MFsh Parser",
-                sourceName,
-                inputLines));
-            //parser.ErrorHandler = new BailErrorStrategy();
+            //Parser2.MFSHParserLocal parser = new Parser2.MFSHParserLocal(new CommonTokenStream(lexer));
+            //parser.DebugFlag = DebugFlag;
+            //parser.Trace = false;
+            //parser.RemoveErrorListeners();
+            //parser.AddErrorListener(new MFSHErrorListenerParser(this,
+            //    "MFsh Parser",
+            //    sourceName,
+            //    inputLines));
+            ////parser.ErrorHandler = new BailErrorStrategy();
 
-            Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this, sourceName);
-            visitor.DebugFlag = DebugFlag;
-            visitor.Visit(parser.document());
-            if (visitor.state.Count != 1)
-            {
-                String fullMsg = $"Error processing {sourceName}. Unterminated #{{Command}}";
-                this.ConversionError("mfsh", "ProcessInclude", fullMsg);
-            }
-            return visitor.Current;
+            //Parser2.MFSHVisitor visitor = new Parser2.MFSHVisitor(this, sourceName);
+            //visitor.DebugFlag = DebugFlag;
+            //visitor.Visit(parser.document());
+            //if (visitor.state.Count != 1)
+            //{
+            //    String fullMsg = $"Error processing {sourceName}. Unterminated #{{Command}}";
+            //    this.ConversionError("mfsh", "ProcessInclude", fullMsg);
+            //}
+            //return visitor.Current;
+            throw new NotImplementedException();
         }
 
         /// <summary>

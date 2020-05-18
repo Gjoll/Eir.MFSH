@@ -1,21 +1,28 @@
 parser grammar MFSHParser;
-
 options { tokenVocab=MFSHLexer; }
 
-document    :   command* EOF;
-command: fshLine | apply | end | include| incompatible|  macro | profile | use;
+document:
+    command* EOF
+    ;
 
-fshLine: FSHLINE anyString;
+command: dataLine | mfshCmd;
+
+dataLine:
+    TEXT
+  | MFSHExit
+	;
+
+mfshCmd: MFSH mfshCmd* ;
+
+mfshCmd: apply | end | incompatible | macro | redirect ;
 
 apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
-include: INCLUDE anyString ;
 incompatible: INCOMPATIBLE NAME ;
 macro: MACRO NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
-profile: PROFILE NAME;
 redirect: GT singleString ;
-use: USE anyString ;
 
 anyString:  singleString | multiLineString;
 multiLineString:  MULTILINE_STRING ;
 singleString: STRING ;
+
