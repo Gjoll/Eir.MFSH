@@ -113,17 +113,12 @@ namespace Eir.MFSH.Parser2
             const String fcn = "VisitIncompatible";
             String macroName = context.NAME().GetText();
 
-            //if (this.Current.IncompatibleMacros.Contains(macroName))
-            //    return null;
-            //this.Current.IncompatibleMacros.Add(macroName);
-            //if (this.Current.AppliedMacros.ContainsKey(macroName))
-            //{
-            //    this.Error(fcn,
-            //        context.Start.Line.ToString(),
-            //        $"Incompatible macro {macroName} has already been applied");
-            //    return false;
-            //}
+            MIIncompatible incompatible = new MIIncompatible()
+            {
+                Name = macroName
+            };
 
+            this.Current.Items.Add(incompatible);
             return null;
         }
 

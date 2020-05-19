@@ -64,6 +64,9 @@
     <None Update="TestFiles\ExpandVar1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\MgrIncompatibleTest.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\MgrApplyTest1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

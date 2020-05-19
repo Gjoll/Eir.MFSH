@@ -80,7 +80,7 @@ namespace Eir.MFSH.Tests
         }
 
         [Fact]
-        public void MgrApplyTest1()
+        public void MgrApplyTest()
         {
             ParseBlock b = ParseTest("MgrApplyTest1.mfsh", out MFshManager mgr);
             Debug.Assert(b.Items.Count == 3);
@@ -102,6 +102,16 @@ namespace Eir.MFSH.Tests
             Debug.Assert(apply3.Parameters[1] == "bb");
             Debug.Assert(apply3.Parameters[2] == "ccc");
             Debug.Assert(apply3.OnceFlag == false);
+        }
+
+        [Fact]
+        public void MgrIncompatibleTest()
+        {
+            ParseBlock b = ParseTest("MgrIncompatibleTest.mfsh", out MFshManager mgr);
+            Debug.Assert(b.Items.Count == 1);
+
+            MIIncompatible apply1 = (MIIncompatible)b.Items[0];
+            Debug.Assert(apply1.Name == "Macro1");
         }
     }
 }

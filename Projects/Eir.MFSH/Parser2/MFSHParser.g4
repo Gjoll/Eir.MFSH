@@ -11,7 +11,7 @@ mfshExit: MFSHExit;
 
 mfshCmds: MFSH mfshCmd* ;
 
-mfshCmd: apply | end | incompatible | macro | redirect ;
+mfshCmd: apply | end | incompatible | macro ;
 
 apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
