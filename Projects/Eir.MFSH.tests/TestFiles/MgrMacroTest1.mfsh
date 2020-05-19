@@ -1,0 +1,11 @@
+Line 1
+Line 2
+#macro Macro1()
+    Line 3
+    Line 4
+#end
+#macro Macro2()
+#end
+Line 5
+#macro Macro3()
+#end

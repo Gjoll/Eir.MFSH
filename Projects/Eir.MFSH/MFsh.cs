@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 using Eir.DevTools;
-using MFSH;
+using Eir.MFSH;
 
-namespace MFSH
+namespace Eir.MFSH
 {
     public class MFsh : ConverterBase
     {
@@ -147,40 +147,7 @@ namespace MFSH
 
         public string PreParseText(String fshText, String sourceName)
         {
-            if (fshText.EndsWith("\n") == false)
-                fshText = fshText + "\n";
-
-            fshText = fshText.Replace("\r", "");
-            String[] inputLines = fshText.Split('\n');
-
-            PreParser.MFSHPreLexerLocal lexer = new PreParser.MFSHPreLexerLocal(new AntlrInputStream(fshText));
-            lexer.DebugFlag = DebugFlag;
-            lexer.RemoveErrorListeners();
-            lexer.AddErrorListener(new MFSHErrorListenerLexer(this,
-                "Fsh PreLexer",
-                sourceName,
-                inputLines));
-
-            PreParser.MFSHPreParserLocal parser = new PreParser.MFSHPreParserLocal(new CommonTokenStream(lexer));
-            parser.DebugFlag = DebugFlag;
-            parser.Trace = false;
-            parser.RemoveErrorListeners();
-            parser.AddErrorListener(new MFSHErrorListenerParser(this,
-                "MFsh PreParser",
-                sourceName,
-                inputLines));
-
-            PreParser.MFSHPreVisitor visitor = new PreParser.MFSHPreVisitor(sourceName);
-            visitor.DebugFlag = DebugFlag;
-            visitor.Visit(parser.text());
-            String retVal = visitor.ParsedText.ToString();
-            if (this.DebugFlag)
-            {
-                Trace.WriteLine("Pre parsed text");
-                Trace.WriteLine(retVal);
-            }
-
-            return retVal;
+            throw new NotImplementedException();
         }
 
         public StackFrame ParseText(String fshText, String sourceName)

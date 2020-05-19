@@ -64,7 +64,16 @@
     <None Update="TestFiles\ExpandVar1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\MFSHManagerTest1.mfsh">
+    <None Update="TestFiles\MgrApplyTest1.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFiles\MgrMacroParametersTest.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFiles\MgrMacroTest2.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFiles\MgrMacroTest1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TestFiles\Parse5.mfsh">

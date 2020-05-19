@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFSH
+namespace Eir.MFSH
 {
     public class VariablesBlock
     {

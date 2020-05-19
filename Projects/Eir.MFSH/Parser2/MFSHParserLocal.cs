@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Antlr4.Runtime;
-using MFSH;
+using Eir.MFSH;
 
-namespace MFSH.Parser2
+namespace Eir.MFSH.Parser2
 {
     public class MFSHParserLocal : MFSHParser
     {

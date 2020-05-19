@@ -1,8 +1,7 @@
 lexer grammar MFSHLexer;
 
-MFSH: [ \t]* '#' -> pushMode(MFSHMode)
-  ;
-TEXT: [ \t]* ~[#\n]* '\n' ;
+MFSH: [ \t]* '#' -> pushMode(MFSHMode);
+TEXT: [ \t]* (~'#' ~'\n'* ('\n' | EOF)) | ('\n' | EOF);
 
 CR: '\r' -> skip ;
 
@@ -25,8 +24,8 @@ GT: '>' ;
 
 NAME: [A-Za-z][A-Za-z0-9]+ | '$' [A-Za-z][A-Za-z0-9]+ '$' | '%' [A-Za-z][A-Za-z0-9]+ '%' ;
 
-MFSHExit: '\n' [ \t]* ~'#' -> popMode;
-MFSHCont: '\n' [ \t]* '#' -> skip;
+MFSHCont: '\n' [ \t]* '#'			-> skip;
+MFSHExit: '\n'						-> popMode;
 
 MFSHCR: '\r' -> skip ;
 MFSH_SPACE: [ \t]+ -> skip;

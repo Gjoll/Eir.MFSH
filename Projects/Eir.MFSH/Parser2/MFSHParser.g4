@@ -5,14 +5,11 @@ document:
     command* EOF
     ;
 
-command: dataLine | mfshCmd;
+command: text | mfshExit | mfshCmds;
+text: TEXT ;
+mfshExit: MFSHExit;
 
-dataLine:
-    TEXT
-  | MFSHExit
-	;
-
-mfshCmd: MFSH mfshCmd* ;
+mfshCmds: MFSH mfshCmd* ;
 
 mfshCmd: apply | end | incompatible | macro | redirect ;
 

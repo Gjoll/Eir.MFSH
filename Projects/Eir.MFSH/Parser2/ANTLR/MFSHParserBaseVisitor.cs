@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace MFSH.Parser2 {
+namespace Eir.MFSH.Parser2 {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -55,7 +55,7 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCommand([NotNull] MFSHParser.CommandContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.data"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.text"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -63,9 +63,9 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitData([NotNull] MFSHParser.DataContext context) { return VisitChildren(context); }
+	public virtual Result VisitText([NotNull] MFSHParser.TextContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mfsh"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.mfshExit"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -73,7 +73,17 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitMfsh([NotNull] MFSHParser.MfshContext context) { return VisitChildren(context); }
+	public virtual Result VisitMfshExit([NotNull] MFSHParser.MfshExitContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.mfshCmds"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitMfshCmds([NotNull] MFSHParser.MfshCmdsContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.mfshCmd"/>.
 	/// <para>
@@ -165,4 +175,4 @@ public partial class MFSHParserBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// <return>The visitor result.</return>
 	public virtual Result VisitSingleString([NotNull] MFSHParser.SingleStringContext context) { return VisitChildren(context); }
 }
-} // namespace MFSH.Parser2
+} // namespace Eir.MFSH.Parser2

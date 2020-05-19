@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace MFSH.Parser2 {
+namespace Eir.MFSH.Parser2 {
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using IToken = Antlr4.Runtime.IToken;
@@ -45,17 +45,23 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCommand([NotNull] MFSHParser.CommandContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.data"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.text"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitData([NotNull] MFSHParser.DataContext context);
+	Result VisitText([NotNull] MFSHParser.TextContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.mfsh"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.mfshExit"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitMfsh([NotNull] MFSHParser.MfshContext context);
+	Result VisitMfshExit([NotNull] MFSHParser.MfshExitContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.mfshCmds"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMfshCmds([NotNull] MFSHParser.MfshCmdsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.mfshCmd"/>.
 	/// </summary>
@@ -111,4 +117,4 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitSingleString([NotNull] MFSHParser.SingleStringContext context);
 }
-} // namespace MFSH.Parser2
+} // namespace Eir.MFSH.Parser2

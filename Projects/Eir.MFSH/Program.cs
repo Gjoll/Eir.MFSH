@@ -10,7 +10,7 @@ using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace MFSH
+namespace Eir.MFSH
 {
     class Program
     {

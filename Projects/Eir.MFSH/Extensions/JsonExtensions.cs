@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MFSH
+namespace Eir.MFSH
 {
     public static class JsonExtensions
     {

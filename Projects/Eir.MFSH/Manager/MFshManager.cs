@@ -12,22 +12,27 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 using Eir.DevTools;
-using MFSH;
+using Eir.MFSH;
+using Eir.MFSH.Parser2;
 
-namespace MFSH.Parser2
+namespace Eir.MFSH
 {
     public class MFshManager
     {
+        Dictionary<String, MIMacro> Macros = new Dictionary<string, MIMacro>();
+        public bool TryGetMacro(String name, out MIMacro block) => this.Macros.TryGetValue(name, out block);
+        public bool TryAddMacro(String name, MIMacro macro) => this.Macros.TryAdd(name, macro);
+
         public bool DebugFlag { get; set; } = true;
 
         public List<String> Paths = new List<string>();
 
         public String BaseUrl { get; set; }
-        private MFsh mfsh;
+        public MFsh Mfsh { get; }
 
         public MFshManager(MFsh mfsh)
         {
-            this.mfsh = mfsh;
+            this.Mfsh = mfsh;
         }
 
         public ParseBlock ParseOne(String fshText, String sourceName, String outputPath)
@@ -38,7 +43,7 @@ namespace MFSH.Parser2
             Parser2.MFSHLexerLocal lexer = new Parser2.MFSHLexerLocal(new AntlrInputStream(fshText));
             lexer.DebugFlag = DebugFlag;
             lexer.RemoveErrorListeners();
-            lexer.AddErrorListener(new MFSHErrorListenerLexer(this.mfsh,
+            lexer.AddErrorListener(new MFSHErrorListenerLexer(this.Mfsh,
                 "MFsh Lexer",
                 sourceName,
                 inputLines));
@@ -47,19 +52,19 @@ namespace MFSH.Parser2
             parser.DebugFlag = DebugFlag;
             parser.Trace = false;
             parser.RemoveErrorListeners();
-            parser.AddErrorListener(new MFSHErrorListenerParser(this.mfsh,
+            parser.AddErrorListener(new MFSHErrorListenerParser(this.Mfsh,
                 "MFsh Parser",
                 sourceName,
                 inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
-            Parser2.MFSHVisitor visitor = new Parser2.MFSHVisitor(this.mfsh, sourceName);
+            Parser2.MFSHVisitor visitor = new Parser2.MFSHVisitor(this, sourceName);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
             if (visitor.state.Count != 1)
             {
                 String fullMsg = $"Error processing {sourceName}. Unterminated #{{Command}}";
-                this.mfsh.ConversionError("mfsh", "ProcessInclude", fullMsg);
+                this.Mfsh.ConversionError("mfsh", "ProcessInclude", fullMsg);
             }
 
             ParseBlock block = visitor.Current;

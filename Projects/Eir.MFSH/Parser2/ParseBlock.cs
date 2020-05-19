@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Eir.MFSH;
 
-namespace MFSH.Parser2
+namespace Eir.MFSH
 {
     public class ParseBlock
     {
         public String OutputPath { get; set; }
-        public FileData Data;
-
+        public List<MIBase> Items = new List<MIBase>();
         public ParseBlock()
         {
-            this.Data = new FileData
-            {
-                RelativePathType = FileData.RedirType.Text
-            };
         }
     }
 }

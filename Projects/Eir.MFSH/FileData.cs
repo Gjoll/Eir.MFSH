@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace MFSH
+namespace Eir.MFSH
 {
     [DebuggerDisplay("{ToString()}")]
     public class FileData
