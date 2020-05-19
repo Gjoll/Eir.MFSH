@@ -31,5 +31,9 @@ namespace Eir.MFSH
         /// Items in macro
         /// </summary>
         public List<MIBase> Items = new List<MIBase>();
+        public MIMacro(String sourceFile,
+            Int32 lineNumber) : base(sourceFile, lineNumber)
+        {
+        }
     }
 }

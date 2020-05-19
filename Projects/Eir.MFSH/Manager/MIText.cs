@@ -10,5 +10,9 @@ namespace Eir.MFSH
     {
         public String Line { get; set; }
 
+        public MIText(String sourceFile,
+            Int32 lineNumber) : base(sourceFile, lineNumber)
+        {
+        }
     }
 }

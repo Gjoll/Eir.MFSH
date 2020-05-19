@@ -16,5 +16,10 @@ namespace Eir.MFSH
         public String Name { get; set; }
         public bool OnceFlag { get; set; }
         public List<String> Parameters = new List<String>();
+
+        public MIApply(String sourceFile,
+            Int32 lineNumber) : base (sourceFile, lineNumber)
+        {
+        }
     }
 }

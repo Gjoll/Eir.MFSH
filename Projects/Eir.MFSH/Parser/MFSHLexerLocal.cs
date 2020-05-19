@@ -11,7 +11,7 @@ namespace Eir.MFSH.Parser
     public class MFSHLexerLocal : MFSHLexer
     {
         public bool DebugFlag { get; set; } = false;
-        private TokenLookup tokens = new TokenLookup(Path.Combine("Parser2", "ANTLR", "MFSHLexer.tokens"));
+        private TokenLookup tokens = new TokenLookup(Path.Combine("Parser", "ANTLR", "MFSHLexer.tokens"));
 
         public MFSHLexerLocal(ICharStream input) : base(input)
         {

@@ -11,6 +11,8 @@ namespace Eir.MFSH.Tests
 {
     public class MFSHTests
     {
+        String TestFile(String name) => Path.Combine("TestFiles", name);
+
         /// <summary>
         /// Getx text w/o carriage returns. Makes comparisons easier.
         /// </summary>
@@ -125,6 +127,20 @@ namespace Eir.MFSH.Tests
         public void MacroTest1()
         {
             MFsh mfsh = new MFsh();
+            mfsh.BaseInputDir = Path.GetFullPath("TestFiles");
+            mfsh.BaseUrl = "http://www.test.com";
+            mfsh.BaseOutputDir = @"c:\Temp\MFSHTests";
+            mfsh.Load(TestFile("MFshMacroTest1A.mfsh"));
+            mfsh.Load(TestFile("MFshMacroTest1B.mfsh"));
+            mfsh.Process();
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Line 1\n");
+            sb.Append("Line 2\n");
+            sb.Append("Line 3\n");
+            Debug.Assert(mfsh.Mgr.Fsh[0].WriteFsh().Length == 0);
+            Debug.Assert(mfsh.Mgr.Fsh[1].WriteFsh() == sb.ToString());
+
         }
     }
 }

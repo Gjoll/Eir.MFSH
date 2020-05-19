@@ -1,0 +1,3 @@
+﻿#macro Macro1()
+Line 2
+#end

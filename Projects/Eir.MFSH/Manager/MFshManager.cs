@@ -20,6 +20,8 @@ namespace Eir.MFSH
     public class MFshManager
     {
         Dictionary<String, MIMacro> Macros = new Dictionary<string, MIMacro>();
+        public List<MIPreFsh> Fsh = new List<MIPreFsh>();
+
         public bool TryGetMacro(String name, out MIMacro block) => this.Macros.TryGetValue(name, out block);
         public bool TryAddMacro(String name, MIMacro macro) => this.Macros.TryAdd(name, macro);
 
@@ -35,9 +37,9 @@ namespace Eir.MFSH
             this.Mfsh = mfsh;
         }
 
-        public ParseBlock ParseOne(String fshText,
+        public MIPreFsh ParseOne(String fshText,
             String sourceName,
-            String outputPath)
+            String relativePath)
         {
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
@@ -70,8 +72,14 @@ namespace Eir.MFSH
             }
 
             ParseBlock block = visitor.Current;
-            block.OutputPath = outputPath;
-            return block;
+            MIPreFsh retVal = new MIPreFsh(relativePath, 0)
+            {
+                Items = block.Items,
+                RelativePath = relativePath
+            };
+
+            this.Fsh.Add(retVal);
+            return retVal;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -13,13 +14,14 @@ using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 using Eir.DevTools;
 using Eir.MFSH;
+using System.Text.RegularExpressions;
 
 namespace Eir.MFSH
 {
     public class MFsh : ConverterBase
     {
         public bool DebugFlag { get; set; } = true;
-        MFshManager mgr;
+        public MFshManager Mgr { get; }
 
         public string BaseInputDir
         {
@@ -35,8 +37,6 @@ namespace Eir.MFSH
         }
         private string baseOutputDir;
 
-        public List<String> Paths = new List<string>();
-
         // Keep track of include files so we dont end up in recursive loop.
         List<String> sources = new List<string>();
 
@@ -51,30 +51,32 @@ namespace Eir.MFSH
 
         public MFsh()
         {
-            this.mgr = new MFshManager(this);
+            this.Mgr = new MFshManager(this);
         }
-
-        public StackFrame Parse(String fshText,
-            String sourceName,
-            String localDir)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /// <summary>
         /// Process single file.
         /// </summary>
-        public void LoadFile(String path)
+        void LoadFile(String path)
         {
             const String fcn = "ProcessFile";
+
+            if (String.IsNullOrEmpty(this.BaseInputDir) == true)
+                throw new Exception($"BaseInputDir not set");
+            path = Path.GetFullPath(path);
+
+            String relativePath = path.Substring(this.BaseInputDir.Length);
+            if (relativePath.StartsWith("\\"))
+                relativePath = relativePath.Substring((1));
 
             if (path.StartsWith(BaseInputDir) == false)
                 throw new Exception("Internal error. Path does not start with correct base path");
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Loading file {path}");
-            String fshText = File.ReadAllText(path);
-            this.mgr.ParseOne(fshText, Path.GetFileName(path), "");
+            String mfshText = File.ReadAllText(path);
+
+            String outputPath = Path.Combine(this.baseOutputDir, relativePath);
+            this.Mgr.ParseOne(mfshText, Path.GetFileName(path), outputPath);
 
             //String baseRPath = path.Substring(BaseInputDir.Length);
             //if (baseRPath.StartsWith("\\"))
@@ -109,38 +111,13 @@ namespace Eir.MFSH
             //    SaveData(reDir);
         }
 
-        /// <summary>
-        /// Process all files in indicated dir and sub dirs.
-        /// </summary>
-        public void Process()
-        {
-            throw new NotImplementedException();
-            if (String.IsNullOrEmpty(this.BaseUrl) == true)
-                throw new Exception($"BaseUrl not set");
-
-            foreach (String path in this.Paths)
-            {
-                try
-                {
-                    if (Directory.Exists(path))
-                        this.LoadDir(path);
-                    else if (File.Exists(path))
-                        this.LoadFile(path);
-                    else
-                        throw new Exception($"Path {path} does not exist");
-                }
-                catch (Exception err)
-                {
-                    String fullMsg = $"Error loading {Path.GetFileName(path)}. '{err.Message}'";
-                    this.ConversionError("mfsh", "ProcessInclude", fullMsg);
-                }
-            }
-        }
-
         void LoadDir(String path,
             String filter = MFsh.MFSHSuffix)
         {
             const String fcn = "AddDir";
+
+            if (String.IsNullOrEmpty(this.BaseInputDir) == true)
+                throw new Exception($"BaseInputDir not set");
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Loading directory {path}, filter {filter}");
             foreach (String subDir in Directory.GetDirectories(path))
@@ -148,6 +125,127 @@ namespace Eir.MFSH
 
             foreach (String file in Directory.GetFiles(path, $"*{MFsh.MFSHSuffix}"))
                 this.LoadFile(file);
+        }
+
+        public void Load(String path,
+            String filter = MFsh.MFSHSuffix)
+        {
+            try
+            {
+                if (Directory.Exists(path))
+                    this.LoadDir(path);
+                else if (File.Exists(path))
+                    this.LoadFile(path);
+                else
+                    throw new Exception($"Path {path} does not exist");
+            }
+            catch (Exception err)
+            {
+                String fullMsg = $"Error loading {Path.GetFileName(path)}. '{err.Message}'";
+                this.ConversionError("mfsh", "ProcessInclude", fullMsg);
+            }
+        }
+
+        /// <summary>
+        /// Process all files in indicated dir and sub dirs.
+        /// </summary>
+        public void Process()
+        {
+            if (String.IsNullOrEmpty(this.BaseUrl) == true)
+                throw new Exception($"BaseUrl not set");
+            foreach (MIPreFsh fsh in this.Mgr.Fsh)
+                fsh.Items = this.Process(fsh.Items, this.GlobalVars);
+        }
+
+        List<MIBase> Process(List<MIBase> inputItems,
+            VariablesBlock variablesBlock)
+        {
+            List<MIBase> outputItems = new List<MIBase>();
+
+            Int32 i = 0;
+            while (i < inputItems.Count)
+            {
+                MIBase b = inputItems[i];
+                switch (b)
+                {
+                    case MIText text:
+                        ProcessText(text, outputItems, variablesBlock);
+                        i += 1;
+                        break;
+
+                    case MIApply apply:
+                        ProcessMacro(apply, outputItems, variablesBlock);
+                        i += 1;
+                        break;
+
+                    case MIIncompatible incompatible:
+                        ProcessIncompatible(incompatible, outputItems, variablesBlock);
+                        i += 1;
+                        break;
+
+                    default:
+                        throw new Exception("Internal error. Unknown MIXXX type");
+                }
+            }
+            return outputItems;
+        }
+
+        void ProcessText(MIText text,
+            List<MIBase> outputItems,
+            VariablesBlock variablesBlock)
+        {
+            String expandedText = variablesBlock.ReplaceText(text.Line);
+            outputItems.Add(new MIText(text.SourceFile, text.LineNumber)
+            {
+                Line = expandedText
+            });
+
+            Debug.Assert(text.Line.StartsWith("Profile") == false);
+            Regex r = new Regex("^Profile[ ]*:(?<profileName>[A-Za-z0-9]+)");
+            if (r.IsMatch(text.Line) == true)
+            {
+            }
+        }
+
+        void ProcessMacro(MIApply apply,
+            List<MIBase> outputItems,
+            VariablesBlock variablesBlock)
+        {
+            if (this.Mgr.TryGetMacro(apply.Name, out MIMacro macro) == false)
+            {
+                String fullMsg = $"Macro {apply.Name} not found. Referenced from {apply.SourceFile}, {apply.LineNumber}'";
+                this.ConversionError("mfsh", "ProcessMacro", fullMsg);
+                return;
+            }
+
+            if (macro.Parameters.Count != apply.Parameters.Count)
+            {
+                String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} requires {macro.Parameters.Count} parameters, called with {apply.Parameters.Count}.";
+                this.ConversionError("mfsh", "ProcessMacro", fullMsg);
+                return;
+            }
+
+            VariablesBlock vbParameters = new VariablesBlock();
+            for (Int32 i = 0; i < apply.Parameters.Count; i++)
+            {
+                String pName = macro.Parameters[i];
+                String pValue = apply.Parameters[i];
+                pValue = variablesBlock.ReplaceText(pValue);
+                vbParameters.Add(pName, pValue);
+            }
+
+            // Replace parameters with parameter value.
+            List<MIBase> macroItems = this.Process(macro.Items, vbParameters);
+            // Replace global variables with global variable value.
+            macroItems = this.Process(macroItems, variablesBlock);
+            // Add expanded items to output list.
+            outputItems.AddRange(macroItems);
+        }
+
+        void ProcessIncompatible(MIIncompatible incompatible,
+            List<MIBase> outputItems,
+            VariablesBlock variablesBlock)
+        {
         }
 
         /// <summary>
@@ -177,7 +275,6 @@ namespace Eir.MFSH
                         $"Saving {Path.GetFileName(outputPath)}");
             }
 
-            this.BaseOutputDir = Path.GetFullPath(BaseOutputDir);
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
             foreach (FileData f in this.FileItems.Values)
             {

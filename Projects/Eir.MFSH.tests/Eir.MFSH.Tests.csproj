@@ -25,6 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestFiles\MFshMacroTest1B.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFiles\MFshMacroTest1A.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\Old\ApplyOnce4.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

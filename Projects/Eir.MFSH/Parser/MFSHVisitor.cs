@@ -71,7 +71,7 @@ namespace Eir.MFSH.Parser
             TraceMsg(context, fcn);
 
             String line = context.GetText();
-            MIText t = new MIText()
+            MIText t = new MIText(this.SourceName, context.Start.Line)
             {
                 Line = context.GetText()
             };
@@ -94,7 +94,7 @@ namespace Eir.MFSH.Parser
         {
             const String fcn = "VisitMacro";
             TraceMsg(context, fcn);
-            MacroBlock macroBlock = new MacroBlock();
+            MacroBlock macroBlock = new MacroBlock(this.SourceName, context.Start.Line);
             this.PushState(macroBlock);
             String[] names = context
                 .NAME()
@@ -113,7 +113,7 @@ namespace Eir.MFSH.Parser
             const String fcn = "VisitIncompatible";
             String macroName = context.NAME().GetText();
 
-            MIIncompatible incompatible = new MIIncompatible()
+            MIIncompatible incompatible = new MIIncompatible(this.SourceName, context.Start.Line)
             {
                 Name = macroName
             };
@@ -125,7 +125,7 @@ namespace Eir.MFSH.Parser
         public override object VisitApply(MFSHParser.ApplyContext context)
         {
             const String fcn = "VisitApply";
-            MIApply apply = new MIApply();
+            MIApply apply = new MIApply(this.SourceName, context.Start.Line);
             apply.Name = context.NAME().GetText();
             apply.OnceFlag = (context.ONCE() != null);
 
@@ -133,6 +133,16 @@ namespace Eir.MFSH.Parser
             {
                 String s = (String)this.VisitChildren(varContext);
                 apply.Parameters.Add(s);
+            }
+
+            if (
+                (apply.OnceFlag == true) &&
+                (apply.Parameters.Count > 0))
+            {
+                this.Error(fcn,
+                    context.Start.Line.ToString(),
+                    $"Error adding macro '{apply.Name}'. OnceFlag can not be used with macro parameters");
+                return null;
             }
 
             this.Current.Items.Add(apply);
