@@ -25,43 +25,43 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestFiles\ApplyOnce4.mfsh">
+    <None Update="TestFiles\Old\ApplyOnce4.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ApplyOnce4.results">
+    <None Update="TestFiles\Old\ApplyOnce4.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Incompatible2.mfsh">
+    <None Update="TestFiles\Old\Incompatible2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Incompatible1.mfsh">
+    <None Update="TestFiles\Old\Incompatible1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ApplyOnce3.mfsh">
+    <None Update="TestFiles\Old\ApplyOnce3.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ApplyOnce2.mfsh">
+    <None Update="TestFiles\Old\ApplyOnce2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\DefineTest2.results">
+    <None Update="TestFiles\Old\DefineTest2.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\DefineTest2.mfsh">
+    <None Update="TestFiles\Old\DefineTest2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ApplyOnce1.results">
+    <None Update="TestFiles\Old\ApplyOnce1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ExpandVar2.results">
+    <None Update="TestFiles\Old\ExpandVar2.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ExpandVar2.mfsh">
+    <None Update="TestFiles\Old\ExpandVar2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ExpandVar1.mfsh">
+    <None Update="TestFiles\Old\ExpandVar1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ExpandVar1.results">
+    <None Update="TestFiles\Old\ExpandVar1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TestFiles\MgrIncompatibleTest.mfsh">
@@ -82,61 +82,61 @@
     <None Update="TestFiles\MgrMacroTest1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Parse5.mfsh">
+    <None Update="TestFiles\Old\Parse5.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Parse4.mfsh">
+    <None Update="TestFiles\Old\Parse4.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Parse3.mfsh">
+    <None Update="TestFiles\Old\Parse3.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ApplyOnce1.mfsh">
+    <None Update="TestFiles\Old\ApplyOnce1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ParseProfile1.mfsh">
+    <None Update="TestFiles\Old\ParseProfile1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ParseRedirect1.results">
+    <None Update="TestFiles\Old\ParseRedirect1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ParseRedirect1.mfsh">
+    <None Update="TestFiles\Old\ParseRedirect1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ParseMultiLine2.mfsh">
+    <None Update="TestFiles\Old\ParseMultiLine2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ParseMultiLine1.results">
+    <None Update="TestFiles\Old\ParseMultiLine1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\PreParse1.results">
+    <None Update="TestFiles\Old\PreParse1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\PreParse1.mfsh">
+    <None Update="TestFiles\Old\PreParse1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Parse2.mfsh">
+    <None Update="TestFiles\Old\Parse2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Parse1.mfsh">
+    <None Update="TestFiles\Old\Parse1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\DefineTest1.mfsh">
+    <None Update="TestFiles\Old\DefineTest1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\DefineTest1.results">
+    <None Update="TestFiles\Old\DefineTest1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\IncludeTest2.inc">
+    <None Update="TestFiles\Old\IncludeTest2.inc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\IncludeTest1.results">
+    <None Update="TestFiles\Old\IncludeTest1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\IncludeTest1.inc">
+    <None Update="TestFiles\Old\IncludeTest1.inc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\IncludeTest1.mfsh">
+    <None Update="TestFiles\Old\IncludeTest1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="MacroTest2.results.txt">
@@ -145,10 +145,10 @@
     <None Update="MacroTest1.results.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ParseMultiLine2.results">
+    <None Update="TestFiles\Old\ParseMultiLine2.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\ParseMultiLine1.mfsh">
+    <None Update="TestFiles\Old\ParseMultiLine1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Test1.fsh">
