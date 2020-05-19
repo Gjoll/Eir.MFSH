@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Xunit;
 using Eir.MFSH;
+using Eir.MFSH.Parser;
 
 namespace Eir.MFSH.Tests
 {

@@ -109,12 +109,6 @@
     <None Update="TestFiles\Old\ParseMultiLine1.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="TestFiles\Old\PreParse1.results">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFiles\Old\PreParse1.mfsh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="TestFiles\Old\Parse2.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

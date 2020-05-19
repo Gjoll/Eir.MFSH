@@ -81,7 +81,6 @@ namespace Eir.MFSH
             foreach (Options.Define define in this.options.defines)
                 this.mfsh.GlobalVars.Set(define.name, define.value);
 
-            this.mfsh.IncludeDirs.AddRange(options.includeDirs);
             this.mfsh.Paths.AddRange(options.mfshPaths);
 
             this.mfsh.Process();

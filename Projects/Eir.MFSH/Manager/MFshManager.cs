@@ -13,7 +13,7 @@ using System.Xml.Linq;
 using Antlr4.Runtime.Tree;
 using Eir.DevTools;
 using Eir.MFSH;
-using Eir.MFSH.Parser2;
+using Eir.MFSH.Parser;
 
 namespace Eir.MFSH
 {
@@ -35,12 +35,14 @@ namespace Eir.MFSH
             this.Mfsh = mfsh;
         }
 
-        public ParseBlock ParseOne(String fshText, String sourceName, String outputPath)
+        public ParseBlock ParseOne(String fshText,
+            String sourceName,
+            String outputPath)
         {
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
 
-            Parser2.MFSHLexerLocal lexer = new Parser2.MFSHLexerLocal(new AntlrInputStream(fshText));
+            Parser.MFSHLexerLocal lexer = new Parser.MFSHLexerLocal(new AntlrInputStream(fshText));
             lexer.DebugFlag = DebugFlag;
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new MFSHErrorListenerLexer(this.Mfsh,
@@ -48,7 +50,7 @@ namespace Eir.MFSH
                 sourceName,
                 inputLines));
 
-            Parser2.MFSHParserLocal parser = new Parser2.MFSHParserLocal(new CommonTokenStream(lexer));
+            Parser.MFSHParserLocal parser = new Parser.MFSHParserLocal(new CommonTokenStream(lexer));
             parser.DebugFlag = DebugFlag;
             parser.Trace = false;
             parser.RemoveErrorListeners();
@@ -58,7 +60,7 @@ namespace Eir.MFSH
                 inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
-            Parser2.MFSHVisitor visitor = new Parser2.MFSHVisitor(this, sourceName);
+            Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this, sourceName);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
             if (visitor.state.Count != 1)

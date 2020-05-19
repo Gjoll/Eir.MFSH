@@ -6,7 +6,7 @@ using System.Text;
 using Antlr4.Runtime;
 using Eir.MFSH;
 
-namespace Eir.MFSH.Parser2
+namespace Eir.MFSH.Parser
 {
     public class MFSHLexerLocal : MFSHLexer
     {

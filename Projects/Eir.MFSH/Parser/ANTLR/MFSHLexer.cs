@@ -19,7 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
-namespace Eir.MFSH.Parser2 {
+namespace Eir.MFSH.Parser {
 using System;
 using System.IO;
 using System.Text;
@@ -273,4 +273,4 @@ public partial class MFSHLexer : Lexer {
 
 
 }
-} // namespace Eir.MFSH.Parser2
+} // namespace Eir.MFSH.Parser

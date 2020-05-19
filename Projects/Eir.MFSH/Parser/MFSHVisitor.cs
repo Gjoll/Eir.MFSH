@@ -14,7 +14,7 @@ using Antlr4.Runtime.Tree;
 using Eir.MFSH;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace Eir.MFSH.Parser2
+namespace Eir.MFSH.Parser
 {
     class MFSHVisitor : MFSHParserBaseVisitor<Object>
     {
