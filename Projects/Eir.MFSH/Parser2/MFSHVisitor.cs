@@ -140,6 +140,7 @@ namespace Eir.MFSH.Parser2
                 apply.Parameters.Add(s);
             }
 
+            this.Current.Items.Add(apply);
             return null;
         }
 

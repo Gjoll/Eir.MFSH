@@ -61,6 +61,14 @@ namespace Eir.MFSH.Tests
         }
 
         [Fact]
+        public void MgrMacroRedirectTest()
+        {
+            ParseBlock b = ParseTest("MgrMacroRedirectTest.mfsh", out MFshManager mgr);
+            Debug.Assert(mgr.TryGetMacro("Macro1", out MIMacro macro1));
+            Debug.Assert(macro1.Redirect == @"A\B.txt");
+        }
+
+        [Fact]
         public void MgrMacroParametersTest()
         {
             ParseBlock b = ParseTest("MgrMacroParametersTest.mfsh", out MFshManager mgr);
@@ -76,17 +84,24 @@ namespace Eir.MFSH.Tests
         {
             ParseBlock b = ParseTest("MgrApplyTest1.mfsh", out MFshManager mgr);
             Debug.Assert(b.Items.Count == 3);
-            Debug.Assert(((MIText)b.Items[0]).Line == "Line 1\n");
-            Debug.Assert(((MIText)b.Items[1]).Line == "Line 2\n");
-            Debug.Assert(((MIText)b.Items[2]).Line == "Line 5\n");
 
-            Debug.Assert(mgr.TryGetMacro("Macro1", out MIMacro macro1));
-            Debug.Assert(macro1.Items.Count == 2);
-            Debug.Assert(((MIText)macro1.Items[0]).Line == "    Line 3\n");
-            Debug.Assert(((MIText)macro1.Items[1]).Line == "    Line 4\n");
+            MIApply apply1 = (MIApply)b.Items[0];
+            Debug.Assert(apply1.Name == "Macro1");
+            Debug.Assert(apply1.Parameters.Count == 0);
+            Debug.Assert(apply1.OnceFlag == false);
 
-            Debug.Assert(mgr.TryGetMacro("Macro2", out MIMacro macro2));
-            Debug.Assert(mgr.TryGetMacro("Macro3", out MIMacro macro3));
+            MIApply apply2 = (MIApply)b.Items[1];
+            Debug.Assert(apply2.Name == "Macro2");
+            Debug.Assert(apply2.Parameters.Count == 0);
+            Debug.Assert(apply2.OnceFlag == true);
+
+            MIApply apply3 = (MIApply)b.Items[2];
+            Debug.Assert(apply3.Name == "Macro3");
+            Debug.Assert(apply3.Parameters.Count == 3);
+            Debug.Assert(apply3.Parameters[0] == "a");
+            Debug.Assert(apply3.Parameters[1] == "bb");
+            Debug.Assert(apply3.Parameters[2] == "ccc");
+            Debug.Assert(apply3.OnceFlag == false);
         }
     }
 }

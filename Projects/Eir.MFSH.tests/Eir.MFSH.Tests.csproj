@@ -67,6 +67,9 @@
     <None Update="TestFiles\MgrApplyTest1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\MgrMacroRedirectTest.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\MgrMacroParametersTest.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
