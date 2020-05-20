@@ -24,7 +24,8 @@ namespace Eir.MFSH
         public bool DebugFlag { get; set; } = true;
         public MFshManager Mgr { get; }
 
-        HashSet<String> onceMacros = new HashSet<string>();
+        HashSet<String> appliedMacros = new HashSet<string>();
+        HashSet<String> incompatibleMacros = new HashSet<string>();
 
         public string BaseInputDir
         {
@@ -145,7 +146,7 @@ namespace Eir.MFSH
             catch (Exception err)
             {
                 String fullMsg = $"Error loading {Path.GetFileName(path)}. '{err.Message}'";
-                this.ConversionError("mfsh", "ProcessInclude", fullMsg);
+                this.ConversionError("mfsh", "Load", fullMsg);
             }
         }
 
@@ -172,7 +173,7 @@ namespace Eir.MFSH
                 switch (b)
                 {
                     case MIText text:
-                        ProcessText(text, outputItems, variablesBlock);
+                        this.ProcessText(text, outputItems, variablesBlock);
                         i += 1;
                         break;
 
@@ -182,7 +183,7 @@ namespace Eir.MFSH
                         break;
 
                     case MIIncompatible incompatible:
-                        ProcessIncompatible(incompatible, outputItems, variablesBlock);
+                        this.ProcessIncompatible(incompatible, outputItems, variablesBlock);
                         i += 1;
                         break;
 
@@ -216,7 +217,8 @@ namespace Eir.MFSH
         void StartNewProfile(String profileName)
         {
             this.GlobalVars.Set("%Profile%", profileName);
-            this.onceMacros.Clear();
+            this.appliedMacros.Clear();
+            this.incompatibleMacros.Clear();
         }
 
         void ProcessApply(MIApply apply,
@@ -225,23 +227,33 @@ namespace Eir.MFSH
         {
             if (this.Mgr.TryGetMacro(apply.Name, out MIMacro macro) == false)
             {
-                String fullMsg = $"Macro {apply.Name} not found. Referenced from {apply.SourceFile}, {apply.LineNumber}'";
-                this.ConversionError("mfsh", "ProcessMacro", fullMsg);
+                String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
+                this.ConversionError("mfsh", "ProcessApply", fullMsg);
                 return;
             }
 
             if (macro.Parameters.Count != apply.Parameters.Count)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} requires {macro.Parameters.Count} parameters, called with {apply.Parameters.Count}.";
-                this.ConversionError("mfsh", "ProcessMacro", fullMsg);
+                this.ConversionError("mfsh", "ProcessApply", fullMsg);
                 return;
             }
 
-            if (macro.OnceFlag == true)
+            bool firstFlag = false;
+            if (this.appliedMacros.Contains(apply.Name) == false)
             {
-                if (this.onceMacros.Contains(apply.Name))
+                this.appliedMacros.Add(apply.Name);
+                firstFlag = true;
+            }
+
+            if ((macro.OnceFlag == true) && (firstFlag == false))
                     return;
-                this.onceMacros.Add(apply.Name);
+
+            if (this.incompatibleMacros.Contains(apply.Name))
+            {
+                String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} has been marked as incompatible with this profile";
+                this.ConversionError("mfsh", "ProcessApply", fullMsg);
+                return;
             }
 
             VariablesBlock vbParameters = new VariablesBlock();
@@ -265,6 +277,17 @@ namespace Eir.MFSH
             List<MIBase> outputItems,
             VariablesBlock variablesBlock)
         {
+            if (this.incompatibleMacros.Contains(incompatible.Name) == true)
+                return;
+            if (this.appliedMacros.Contains(incompatible.Name) == true)
+            {
+                String fullMsg = $"{incompatible.SourceFile}, line {incompatible.LineNumber} Macro {incompatible.Name} is incompatible and has already been applied.";
+                this.ConversionError("mfsh", "ProcessApply", fullMsg);
+                return;
+            }
+
+            if (this.incompatibleMacros.Add(incompatible.Name) == true)
+                return;
         }
 
         /// <summary>
