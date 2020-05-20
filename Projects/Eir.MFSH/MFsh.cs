@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
@@ -22,6 +23,8 @@ namespace Eir.MFSH
     {
         public bool DebugFlag { get; set; } = true;
         public MFshManager Mgr { get; }
+
+        HashSet<String> appliedMacros = new HashSet<string>();
 
         public string BaseInputDir
         {
@@ -174,7 +177,7 @@ namespace Eir.MFSH
                         break;
 
                     case MIApply apply:
-                        ProcessMacro(apply, outputItems, variablesBlock);
+                        this.ProcessApply(apply, outputItems, variablesBlock);
                         i += 1;
                         break;
 
@@ -200,14 +203,23 @@ namespace Eir.MFSH
                 Line = expandedText
             });
 
-            Debug.Assert(text.Line.StartsWith("Profile") == false);
-            Regex r = new Regex("^Profile[ ]*:(?<profileName>[A-Za-z0-9]+)");
-            if (r.IsMatch(text.Line) == true)
+            Regex r = new Regex("^Profile[ \n]*:[ \n]*([A-Za-z0-9]+)");
+            Match m = r.Match(text.Line);
+            if (m.Success == true)
             {
+                String profileName = m.Groups[1].Value;
+                StartNewProfile(profileName);
+                this.GlobalVars.Set("%Profile%", profileName);
             }
         }
 
-        void ProcessMacro(MIApply apply,
+        void StartNewProfile(String profileName)
+        {
+            this.GlobalVars.Set("%Profile%", profileName);
+            this.appliedMacros.Clear();
+        }
+
+        void ProcessApply(MIApply apply,
             List<MIBase> outputItems,
             VariablesBlock variablesBlock)
         {
@@ -224,6 +236,7 @@ namespace Eir.MFSH
                 this.ConversionError("mfsh", "ProcessMacro", fullMsg);
                 return;
             }
+
 
             VariablesBlock vbParameters = new VariablesBlock();
             for (Int32 i = 0; i < apply.Parameters.Count; i++)

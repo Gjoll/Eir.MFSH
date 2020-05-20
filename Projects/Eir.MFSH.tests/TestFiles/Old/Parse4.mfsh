@@ -1,4 +1,0 @@
- #macro XX(SliceName) 
- #end
-
- #apply XX(".section:SliceName")

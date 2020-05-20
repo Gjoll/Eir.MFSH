@@ -1,15 +1,10 @@
 #macro Alpha(AlphaName)
-  `{
-  `  "graphNode" : {
-  `  }
-  `},
+AlphaName
 #end
-
 #macro Beta(BetaName)
 #apply Alpha("BetaName")
 #end
-
 Profile: Alpha
 #apply Beta("%Profile%")
-#apply Beta("One")
-#apply Beta("Two")
+#apply Beta("Beta")
+#apply Beta("Delta")

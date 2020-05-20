@@ -1,8 +1,0 @@
-Profile: Alpha
-{
-  "graphNode" : {
-  "nodeName" : "NodeName",
-  "displayName" : "DisplayName",
-  "cssClass" : "CssClass"
-  }
-},

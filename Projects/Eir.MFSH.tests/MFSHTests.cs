@@ -25,30 +25,37 @@ namespace Eir.MFSH.Tests
             return input;
         }
 
+        MFsh CreateMfsh()
+        {
+            MFsh mfsh = new MFsh();
+            mfsh.BaseInputDir = Path.GetFullPath("TestFiles");
+            mfsh.BaseUrl = "http://www.test.com";
+            mfsh.BaseOutputDir = @"c:\Temp\MFSHTests";
+            return mfsh;
+        }
+
+
         void ParseTest(String mfshFile, String resultsFile)
         {
-            //$String input = GetCleanText(mfshFile);
-            //MFsh pp = new MFsh();
-            //pp.TraceLogging(true, true, true);
-            //String results = pp.Parse(input, "test", null).Data.Text();
-            //Assert.True(pp.HasErrors == false);
-            //if (resultsFile == null)
-            //    return;
-
-            //$String shouldBe = File.ReadAllText(resultsFile);
-            //$shouldBe = shouldBe.Trim().Replace("\r", "");
-            //$results = results.Trim().Replace("\r", "");
-            //$Assert.True(String.Compare(results, shouldBe) == 0);
+            MFsh mfsh = CreateMfsh();
+            mfsh.TraceLogging(true, true, true);
+            mfsh.Load(TestFile(mfshFile));
+            mfsh.Process();
+            Assert.True(mfsh.HasErrors == false);
+            Assert.True(mfsh.Mgr.Fsh.Count == 1);
+            String shouldBe = this.GetCleanText(resultsFile);
+            String results = mfsh.Mgr.Fsh[0].WriteFsh();
+            Assert.True(String.Compare(results, shouldBe, StringComparison.InvariantCulture) == 0);
         }
 
         //$[Fact]
         //public void Include1()
         //{
         //    String input = GetCleanText("IncludeTest1.mfsh");
-        //    MFsh pp = new MFsh();
-        //    pp.TraceLogging(true, true, true);
-        //    String results = pp.Parse(input, "test", null).Data.Text();
-        //    Assert.True(pp.HasErrors == false);
+        //    MFsh mfsh = new MFsh();
+        //    mfsh.TraceLogging(true, true, true);
+        //    String results = mfsh.Parse(input, "test", null).Data.Text();
+        //    Assert.True(mfsh.HasErrors == false);
         //    String shouldBe = File.ReadAllText("IncludeTest1.results");
         //    shouldBe = shouldBe.Trim().Replace("\r", "");
         //    results = results.Trim().Replace("\r", "");
@@ -98,11 +105,11 @@ namespace Eir.MFSH.Tests
         void ParseTestSingleError(String fileName, String errorex)
         {
             //$String input = GetCleanText(fileName);
-            //MFsh pp = new MFsh();
-            //pp.TraceLogging(true, true, true);
-            //String results = pp.Parse(input, "test", null).Data.Text();
-            //Assert.True(pp.HasErrors == true);
-            //String error = pp.Errors.First();
+            //MFsh mfsh = new MFsh();
+            //mfsh.TraceLogging(true, true, true);
+            //String results = mfsh.Parse(input, "test", null).Data.Text();
+            //Assert.True(mfsh.HasErrors == true);
+            //String error = mfsh.Errors.First();
             //Regex r = new Regex(errorex);
             //Assert.True(r.IsMatch(error) == true);
         }
@@ -126,10 +133,7 @@ namespace Eir.MFSH.Tests
         [Fact]
         public void MacroTest1()
         {
-            MFsh mfsh = new MFsh();
-            mfsh.BaseInputDir = Path.GetFullPath("TestFiles");
-            mfsh.BaseUrl = "http://www.test.com";
-            mfsh.BaseOutputDir = @"c:\Temp\MFSHTests";
+            MFsh mfsh = CreateMfsh();
             mfsh.Load(TestFile("MFshMacroTest1A.mfsh"));
             mfsh.Load(TestFile("MFshMacroTest1B.mfsh"));
             mfsh.Process();
@@ -138,9 +142,11 @@ namespace Eir.MFSH.Tests
             sb.Append("Line 1\n");
             sb.Append("Line 2\n");
             sb.Append("Line 3\n");
-            Debug.Assert(mfsh.Mgr.Fsh[0].WriteFsh().Length == 0);
-            Debug.Assert(mfsh.Mgr.Fsh[1].WriteFsh() == sb.ToString());
-
+            Assert.True(mfsh.Mgr.Fsh[0].WriteFsh().Length == 0);
+            Assert.True(mfsh.Mgr.Fsh[1].WriteFsh() == sb.ToString());
         }
+
+        [Fact]
+        public void MfshExpandVar1() => ParseTest("MfshExpandVar1.mfsh", "MfshExpandVar1.results");
     }
 }
