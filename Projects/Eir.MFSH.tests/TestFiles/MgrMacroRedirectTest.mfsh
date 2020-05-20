@@ -1,2 +1,2 @@
-#macro Macro1() > "A\\B.txt"
+#macro once Macro1() > "A\\B.txt"
 #end

@@ -13,6 +13,10 @@ namespace Eir.MFSH
     public class MIMacro : MIBase
     {
         /// <summary>
+        /// If set, this macro is onlyh instantiated once per profile.
+        /// </summary>
+        public bool OnceFlag { get; set; }
+        /// <summary>
         /// Output path if redirection set
         /// </summary>
         public String Redirect { get; set; }

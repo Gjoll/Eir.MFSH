@@ -13,10 +13,10 @@ mfshCmds: MFSH mfshCmd* ;
 
 mfshCmd: apply | end | incompatible | macro ;
 
-apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
+apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 incompatible: INCOMPATIBLE NAME ;
-macro: MACRO NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
+macro: MACRO ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
 redirect: GT singleString ;
 
 anyString:  singleString | multiLineString;

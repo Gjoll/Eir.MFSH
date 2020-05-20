@@ -105,6 +105,18 @@ namespace Eir.MFSH.Parser
             var redirectContext = context.redirect();
             if (redirectContext != null)
                 macroBlock.Macro.Redirect = (String)(this.Visit(redirectContext.singleString()));
+
+            macroBlock.Macro.OnceFlag = (context.ONCE() != null);
+            if (
+                (macroBlock.Macro.OnceFlag == true) &&
+                (macroBlock.Macro.Parameters.Count > 0))
+            {
+                this.Error(fcn,
+                    context.Start.Line.ToString(),
+                    $"Error adding macro '{macroBlock.Macro.Name}'. OnceFlag can not be used with macro parameters");
+                return null;
+            }
+
             return null;
         }
 
@@ -127,22 +139,11 @@ namespace Eir.MFSH.Parser
             const String fcn = "VisitApply";
             MIApply apply = new MIApply(this.SourceName, context.Start.Line);
             apply.Name = context.NAME().GetText();
-            apply.OnceFlag = (context.ONCE() != null);
 
             foreach (MFSHParser.AnyStringContext varContext in context.anyString())
             {
                 String s = (String)this.VisitChildren(varContext);
                 apply.Parameters.Add(s);
-            }
-
-            if (
-                (apply.OnceFlag == true) &&
-                (apply.Parameters.Count > 0))
-            {
-                this.Error(fcn,
-                    context.Start.Line.ToString(),
-                    $"Error adding macro '{apply.Name}'. OnceFlag can not be used with macro parameters");
-                return null;
             }
 
             this.Current.Items.Add(apply);

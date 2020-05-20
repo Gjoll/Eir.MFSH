@@ -133,17 +133,33 @@ namespace Eir.MFSH.Tests
         [Fact]
         public void MacroTest1()
         {
-            MFsh mfsh = CreateMfsh();
-            mfsh.Load(TestFile("MFshMacroTest1A.mfsh"));
-            mfsh.Load(TestFile("MFshMacroTest1B.mfsh"));
-            mfsh.Process();
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.Load(TestFile("MFshMacroTest1A.mfsh"));
+                mfsh.Load(TestFile("MFshMacroTest1B.mfsh"));
+                mfsh.Process();
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Line 1\n");
-            sb.Append("Line 2\n");
-            sb.Append("Line 3\n");
-            Assert.True(mfsh.Mgr.Fsh[0].WriteFsh().Length == 0);
-            Assert.True(mfsh.Mgr.Fsh[1].WriteFsh() == sb.ToString());
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Line 1\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 3\n");
+                Assert.True(mfsh.Mgr.Fsh[0].WriteFsh().Length == 0);
+                Assert.True(mfsh.Mgr.Fsh[1].WriteFsh() == sb.ToString());
+            }
+
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.Load(TestFile("MFshMacroTest1A.mfsh"));
+                mfsh.Load(TestFile("MFshMacroTest1C.mfsh"));
+                mfsh.Process();
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Line 1\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 3\n");
+                Assert.True(mfsh.Mgr.Fsh[0].WriteFsh().Length == 0);
+                Assert.True(mfsh.Mgr.Fsh[1].WriteFsh() == sb.ToString());
+            }
         }
 
         [Fact]

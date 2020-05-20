@@ -67,6 +67,7 @@ namespace Eir.MFSH.Tests
             MIPreFsh b = ParseTest("MgrMacroRedirectTest.mfsh", out MFshManager mgr);
             Debug.Assert(mgr.TryGetMacro("Macro1", out MIMacro macro1));
             Debug.Assert(macro1.Redirect == @"A\B.txt");
+            Debug.Assert(macro1.OnceFlag == true);
         }
 
         [Fact]
@@ -74,6 +75,7 @@ namespace Eir.MFSH.Tests
         {
             MIPreFsh b = ParseTest("MgrMacroParametersTest.mfsh", out MFshManager mgr);
             Debug.Assert(mgr.TryGetMacro("Macro1", out MIMacro macro1));
+            Debug.Assert(macro1.OnceFlag == false);
             Debug.Assert(macro1.Parameters.Count == 3);
             Debug.Assert(macro1.Parameters[0] == "Param1");
             Debug.Assert(macro1.Parameters[1] == "Param2");
@@ -89,12 +91,10 @@ namespace Eir.MFSH.Tests
             MIApply apply1 = (MIApply)b.Items[0];
             Debug.Assert(apply1.Name == "Macro1");
             Debug.Assert(apply1.Parameters.Count == 0);
-            Debug.Assert(apply1.OnceFlag == false);
 
             MIApply apply2 = (MIApply)b.Items[1];
             Debug.Assert(apply2.Name == "Macro2");
             Debug.Assert(apply2.Parameters.Count == 0);
-            Debug.Assert(apply2.OnceFlag == true);
 
             MIApply apply3 = (MIApply)b.Items[2];
             Debug.Assert(apply3.Name == "Macro3");
@@ -102,7 +102,6 @@ namespace Eir.MFSH.Tests
             Debug.Assert(apply3.Parameters[0] == "a");
             Debug.Assert(apply3.Parameters[1] == "bb");
             Debug.Assert(apply3.Parameters[2] == "ccc");
-            Debug.Assert(apply3.OnceFlag == false);
         }
 
         [Fact]

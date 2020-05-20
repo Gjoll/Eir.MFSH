@@ -24,7 +24,7 @@ namespace Eir.MFSH
         public bool DebugFlag { get; set; } = true;
         public MFshManager Mgr { get; }
 
-        HashSet<String> appliedMacros = new HashSet<string>();
+        HashSet<String> onceMacros = new HashSet<string>();
 
         public string BaseInputDir
         {
@@ -216,7 +216,7 @@ namespace Eir.MFSH
         void StartNewProfile(String profileName)
         {
             this.GlobalVars.Set("%Profile%", profileName);
-            this.appliedMacros.Clear();
+            this.onceMacros.Clear();
         }
 
         void ProcessApply(MIApply apply,
@@ -237,6 +237,12 @@ namespace Eir.MFSH
                 return;
             }
 
+            if (macro.OnceFlag == true)
+            {
+                if (this.onceMacros.Contains(apply.Name))
+                    return;
+                this.onceMacros.Add(apply.Name);
+            }
 
             VariablesBlock vbParameters = new VariablesBlock();
             for (Int32 i = 0; i < apply.Parameters.Count; i++)

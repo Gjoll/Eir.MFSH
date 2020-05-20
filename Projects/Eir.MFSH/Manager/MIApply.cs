@@ -14,7 +14,6 @@ namespace Eir.MFSH
     public class MIApply : MIBase
     {
         public String Name { get; set; }
-        public bool OnceFlag { get; set; }
         public List<String> Parameters = new List<String>();
 
         public MIApply(String sourceFile,
