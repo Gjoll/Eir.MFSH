@@ -5,8 +5,8 @@ P3
 #end
 
 #apply Macro1("Line one",
-#      "Line two",
-#      """
-#      Line three
-#      """
-#      ###)
+  #      "Line two",
+  #      """
+  #      Line three
+  #      """
+  #)

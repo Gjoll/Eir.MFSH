@@ -46,6 +46,7 @@ namespace Eir.MFSH
 
         public const String FSHSuffix = ".fsh";
         public const String MFSHSuffix = ".mfsh";
+        public const String MINCSuffix = ".minc";
 
         public String BaseUrl { get; set; }
 
@@ -115,24 +116,24 @@ namespace Eir.MFSH
             //    SaveData(reDir);
         }
 
-        void LoadDir(String path,
-            String filter = MFsh.MFSHSuffix)
+        void LoadDir(String path)
         {
             const String fcn = "AddDir";
 
             if (String.IsNullOrEmpty(this.BaseInputDir) == true)
                 throw new Exception($"BaseInputDir not set");
 
-            this.ConversionInfo(this.GetType().Name, fcn, $"Loading directory {path}, filter {filter}");
+            this.ConversionInfo(this.GetType().Name, fcn, $"Loading directory {path}");
             foreach (String subDir in Directory.GetDirectories(path))
-                this.LoadDir(subDir, filter);
+                this.LoadDir(subDir);
 
             foreach (String file in Directory.GetFiles(path, $"*{MFsh.MFSHSuffix}"))
                 this.LoadFile(file);
+            foreach (String file in Directory.GetFiles(path, $"*{MFsh.MINCSuffix}"))
+                this.LoadFile(file);
         }
 
-        public void Load(String path,
-            String filter = MFsh.MFSHSuffix)
+        public void Load(String path)
         {
             try
             {

@@ -180,7 +180,7 @@ namespace Eir.MFSH.Parser
 
         public override object VisitIncompatible(MFSHParser.IncompatibleContext context)
         {
-            const String fcn = "VisitIncompatible";
+            //const String fcn = "VisitIncompatible";
             String macroName = context.NAME().GetText();
 
             MIIncompatible incompatible = new MIIncompatible(this.SourceName, context.Start.Line)
@@ -194,7 +194,7 @@ namespace Eir.MFSH.Parser
 
         public override object VisitApply(MFSHParser.ApplyContext context)
         {
-            const String fcn = "VisitApply";
+            //const String fcn = "VisitApply";
             MIApply apply = new MIApply(this.SourceName, context.Start.Line);
             apply.Name = context.NAME().GetText();
 
@@ -258,6 +258,26 @@ namespace Eir.MFSH.Parser
             List<String> lines = context.GetText().Split('\n').ToList();
             if (lines.Count == 0)
                 return null;
+
+            Int32 minMargin = Int32.MaxValue;
+            for (Int32 i = 0; i < lines.Count; i++)
+            {
+                String line = lines[i];
+                {
+                    Regex r = new Regex("^[ ]*#");
+                    Match m = r.Match(line);
+                    if (m.Success == true)
+                        line = line.Substring(m.Length);
+                }
+                {
+                    Regex r = new Regex("^[ ]*");
+                    Match m = r.Match(line);
+                    if ((m.Success == true) && (m.Length < minMargin))
+                        minMargin = m.Length;
+                }
+                lines[i] = line;
+            }
+
             if (lines[0].StartsWith("\"\"\""))
                 lines[0] = lines[0].Substring(3);
             if (lines[^1].EndsWith("\"\"\""))
@@ -274,7 +294,6 @@ namespace Eir.MFSH.Parser
                 sb.Append("\n");
                 sb.Append(line);
             }
-
             return sb.ToString();
         }
 
