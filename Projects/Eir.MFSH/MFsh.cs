@@ -60,6 +60,20 @@ namespace Eir.MFSH
         }
 
         /// <summary>
+        /// Only valid after Process() called.
+        /// </summary>
+        /// <param name="relativeFileName"></param>
+        /// <returns></returns>
+        public bool TryGetText(String relativePath, out String text)
+        {
+            text = null;
+            if (this.FileItems.TryGetValue(relativePath, out FileData fd) == false)
+                return false;
+            text = fd.Text.ToString();
+            return true;
+        }
+
+        /// <summary>
         /// Process single file.
         /// </summary>
         void LoadFile(String path)
@@ -80,8 +94,7 @@ namespace Eir.MFSH
             this.ConversionInfo(this.GetType().Name, fcn, $"Loading file {path}");
             String mfshText = File.ReadAllText(path);
 
-            String outputPath = Path.Combine(this.baseOutputDir, relativePath);
-            this.Mgr.ParseOne(mfshText, Path.GetFileName(path), outputPath);
+            this.Mgr.ParseOne(mfshText, Path.GetFileName(path), relativePath);
 
             //String baseRPath = path.Substring(BaseInputDir.Length);
             //if (baseRPath.StartsWith("\\"))
@@ -159,7 +172,34 @@ namespace Eir.MFSH
             if (String.IsNullOrEmpty(this.BaseUrl) == true)
                 throw new Exception($"BaseUrl not set");
             foreach (MIPreFsh fsh in this.Mgr.Fsh)
-                fsh.Items = this.Process(fsh.Items, this.GlobalVars);
+                this.Process(fsh);
+        }
+
+        public void Process(MIPreFsh fsh)
+        {
+            if (Path.GetExtension(fsh.RelativePath).ToLower() == MINCSuffix)
+                return;
+
+            List<MIBase> items = this.Process(fsh.Items, this.GlobalVars);
+            FileData fd = new FileData();
+            fd.RelativePath = fsh.RelativePath;
+            foreach (MIBase item in items)
+            {
+                switch (item)
+                {
+                    case MIText miText:
+                        fd.Text.Append(miText.Line);
+                        break;
+                    default:
+                        this.ConversionError("mfsh", "Process", $"Unexpected item of type {item.GetType().Name} found in output!");
+                        break;
+                }
+            }
+
+            if (this.FileItems.ContainsKey(fd.RelativePath))
+                this.ConversionError("mfsh", "Process", $"Output file {fd.RelativePath} already exists!");
+            else
+                this.FileItems.Add(fd.RelativePath, fd);
         }
 
         List<MIBase> Process(List<MIBase> inputItems,
@@ -248,7 +288,7 @@ namespace Eir.MFSH
             }
 
             if ((macro.OnceFlag == true) && (firstFlag == false))
-                    return;
+                return;
 
             if (this.incompatibleMacros.Contains(apply.Name))
             {
@@ -321,8 +361,11 @@ namespace Eir.MFSH
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
             foreach (FileData f in this.FileItems.Values)
             {
+
                 String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
-                string outText = f.SaveText();
+                Debug.Assert(Path.GetExtension(f.RelativePath).ToLower() == ".mfsh");
+                outputPath = outputPath.Substring(0, outputPath.Length - 5) + ".fsh";
+                string outText = f.Text.ToString();
                 Save(outputPath, outText);
             }
         }

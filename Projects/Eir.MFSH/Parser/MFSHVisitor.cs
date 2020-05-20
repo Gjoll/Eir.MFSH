@@ -269,12 +269,6 @@ namespace Eir.MFSH.Parser
                     if (m.Success == true)
                         line = line.Substring(m.Length);
                 }
-                {
-                    Regex r = new Regex("^[ ]*");
-                    Match m = r.Match(line);
-                    if ((m.Success == true) && (m.Length < minMargin))
-                        minMargin = m.Length;
-                }
                 lines[i] = line;
             }
 
@@ -287,12 +281,21 @@ namespace Eir.MFSH.Parser
             while (String.IsNullOrWhiteSpace(lines[^1]))
                 lines.RemoveAt(lines.Count - 1);
 
+            for (Int32 i = 0; i < lines.Count; i++)
+            {
+                String line = lines[i];
+                Regex r = new Regex("^[ ]*");
+                Match m = r.Match(line);
+                if ((m.Success == true) && (m.Length < minMargin))
+                    minMargin = m.Length;
+            }
+
             StringBuilder sb = new StringBuilder();
-            sb.Append(lines[0]);
+            sb.Append(lines[0].Substring(minMargin));
             foreach (String line in lines.Skip(1))
             {
                 sb.Append("\n");
-                sb.Append(line);
+                sb.Append(line.Substring(minMargin));
             }
             return sb.ToString();
         }

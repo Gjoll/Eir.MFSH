@@ -26,22 +26,5 @@ namespace Eir.MFSH
             Int32 lineNumber) : base(sourceFile, lineNumber)
         {
         }
-
-        public String WriteFsh()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (MIBase b in this.Items)
-            {
-                switch (b)
-                {
-                    case MIText text:
-                        sb.Append(text.Line);
-                        break;
-                }
-            }
-
-            return sb.ToString();
-        }
     }
 }
