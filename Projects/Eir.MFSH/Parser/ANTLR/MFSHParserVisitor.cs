@@ -45,11 +45,35 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCommand([NotNull] MFSHParser.CommandContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.text"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.textA"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitText([NotNull] MFSHParser.TextContext context);
+	Result VisitTextA([NotNull] MFSHParser.TextAContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.textB"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTextB([NotNull] MFSHParser.TextBContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.textC"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTextC([NotNull] MFSHParser.TextCContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.textD"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTextD([NotNull] MFSHParser.TextDContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.tickText"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTickText([NotNull] MFSHParser.TickTextContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.mfshExit"/>.
 	/// </summary>

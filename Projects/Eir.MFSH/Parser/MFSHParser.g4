@@ -5,8 +5,12 @@ document:
     command* EOF
     ;
 
-command: text | mfshExit | mfshCmds;
-text: TEXT ;
+command: textA | textB | textC | textD | tickText | mfshExit | mfshCmds;
+textA: TEXTA ;
+textB: TEXTB ;
+textC: TEXTC ;
+textD: TEXTD ;
+tickText: TICKTEXT ;
 mfshExit: MFSHExit;
 
 mfshCmds: MFSH mfshCmd* ;

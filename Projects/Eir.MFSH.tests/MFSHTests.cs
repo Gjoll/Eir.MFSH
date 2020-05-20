@@ -28,6 +28,7 @@ namespace Eir.MFSH.Tests
         MFsh CreateMfsh()
         {
             MFsh mfsh = new MFsh();
+            mfsh.DebugFlag = true;
             mfsh.BaseInputDir = Path.GetFullPath("TestFiles");
             mfsh.BaseUrl = "http://www.test.com";
             mfsh.BaseOutputDir = @"c:\Temp\MFSHTests";
@@ -160,6 +161,20 @@ namespace Eir.MFSH.Tests
                 Assert.True(mfsh.Mgr.Fsh[0].WriteFsh().Length == 0);
                 Assert.True(mfsh.Mgr.Fsh[1].WriteFsh() == sb.ToString());
             }
+        }
+
+        [Fact]
+        public void MacroTest2()
+        {
+            MFsh mfsh = CreateMfsh();
+            mfsh.Load(TestFile("MFshMacroTest2.mfsh"));
+            mfsh.Process();
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Line 1\n");
+            sb.Append("Line 2\n");
+            sb.Append("Line 3\n");
+            Assert.True(mfsh.Mgr.Fsh[0].WriteFsh() == sb.ToString());
         }
 
         [Fact]

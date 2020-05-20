@@ -1,7 +1,11 @@
 lexer grammar MFSHLexer;
 
 MFSH: [ \t]* '#' -> pushMode(MFSHMode);
-TEXT: [ \t]* (~'#' ~'\n'* ('\n' | EOF)) | ('\n' | EOF);
+TEXTA: [ \t]* ~[#\n]+  ~'\n'* '\n';
+TEXTB: [ \t]* ~[#\n]+  ~'\n'* EOF;
+TEXTC: [ \t]* '\n';
+TEXTD: [ \t]* EOF;
+TICKTEXT: [ \t]* '`' ~'\n'* ('\n' | EOF);
 
 CR: '\r' -> skip ;
 

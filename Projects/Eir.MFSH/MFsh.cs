@@ -21,7 +21,7 @@ namespace Eir.MFSH
 {
     public class MFsh : ConverterBase
     {
-        public bool DebugFlag { get; set; } = true;
+        public bool DebugFlag { get; set; } = false;
         public MFshManager Mgr { get; }
 
         HashSet<String> appliedMacros = new HashSet<string>();

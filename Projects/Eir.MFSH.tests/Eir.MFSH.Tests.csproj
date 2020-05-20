@@ -79,6 +79,9 @@
     <None Update="TestFiles\Old\ApplyOnce1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\MFshMacroTest2.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\Old\ParseProfile1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

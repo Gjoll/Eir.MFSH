@@ -25,7 +25,7 @@ namespace Eir.MFSH
         public bool TryGetMacro(String name, out MIMacro block) => this.Macros.TryGetValue(name, out block);
         public bool TryAddMacro(String name, MIMacro macro) => this.Macros.TryAdd(name, macro);
 
-        public bool DebugFlag { get; set; } = true;
+        public bool DebugFlag => this.Mfsh.DebugFlag;
 
         public List<String> Paths = new List<string>();
 

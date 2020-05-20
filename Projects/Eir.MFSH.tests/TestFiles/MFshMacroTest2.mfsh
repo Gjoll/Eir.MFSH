@@ -1,0 +1,12 @@
+﻿#macro Macro1(P1, P2, P3)
+P1
+P2
+P3
+#end
+
+#apply Macro1("Line one",
+#      "Line two",
+#      """
+#      Line three
+#      """
+#      ###)

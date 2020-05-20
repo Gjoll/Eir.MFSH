@@ -48,8 +48,8 @@ namespace Eir.MFSH.Parser
 
         void TraceMsg(ParserRuleContext context, String fcn)
         {
-            //if (!DebugFlag)
-            //    return;
+            if (!DebugFlag)
+                return;
             String text = context
                 .GetText()
                 .Replace("\r", "")
@@ -65,12 +65,70 @@ namespace Eir.MFSH.Parser
             return null;
         }
 
-        public override object VisitText(MFSHParser.TextContext context)
+        public override object VisitTextA(MFSHParser.TextAContext context)
         {
-            const String fcn = "VisitText";
+            const String fcn = "VisitTextA";
             TraceMsg(context, fcn);
 
             String line = context.GetText();
+            MIText t = new MIText(this.SourceName, context.Start.Line)
+            {
+                Line = context.GetText()
+            };
+            this.Current.Items.Add(t);
+            return null;
+        }
+
+        public override object VisitTextB(MFSHParser.TextBContext context)
+        {
+            const String fcn = "VisitTextB";
+            TraceMsg(context, fcn);
+
+            String line = context.GetText();
+            MIText t = new MIText(this.SourceName, context.Start.Line)
+            {
+                Line = context.GetText()
+            };
+            this.Current.Items.Add(t);
+            return null;
+        }
+
+        public override object VisitTextC(MFSHParser.TextCContext context)
+        {
+            const String fcn = "VisitTextC";
+            TraceMsg(context, fcn);
+
+            String line = context.GetText();
+            MIText t = new MIText(this.SourceName, context.Start.Line)
+            {
+                Line = context.GetText()
+            };
+            this.Current.Items.Add(t);
+            return null;
+        }
+
+        public override object VisitTextD(MFSHParser.TextDContext context)
+        {
+            const String fcn = "VisitTextD";
+            TraceMsg(context, fcn);
+
+            String line = context.GetText();
+            MIText t = new MIText(this.SourceName, context.Start.Line)
+            {
+                Line = context.GetText()
+            };
+            this.Current.Items.Add(t);
+            return null;
+        }
+
+        public override object VisitTickText(MFSHParser.TickTextContext context)
+        {
+            const String fcn = "VisitTickText";
+            TraceMsg(context, fcn);
+
+            String line = context.GetText();
+            Int32 tickIndex = line.IndexOf('`');
+            line = line.Substring(tickIndex + 1);
             MIText t = new MIText(this.SourceName, context.Start.Line)
             {
                 Line = context.GetText()
