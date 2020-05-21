@@ -16,6 +16,12 @@ namespace Eir.MFSH
     {
         class Options
         {
+            public class Clean
+            {
+                public String path { get; set; }
+                public String filter { get; set; }
+            };
+
             public class Define
             {
                 public String name { get; set; }
@@ -25,7 +31,7 @@ namespace Eir.MFSH
             public String baseInputDir { get; set; }
             public String baseOutputDir  { get; set; }
             public String baseUrl { get; set; }
-            public String[] includeDirs { get; set; }
+            public Clean[] cleanDirs { get; set; }
             public String[] mfshPaths { get; set; }
             public Define[] defines { get; set; }
         }
@@ -77,6 +83,9 @@ namespace Eir.MFSH
             if (options.baseUrl == null)
                 throw new Exception("Missing 'baseUrl' option setting");
             this.mfsh.BaseUrl = options.baseUrl;
+
+            foreach (Options.Clean cleanDir in this.options.cleanDirs)
+                this.mfsh.FileClean(cleanDir.path, cleanDir.filter);
 
             foreach (Options.Define define in this.options.defines)
                 this.mfsh.GlobalVars.Set(define.name, define.value);

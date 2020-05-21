@@ -22,7 +22,7 @@ namespace Eir.MFSH
     public class MFsh : ConverterBase
     {
         private const String ClassName = "MFsh";
-
+        private FileCleaner fc = new FileCleaner();
         public bool DebugFlag { get; set; } = false;
         public MFshManager Mgr { get; }
 
@@ -78,6 +78,12 @@ namespace Eir.MFSH
         {
             this.Mgr = new MFshManager(this);
         }
+
+        /// <summary>
+        /// Turn on file cleaning. if on, then files in output dir that are not updated will
+        /// be deleted.
+        /// </summary>
+        public void FileClean(String path, String fileFilter) => this.fc.Add(Path.GetFullPath(path), fileFilter);
 
         /// <summary>
         /// Only valid after Process() called.
@@ -363,11 +369,7 @@ namespace Eir.MFSH
             {
                 text = text.Trim();
                 if (text.Length == 0)
-                {
-                    if (File.Exists(outputPath))
-                        File.Delete(outputPath);
                     return;
-                }
 
                 String dir = Path.GetDirectoryName(outputPath);
                 if (Directory.Exists(dir) == false)
@@ -377,16 +379,21 @@ namespace Eir.MFSH
                     this.ConversionInfo(this.GetType().Name,
                         fcn,
                         $"Saving {Path.GetFileName(outputPath)}");
+
+                // Mark file as updated. If file cleaning on, this will stop file
+                // from being deleted during clean phase.
+                this.fc.Mark(outputPath);
             }
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
             foreach (FileData f in this.FileItems.Values)
             {
-
                 String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
                 string outText = f.Text.ToString();
                 Save(outputPath, outText);
             }
+
+            this.fc.DeleteUnMarkedFiles();
         }
     }
 }
