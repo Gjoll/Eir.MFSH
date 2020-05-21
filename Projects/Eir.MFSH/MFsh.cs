@@ -276,6 +276,10 @@ namespace Eir.MFSH
         void StartNewProfile(String profileName)
         {
             this.profileVariables.Set("%Profile%", profileName);
+
+            String profileUrl = $"{this.BaseUrl}/StructureDefinition/{profileName}";
+            this.profileVariables.Set("%ProfileUrl%", profileUrl);
+
             this.appliedMacros.Clear();
             this.incompatibleMacros.Clear();
         }
