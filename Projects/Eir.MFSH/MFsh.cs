@@ -175,38 +175,47 @@ namespace Eir.MFSH
                 this.Process(fsh);
         }
 
+        /// <summary>
+        /// Get/Create file data item.
+        /// If item with relative path already existsm, return that, 
+        /// create a new one.
+        /// </summary>
+        /// <returns>true if new one created</returns>
+        bool GetFileData(String relativePath, out FileData fd)
+        {
+            relativePath = this.GlobalVars.ReplaceText(relativePath);
+            if (this.FileItems.TryGetValue(relativePath, out fd))
+                return false;
+            fd = new FileData();
+            fd.RelativePath = relativePath;
+            this.FileItems.Add(relativePath, fd);
+            return true;
+        }
+
         public void Process(MIPreFsh fsh)
         {
             if (Path.GetExtension(fsh.RelativePath).ToLower() == MINCSuffix)
                 return;
 
-            List<MIBase> items = this.Process(fsh.Items, this.GlobalVars);
-            FileData fd = new FileData();
-            fd.RelativePath = fsh.RelativePath;
-            foreach (MIBase item in items)
+            String relativeFshPath = Path.Combine(
+                Path.GetDirectoryName(fsh.RelativePath),
+                Path.GetFileNameWithoutExtension(fsh.RelativePath) + ".fsh"
+            );
+            if (GetFileData(relativeFshPath, out FileData fd) == false)
             {
-                switch (item)
-                {
-                    case MIText miText:
-                        fd.Text.Append(miText.Line);
-                        break;
-                    default:
-                        this.ConversionError("mfsh", "Process", $"Unexpected item of type {item.GetType().Name} found in output!");
-                        break;
-                }
+                this.ConversionError("mfsh", "Process", $"Output file {fd.RelativePath} already exists!");
+                return;
             }
 
-            if (this.FileItems.ContainsKey(fd.RelativePath))
-                this.ConversionError("mfsh", "Process", $"Output file {fd.RelativePath} already exists!");
-            else
-                this.FileItems.Add(fd.RelativePath, fd);
+            List<VariablesBlock> variableBlocks = new List<VariablesBlock>();
+            variableBlocks.Add(this.GlobalVars);
+            this.Process(fsh.Items, fd, variableBlocks);
         }
 
-        List<MIBase> Process(List<MIBase> inputItems,
-            VariablesBlock variablesBlock)
+        void Process(List<MIBase> inputItems,
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
         {
-            List<MIBase> outputItems = new List<MIBase>();
-
             Int32 i = 0;
             while (i < inputItems.Count)
             {
@@ -214,17 +223,17 @@ namespace Eir.MFSH
                 switch (b)
                 {
                     case MIText text:
-                        this.ProcessText(text, outputItems, variablesBlock);
+                        this.ProcessText(text, fd, variableBlocks);
                         i += 1;
                         break;
 
                     case MIApply apply:
-                        this.ProcessApply(apply, outputItems, variablesBlock);
+                        this.ProcessApply(apply, fd, variableBlocks);
                         i += 1;
                         break;
 
                     case MIIncompatible incompatible:
-                        this.ProcessIncompatible(incompatible, outputItems, variablesBlock);
+                        this.ProcessIncompatible(incompatible, fd, variableBlocks);
                         i += 1;
                         break;
 
@@ -232,18 +241,14 @@ namespace Eir.MFSH
                         throw new Exception("Internal error. Unknown MIXXX type");
                 }
             }
-            return outputItems;
         }
 
         void ProcessText(MIText text,
-            List<MIBase> outputItems,
-            VariablesBlock variablesBlock)
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
         {
-            String expandedText = variablesBlock.ReplaceText(text.Line);
-            outputItems.Add(new MIText(text.SourceFile, text.LineNumber)
-            {
-                Line = expandedText
-            });
+            String expandedText = variableBlocks.ReplaceText(text.Line);
+            fd.Text.Append(expandedText);
 
             Regex r = new Regex("^Profile[ \n]*:[ \n]*([A-Za-z0-9]+)");
             Match m = r.Match(text.Line);
@@ -263,9 +268,12 @@ namespace Eir.MFSH
         }
 
         void ProcessApply(MIApply apply,
-            List<MIBase> outputItems,
-            VariablesBlock variablesBlock)
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
         {
+            List<VariablesBlock> local = new List<VariablesBlock>();
+            local.AddRange(variableBlocks);
+
             if (this.Mgr.TryGetMacro(apply.Name, out MIMacro macro) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
@@ -297,26 +305,31 @@ namespace Eir.MFSH
                 return;
             }
 
-            VariablesBlock vbParameters = new VariablesBlock();
-            for (Int32 i = 0; i < apply.Parameters.Count; i++)
             {
-                String pName = macro.Parameters[i];
-                String pValue = apply.Parameters[i];
-                pValue = variablesBlock.ReplaceText(pValue);
-                vbParameters.Add(pName, pValue);
+                VariablesBlock vbParameters = new VariablesBlock();
+                for (Int32 i = 0; i < apply.Parameters.Count; i++)
+                {
+                    String pName = macro.Parameters[i];
+                    String pValue = apply.Parameters[i];
+                    pValue = variableBlocks.ReplaceText(pValue);
+                    vbParameters.Add(pName, pValue);
+                }
+
+                local.Insert(0, vbParameters);
             }
 
-            // Replace parameters with parameter value.
-            List<MIBase> macroItems = this.Process(macro.Items, vbParameters);
-            // Replace global variables with global variable value.
-            macroItems = this.Process(macroItems, variablesBlock);
-            // Add expanded items to output list.
-            outputItems.AddRange(macroItems);
+            FileData macroData = fd;
+            if (String.IsNullOrEmpty(macro.Redirect) == false)
+            {
+                this.GetFileData(macro.Redirect, out macroData);
+            }
+
+            this.Process(macro.Items, macroData, local);
         }
 
         void ProcessIncompatible(MIIncompatible incompatible,
-            List<MIBase> outputItems,
-            VariablesBlock variablesBlock)
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
         {
             if (this.incompatibleMacros.Contains(incompatible.Name) == true)
                 return;
@@ -363,8 +376,6 @@ namespace Eir.MFSH
             {
 
                 String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
-                Debug.Assert(Path.GetExtension(f.RelativePath).ToLower() == ".mfsh");
-                outputPath = outputPath.Substring(0, outputPath.Length - 5) + ".fsh";
                 string outText = f.Text.ToString();
                 Save(outputPath, outText);
             }
