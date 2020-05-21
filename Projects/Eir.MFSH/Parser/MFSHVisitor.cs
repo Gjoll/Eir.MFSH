@@ -131,7 +131,7 @@ namespace Eir.MFSH.Parser
             line = line.Substring(tickIndex + 1);
             MIText t = new MIText(this.SourceName, context.Start.Line)
             {
-                Line = context.GetText()
+                Line = line
             };
             this.Current.Items.Add(t);
             return null;

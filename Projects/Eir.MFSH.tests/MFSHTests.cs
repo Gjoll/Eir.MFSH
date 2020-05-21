@@ -36,16 +36,17 @@ namespace Eir.MFSH.Tests
         }
 
 
-        void ParseTest(String mfshFile, String resultsFile)
+        void ParseTest(String testFile, String resultsFile)
         {
             MFsh mfsh = CreateMfsh();
             mfsh.TraceLogging(true, true, true);
-            mfsh.Load(TestFile(mfshFile));
+            mfsh.Load(TestFile($"{testFile}.mfsh"));
             mfsh.Process();
             Assert.True(mfsh.HasErrors == false);
             Assert.True(mfsh.Mgr.Fsh.Count == 1);
             String shouldBe = this.GetCleanText(resultsFile);
-            Assert.True(mfsh.TryGetText(mfshFile, out String fsh));
+            Assert.True(mfsh.TryGetText($"{testFile}.fsh", out String actualResults));
+            Assert.True(String.Compare(actualResults, shouldBe) == 0);
         }
 
         [Fact]
@@ -61,7 +62,7 @@ namespace Eir.MFSH.Tests
                 sb.Append("Line 1\n");
                 sb.Append("Line 2\n");
                 sb.Append("Line 3\n");
-                Assert.True(mfsh.TryGetText("MFshMacroTest1B.mfsh", out String fsh));
+                Assert.True(mfsh.TryGetText("MFshMacroTest1B.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
 
@@ -75,7 +76,7 @@ namespace Eir.MFSH.Tests
                 sb.Append("Line 1\n");
                 sb.Append("Line 2\n");
                 sb.Append("Line 3\n");
-                Assert.True(mfsh.TryGetText("MFshMacroTest1C.mfsh", out String fsh));
+                Assert.True(mfsh.TryGetText("MFshMacroTest1C.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
         }
@@ -91,11 +92,14 @@ namespace Eir.MFSH.Tests
             sb.Append("Line one\n");
             sb.Append("Line two\n");
             sb.Append("Line three\n");
-            Assert.True(mfsh.TryGetText("MFshMacroTest2.mfsh", out String fsh));
+            Assert.True(mfsh.TryGetText("MFshMacroTest2.fsh", out String fsh));
             Assert.True(fsh == sb.ToString());
         }
 
         [Fact]
-        public void MfshExpandVar1() => ParseTest("MfshExpandVar1.mfsh", "MfshExpandVar1.results");
+        public void MfshExpandVar1() => ParseTest("MfshExpandVar1", "MfshExpandVar1.results");
+
+        [Fact]
+        public void MfshTickTest() => ParseTest("MfshTickText", "MfshTickText.results");
     }
 }
