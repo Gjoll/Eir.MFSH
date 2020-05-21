@@ -21,6 +21,8 @@ namespace Eir.MFSH
 {
     public class MFsh : ConverterBase
     {
+        private const String ClassName = "MFsh";
+
         public bool DebugFlag { get; set; } = false;
         public MFshManager Mgr { get; }
 
@@ -50,7 +52,25 @@ namespace Eir.MFSH
 
         public String BaseUrl { get; set; }
 
+        /// <summary>
+        /// List of all variable blocks.
+        /// A new one of these is created on every file.
+        /// </summary>
+        List<VariablesBlock> variableBlocks;
+
+        /// <summary>
+        /// Global variables block. Variables that do not change from profile to profile are stored here.
+        /// </summary>
         public VariablesBlock GlobalVars = new VariablesBlock();
+
+        /// <summary>
+        /// Variables that are local to a profile (or a  file)
+        /// </summary>
+        VariablesBlock profileVariables = new VariablesBlock();
+
+        /// <summary>
+        /// List of all variables block in action.
+        /// </summary>
         public Dictionary<String, FileData> FileItems =
             new Dictionary<String, FileData>();
 
@@ -95,43 +115,11 @@ namespace Eir.MFSH
             String mfshText = File.ReadAllText(path);
 
             this.Mgr.ParseOne(mfshText, Path.GetFileName(path), relativePath);
-
-            //String baseRPath = path.Substring(BaseInputDir.Length);
-            //if (baseRPath.StartsWith("\\"))
-            //    baseRPath = baseRPath.Substring(1);
-            //Int32 extensionIndex = baseRPath.LastIndexOf('.');
-            //if (extensionIndex > 0)
-            //    baseRPath = baseRPath.Substring(0, extensionIndex);
-
-            //String baseName = Path.GetFileName(baseRPath);
-            //String baseDir = Path.GetDirectoryName(baseRPath);
-
-            //this.GlobalVars.Set("%BasePath%", baseRPath);
-            //this.GlobalVars.Set("%BaseDir%", baseDir);
-            //this.GlobalVars.Set("%BaseName%", baseName);
-            //this.GlobalVars.Set("%SavePath%", $"{baseRPath}{MFsh.FSHSuffix}");
-
-            //StackFrame frame = this.Parse(fshText,
-            //    baseName,
-            //    Path.GetDirectoryName(path));
-
-            //void SaveData(FileData fileData)
-            //{
-            //    fileData.ProcessVariables(this.GlobalVars);
-            //    if (this.FileItems.TryGetValue(fileData.RelativePath, out FileData existingReDir) == true)
-            //        existingReDir.AppendText(fileData.Text());
-            //    else
-            //        this.FileItems.Add(fileData.RelativePath, fileData);
-            //}
-
-            //SaveData(frame.Data);
-            //foreach (FileData reDir in frame.Redirections)
-            //    SaveData(reDir);
         }
 
         void LoadDir(String path)
         {
-            const String fcn = "AddDir";
+            const String fcn = "LoadDir";
 
             if (String.IsNullOrEmpty(this.BaseInputDir) == true)
                 throw new Exception($"BaseInputDir not set");
@@ -148,6 +136,7 @@ namespace Eir.MFSH
 
         public void Load(String path)
         {
+            const String fcn = "Load";
             try
             {
                 if (Directory.Exists(path))
@@ -160,7 +149,7 @@ namespace Eir.MFSH
             catch (Exception err)
             {
                 String fullMsg = $"Error loading {Path.GetFileName(path)}. '{err.Message}'";
-                this.ConversionError("mfsh", "Load", fullMsg);
+                this.ConversionError(ClassName, fcn, fullMsg);
             }
         }
 
@@ -183,7 +172,7 @@ namespace Eir.MFSH
         /// <returns>true if new one created</returns>
         bool GetFileData(String relativePath, out FileData fd)
         {
-            relativePath = this.GlobalVars.ReplaceText(relativePath);
+            relativePath = this.variableBlocks.ReplaceText(relativePath);
             if (this.FileItems.TryGetValue(relativePath, out fd))
                 return false;
             fd = new FileData();
@@ -194,6 +183,8 @@ namespace Eir.MFSH
 
         public void Process(MIPreFsh fsh)
         {
+            const String fcn = "Process";
+
             if (Path.GetExtension(fsh.RelativePath).ToLower() == MINCSuffix)
                 return;
 
@@ -201,15 +192,32 @@ namespace Eir.MFSH
                 Path.GetDirectoryName(fsh.RelativePath),
                 Path.GetFileNameWithoutExtension(fsh.RelativePath) + ".fsh"
             );
+
+            this.profileVariables = new VariablesBlock();
+            {
+                String baseRPath = fsh.RelativePath;
+                String baseName = Path.GetFileName(baseRPath);
+                String baseDir = Path.GetDirectoryName(baseRPath);
+
+                profileVariables.Set("%BasePath%", baseRPath);
+                profileVariables.Set("%BaseDir%", baseDir);
+                profileVariables.Set("%BaseName%", baseName);
+                profileVariables.Set("%SavePath%", $"{relativeFshPath}");
+            }
+            this.variableBlocks = new List<VariablesBlock>();
+            variableBlocks.Insert(0, this.GlobalVars);
+            variableBlocks.Insert(0, profileVariables);
+
             if (GetFileData(relativeFshPath, out FileData fd) == false)
             {
-                this.ConversionError("mfsh", "Process", $"Output file {fd.RelativePath} already exists!");
+                this.ConversionError(ClassName, fcn, $"Output file {fd.RelativePath} already exists!");
                 return;
             }
 
-            List<VariablesBlock> variableBlocks = new List<VariablesBlock>();
-            variableBlocks.Add(this.GlobalVars);
             this.Process(fsh.Items, fd, variableBlocks);
+ 
+            this.variableBlocks = null;
+            this.profileVariables = null;
         }
 
         void Process(List<MIBase> inputItems,
@@ -256,13 +264,12 @@ namespace Eir.MFSH
             {
                 String profileName = m.Groups[1].Value;
                 StartNewProfile(profileName);
-                this.GlobalVars.Set("%Profile%", profileName);
             }
         }
 
         void StartNewProfile(String profileName)
         {
-            this.GlobalVars.Set("%Profile%", profileName);
+            this.profileVariables.Set("%Profile%", profileName);
             this.appliedMacros.Clear();
             this.incompatibleMacros.Clear();
         }
@@ -271,20 +278,22 @@ namespace Eir.MFSH
             FileData fd,
             List<VariablesBlock> variableBlocks)
         {
+            const String fcn = "ProcessApply";
+
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.AddRange(variableBlocks);
 
             if (this.Mgr.TryGetMacro(apply.Name, out MIMacro macro) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
-                this.ConversionError("mfsh", "ProcessApply", fullMsg);
+                this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
 
             if (macro.Parameters.Count != apply.Parameters.Count)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} requires {macro.Parameters.Count} parameters, called with {apply.Parameters.Count}.";
-                this.ConversionError("mfsh", "ProcessApply", fullMsg);
+                this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
 
@@ -301,7 +310,7 @@ namespace Eir.MFSH
             if (this.incompatibleMacros.Contains(apply.Name))
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} has been marked as incompatible with this profile";
-                this.ConversionError("mfsh", "ProcessApply", fullMsg);
+                this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
 
@@ -320,10 +329,7 @@ namespace Eir.MFSH
 
             FileData macroData = fd;
             if (String.IsNullOrEmpty(macro.Redirect) == false)
-            {
                 this.GetFileData(macro.Redirect, out macroData);
-            }
-
             this.Process(macro.Items, macroData, local);
         }
 
@@ -331,12 +337,14 @@ namespace Eir.MFSH
             FileData fd,
             List<VariablesBlock> variableBlocks)
         {
+            const String fcn = "ProcessIncompatible";
+
             if (this.incompatibleMacros.Contains(incompatible.Name) == true)
                 return;
             if (this.appliedMacros.Contains(incompatible.Name) == true)
             {
                 String fullMsg = $"{incompatible.SourceFile}, line {incompatible.LineNumber} Macro {incompatible.Name} is incompatible and has already been applied.";
-                this.ConversionError("mfsh", "ProcessApply", fullMsg);
+                this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
 
