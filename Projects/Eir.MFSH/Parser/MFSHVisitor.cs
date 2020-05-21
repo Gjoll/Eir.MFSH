@@ -259,7 +259,6 @@ namespace Eir.MFSH.Parser
             if (lines.Count == 0)
                 return null;
 
-            Int32 minMargin = Int32.MaxValue;
             for (Int32 i = 0; i < lines.Count; i++)
             {
                 String line = lines[i];
@@ -281,6 +280,7 @@ namespace Eir.MFSH.Parser
             while (String.IsNullOrWhiteSpace(lines[^1]))
                 lines.RemoveAt(lines.Count - 1);
 
+            Int32 minMargin = Int32.MaxValue;
             for (Int32 i = 0; i < lines.Count; i++)
             {
                 String line = lines[i];
