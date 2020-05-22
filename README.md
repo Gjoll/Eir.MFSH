@@ -62,4 +62,49 @@ The format of this file is json.
 
 ## MFSH Grammar
 
-	To Be Documented Real Soon Now
+MFSH reads two kinds of files
+| name | meaning |
+| ---- | -------------- |
+| *.minc | These files include macro and variable definitions, but do not generate directly any fsh |
+| *.mfsh | These files can include macro and variable definitions like .minc files, but they will generate a corresponding .fsh file |
+
+### MFSH Commands
+
+All mfsh commands are formatted as a line that starts with a '#'. White space can proceed the '#' character.
+
+i.e.
+
+# macro xxyyz()
+
+mfsh commands can be found in both .minc and .mfsh files.
+
+### FSH Text
+
+Lines that do not start with a '#' are processed as fsh (or json/text if in a macro redirect).
+MFSH will replace any variables references in these lines with the variable value.
+
+### Variable Expansion
+Variables can be defined which can be referenced in redirect paths, mfsh commands, and fsh text. When a string matching the variable is detected,
+the value of the variable will replace the actual variable name.
+
+There are two types of variables.
+
+%{name}%
+
+variables that start and end with '%' will be expanded whereever they are found
+
+{name}
+
+variables that do not start and end with '%' will be expanded only if they are seperate words.
+
+i.e. if a variable xxyyz is defined, then the string
+
+ABCxxyyzDEF
+
+will not have xxyyz relaced,
+
+ABC xxyyz DEF
+
+will have its variable replaced.
+
+
