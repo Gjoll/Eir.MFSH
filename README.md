@@ -72,10 +72,11 @@ MFSH reads two kinds of files
 
 All mfsh commands are formatted as a line that starts with a '#'. White space can proceed the '#' character.
 
-####macro
+#### macro
+
 Define a mfsh macro.
 The syntax of the macro is
-\#macro {name} [once] ([{paramaters}]) [> {output path}]
+\#macro {name} [once] ([{parameters}]) [> {output path}]
 macro value (i.e. fsh text)
 \#end
  
@@ -83,13 +84,13 @@ macro value (i.e. fsh text)
 | ---- | -------------- |
 | {name}| name of the macro. The name must be unique in the project |
 | {once} | optional flag indicating that the macro shou;d only be referenced once in any profile.
-All references after the inditial reference will be ignored. 
+All references after the initial reference will be ignored. 
 If once is included, then the macro must have no macros |
-| {parameters} | A comma seperated list of parameters that will be expanded when the macro is invoked.
+| {parameters} | A comma separated list of parameters that will be expanded when the macro is invoked.
 Each parameters is treated like a variable, and can be a name or %name%. |
 | {output path} | An optional path. If not included then the value of the invoked macro will be copied to the current output fsh file.
 If included, then text from a macro can be redirected to any alternate file. All text to an alternate file from multiple macro applications
-will be concatanated together. Text in a file from a previous mfsh run will not be retained |
+will be concatenated together. Text in a file from a previous mfsh run will not be retained |
 | macro value | whatever text and/or mfsh commands the macro should expand. |
 
 Example
