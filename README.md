@@ -215,6 +215,7 @@ The following variables are automatically defined.
 | %BaseDir% |  The current input file directory (relative to the base input directory)|
 | %BaseName% |  The current input file name (no directory) |
 | %SavePath% | The output file path, relative to the base output directory |
+| %Id% | Fsh Id header value, or if not set the Profile value |
 | %Profile% | The name of the current Profile. Valid only after fsh 'Profile:' has been parsed |
 | %ProfileUrl% | The name of the current Profile's FHIR url. Valid only after fsh 'Profile:' has been parsed |
 | %Id% | Fsh Id header, or if not set, the name of the current Profile |
