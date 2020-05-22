@@ -75,10 +75,13 @@ All mfsh commands are formatted as a line that starts with a '#'. White space ca
 #### macro
 
 Define a mfsh macro.
-The syntax of the macro is
+The syntax of the command is
+
+```text
 \#macro {name} [once] ([{parameters}]) [> {output path}]
 macro value (i.e. fsh text)
 \#end
+```
  
 | name | meaning |
 | ---- | -------------- |
@@ -86,8 +89,8 @@ macro value (i.e. fsh text)
 | {once} | optional flag indicating that the macro shou;d only be referenced once in any profile.
 All references after the initial reference will be ignored. 
 If once is included, then the macro must have no macros |
-| {parameters} | A comma separated list of parameters that will be expanded when the macro is invoked.
-Each parameters is treated like a variable, and can be a name or %name%. |
+| {parameter names} | A comma separated list of parameter names that define paraneters to expand when the macro is invoked.
+Each parameter will be treated like a variable, and can have the format name or %name%. |
 | {output path} | An optional path. If not included then the value of the invoked macro will be copied to the current output fsh file.
 If included, then text from a macro can be redirected to any alternate file. All text to an alternate file from multiple macro applications
 will be concatenated together. Text in a file from a previous mfsh run will not be retained |
@@ -104,6 +107,74 @@ Example
 #end
 ```
 
+Example Redirect
+
+This macro assumes that the '%PageContent%' variable was defined in the options file.
+
+```text
+//
+// Write out an intro doc.
+//
+#macro IntroDoc(%Description%) > "%PageContent%\\StructureDefinition-%Profile%-intro.xml"
+  ` <div xmlns="http://www.w3.org/1999/xhtml"
+  `     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  `     xsi:schemaLocation="http://hl7.org/fhir ../../src-generated/schemas/fhir-single.xsd">
+  `   <p>
+  `     <u style="font-size:large;">Description</u>
+  `   </p>
+  `   %Description%
+  ` </div>
+#end
+```
+#### apply
+
+Apply a mfsh macro.
+
+The syntax of the command is
+
+```text
+\#apply {name} ([{parameters}])
+```
+| name | meaning |
+| ---- | -------------- |
+| {name}| name of the macro to expand|
+| {parameter values} | A comma separated list of parameter values.
+Each value is enclosed in quotes or multi line quotes ('"""').
+The number of parameter values must match the number of parameters defined for the macro.
+The parameter value can contains variales/parameters that will be expanded when called. |
+
+Example
+
+```text
+#apply SetComponent("mySlice", "0..1", "MyValueSet")
+#end
+```
+
+Example Multi line
+
+```text
+#apply SetComponent(
+#  """
+#  mySlice
+#  """,
+# "0..1",
+# "MyValueSet")
+```
+
+#### incompatible
+
+This will indicate that the current profile or macro is incompatible with a macro.
+Attempts to call that macro will cause a run time error.
+
+
+The syntax of the command is
+
+```text
+\#incompatible {name}
+
+| name | meaning |
+| ---- | -------------- |
+| {name}| name of the macro that is being declatred as incompatible |
 
 ### FSH Text
 
@@ -134,4 +205,15 @@ ABC xxyyz DEF
 
 will have its variable replaced.
 
+### Variables
+The following variables are automatically defined.
 
+| name | meaning |
+| ---- | -------------- |
+
+| %BasePath% | The current input file path (relative to the base input directory) |
+| %BaseDir% |  The current input file directory (relative to the base input directory)|
+| %BaseName% |  The current input file name (no directory) |
+| %SavePath% | The output file path, relative to the base output directory |
+| %Profile% | The name of the current Profile. Valid only after fsh 'Profile:' has been parsed |
+| %ProfileUrl% | The name of the current Profile's FHIR url. Valid only after fsh 'Profile:' has been parsed |
