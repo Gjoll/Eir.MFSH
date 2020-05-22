@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Eir.MFSH
 {
-    [DebuggerDisplay("{RelativePath} '{Text.ToString}'")]
+    [DebuggerDisplay("{" + nameof(FileData.RelativePath) + "}")]
     public class FileData
     {
         public String RelativePath { get; set; }

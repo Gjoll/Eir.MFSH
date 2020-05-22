@@ -221,7 +221,7 @@ namespace Eir.MFSH
             }
 
             this.Process(fsh.Items, fd, variableBlocks);
- 
+
             this.variableBlocks = null;
             this.profileVariables = null;
         }
@@ -261,21 +261,38 @@ namespace Eir.MFSH
             FileData fd,
             List<VariablesBlock> variableBlocks)
         {
+            void ProcessHeader()
+            {
+                {
+                    Regex r = new Regex("^[ \t]*Profile[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+                    Match m = r.Match(text.Line);
+                    if (m.Success == true)
+                    {
+                        String profileName = m.Groups[1].Value;
+                        StartNewProfile(profileName);
+                    }
+                }
+                {
+                    Regex r = new Regex("^[ \t]*Id[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+                    Match m = r.Match(text.Line);
+                    if (m.Success == true)
+                    {
+                        String idName = m.Groups[1].Value;
+                        this.profileVariables.Set("%Id%", idName);
+                    }
+                }
+            }
+
             String expandedText = variableBlocks.ReplaceText(text.Line);
             fd.Text.Append(expandedText);
-
-            Regex r = new Regex("^Profile[ \n]*:[ \n]*([A-Za-z0-9]+)");
-            Match m = r.Match(text.Line);
-            if (m.Success == true)
-            {
-                String profileName = m.Groups[1].Value;
-                StartNewProfile(profileName);
-            }
+            ProcessHeader();
         }
 
         void StartNewProfile(String profileName)
         {
             this.profileVariables.Set("%Profile%", profileName);
+            // %Id% defaults to profile unless explicitly set (later)
+            this.profileVariables.Set("%Id%", profileName);
 
             String profileUrl = $"{this.BaseUrl}/StructureDefinition/{profileName}";
             this.profileVariables.Set("%ProfileUrl%", profileUrl);

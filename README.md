@@ -6,13 +6,13 @@ FSH prepropcessor
 
 Open Visual Studio Package Manager Console, and type the following.
 
-dotnet tool install --global Eir.MFSH --version 2.0.5
+dotnet tool install --global Eir.MFSH --version 2.0.6
 
 to upgrade,
 
 dotnet tool uninstall --global Eir.MFSH
 
-dotnet tool install --global Eir.MFSH --version 2.0.5
+dotnet tool install --global Eir.MFSH --version 2.0.6
 
 ## Command Line Option
 
@@ -115,7 +115,7 @@ This macro assumes that the '%PageContent%' variable was defined in the options 
 //
 // Write out an intro doc.
 //
-#macro IntroDoc(%Description%) > "%PageContent%\\StructureDefinition-%Profile%-intro.xml"
+#macro IntroDoc(%Description%) > "%PageContent%\\StructureDefinition-%Id%-intro.xml"
   ` <div xmlns="http://www.w3.org/1999/xhtml"
   `     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   `     xsi:schemaLocation="http://hl7.org/fhir ../../src-generated/schemas/fhir-single.xsd">
@@ -217,3 +217,4 @@ The following variables are automatically defined.
 | %SavePath% | The output file path, relative to the base output directory |
 | %Profile% | The name of the current Profile. Valid only after fsh 'Profile:' has been parsed |
 | %ProfileUrl% | The name of the current Profile's FHIR url. Valid only after fsh 'Profile:' has been parsed |
+| %Id% | Fsh Id header, or if not set, the name of the current Profile |
