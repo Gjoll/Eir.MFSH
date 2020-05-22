@@ -46,7 +46,8 @@ MFSH is controlled from a user defined json file.
 			"filter": "StructureDefinition-*-intro.xml"
 		}
 	]
-}```
+}
+```
 
 The format of this file is json.
 | name | meaning |
