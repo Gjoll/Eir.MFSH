@@ -74,7 +74,7 @@ All mfsh commands are formatted as a line that starts with a '#'. White space ca
 
 i.e.
 
-# macro xxyyz()
+\#macro xxyyz()
 
 mfsh commands can be found in both .minc and .mfsh files.
 
