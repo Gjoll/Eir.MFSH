@@ -21,6 +21,7 @@ namespace Eir.MFSH
             Remove(key);
             Add(key, value);
         }
+
         public String ReplaceText(String text)
         {
             if (String.IsNullOrEmpty(text))

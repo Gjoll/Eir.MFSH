@@ -270,6 +270,17 @@ namespace Eir.MFSH
                     {
                         String profileName = m.Groups[1].Value;
                         StartNewProfile(profileName);
+                        return;
+                    }
+                }
+                {
+                    Regex r = new Regex("^[ \t]*Extension[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+                    Match m = r.Match(text.Line);
+                    if (m.Success == true)
+                    {
+                        String extensionName = m.Groups[1].Value;
+                        StartNewExtension(extensionName);
+                        return;
                     }
                 }
                 {
@@ -279,6 +290,7 @@ namespace Eir.MFSH
                     {
                         String idName = m.Groups[1].Value;
                         this.profileVariables.Set("%Id%", idName);
+                        return;
                     }
                 }
             }
@@ -288,8 +300,23 @@ namespace Eir.MFSH
             ProcessHeader();
         }
 
+        void StartNewExtension(String extensionName)
+        {
+            this.profileVariables.Remove("%Profile%");
+            this.profileVariables.Add("%Extension%", extensionName);
+            // %Id% defaults to profile unless explicitly set (later)
+            this.profileVariables.Set("%Id%", extensionName);
+
+            String profileUrl = $"{this.BaseUrl}/StructureDefinition/{extensionName}";
+            this.profileVariables.Set("%ExtensionUrl%", profileUrl);
+
+            this.appliedMacros.Clear();
+            this.incompatibleMacros.Clear();
+        }
+
         void StartNewProfile(String profileName)
         {
+            this.profileVariables.Remove("%Extension%");
             this.profileVariables.Set("%Profile%", profileName);
             // %Id% defaults to profile unless explicitly set (later)
             this.profileVariables.Set("%Id%", profileName);
