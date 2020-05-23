@@ -378,6 +378,9 @@ namespace Eir.MFSH
                     vbParameters.Add(pName, pValue);
                 }
 
+                vbParameters.Add("%ApplySourceFile%", apply.SourceFile);
+                vbParameters.Add("%ApplyLineNumber%", apply.LineNumber.ToString());
+
                 local.Insert(0, vbParameters);
             }
 

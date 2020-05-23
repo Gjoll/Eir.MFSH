@@ -6,13 +6,13 @@ FSH prepropcessor
 
 Open Visual Studio Package Manager Console, and type the following.
 
-dotnet tool install --global Eir.MFSH --version 2.0.7
+dotnet tool install --global Eir.MFSH --version 2.0.8
 
 to upgrade,
 
 dotnet tool uninstall --global Eir.MFSH
 
-dotnet tool install --global Eir.MFSH --version 2.0.7
+dotnet tool install --global Eir.MFSH --version 2.0.8
 
 ## Command Line Option
 
@@ -211,6 +211,8 @@ The following variables are automatically defined.
 | name | meaning |
 | ---- | -------------- |
 
+| %ApplySourceFile% | The source file that contained the last #apply command executed. Used for debug tracing |
+| %ApplyLineNumber% | The line number in the file that contained the last #apply command executed. Used for debug tracing |
 | %BasePath% | The current input file path (relative to the base input directory) |
 | %BaseDir% |  The current input file directory (relative to the base input directory)|
 | %BaseName% |  The current input file name (no directory) |

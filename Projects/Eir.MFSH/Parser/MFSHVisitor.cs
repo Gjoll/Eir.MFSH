@@ -137,17 +137,6 @@ namespace Eir.MFSH.Parser
             return null;
         }
 
-        //public override object VisitData(MFSHParser.DataContext context)
-        //{
-        //    const String fcn = "VisitData";
-        //    TraceMsg(context, fcn);
-
-        //    MIText t = new MIText();
-        //    t.Line = context.GetText();
-        //    this.Current.Items.Add(t);
-        //    return null;
-        //}
-
         public override object VisitMacro(MFSHParser.MacroContext context)
         {
             const String fcn = "VisitMacro";
