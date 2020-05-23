@@ -2,7 +2,7 @@
   "profiles": {
     "FSHer": {
       "commandName": "Project",
-      "workingDirectory": "C:\\Development\\CQFramework\\Lung-CCG\\FSH-LungCCG"
+      "workingDirectory": "C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects"
     }
   }
 }
