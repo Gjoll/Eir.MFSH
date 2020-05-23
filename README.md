@@ -216,6 +216,8 @@ The following variables are automatically defined.
 | %BaseName% |  The current input file name (no directory) |
 | %SavePath% | The output file path, relative to the base output directory |
 | %Id% | Fsh Id header value, or if not set the Profile value |
+| %Extension% | The name of the current Extension. Valid only after fsh 'Extension:' has been parsed |
+| %ExtensionUrl% | The name of the current Extension's FHIR url. Valid only after fsh 'Extension:' has been parsed |
 | %Profile% | The name of the current Profile. Valid only after fsh 'Profile:' has been parsed |
 | %ProfileUrl% | The name of the current Profile's FHIR url. Valid only after fsh 'Profile:' has been parsed |
-| %Id% | Fsh Id header, or if not set, the name of the current Profile |
+| %Id% | Fsh Id header, or if not set, the %Profile% or %Extension% |
