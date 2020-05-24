@@ -5,6 +5,6 @@ AlphaName
 #apply Alpha("BetaName")
 #end
 Profile: Alpha
-#apply Beta("%Profile%")
+#apply Beta("%Id%")
 #apply Beta("Beta")
 #apply Beta("Delta")

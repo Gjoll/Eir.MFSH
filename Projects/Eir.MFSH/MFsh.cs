@@ -314,13 +314,11 @@ namespace Eir.MFSH
         }
         void StartNewExtension(String extensionName)
         {
-            this.profileVariables.Remove("%Profile%");
-            this.profileVariables.Add("%Extension%", extensionName);
             // %Id% defaults to profile unless explicitly set (later)
             this.profileVariables.Set("%Id%", extensionName);
 
             String profileUrl = $"{this.BaseUrl}/StructureDefinition/{extensionName}";
-            this.profileVariables.Set("%ExtensionUrl%", profileUrl);
+            this.profileVariables.Set("%Url%", profileUrl);
 
             this.appliedMacros.Clear();
             this.incompatibleMacros.Clear();
@@ -328,13 +326,11 @@ namespace Eir.MFSH
 
         void StartNewProfile(String profileName)
         {
-            this.profileVariables.Remove("%Extension%");
-            this.profileVariables.Set("%Profile%", profileName);
             // %Id% defaults to profile unless explicitly set (later)
             this.profileVariables.Set("%Id%", profileName);
 
             String profileUrl = $"{this.BaseUrl}/StructureDefinition/{profileName}";
-            this.profileVariables.Set("%ProfileUrl%", profileUrl);
+            this.profileVariables.Set("%Url%", profileUrl);
 
             this.appliedMacros.Clear();
             this.incompatibleMacros.Clear();

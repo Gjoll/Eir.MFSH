@@ -6,13 +6,13 @@ FSH prepropcessor
 
 Open Visual Studio Package Manager Console, and type the following.
 
-dotnet tool install --global Eir.MFSH --version 2.0.9
+dotnet tool install --global Eir.MFSH --version 2.1.0
 
 to upgrade,
 
 dotnet tool uninstall --global Eir.MFSH
 
-dotnet tool install --global Eir.MFSH --version 2.0.9
+dotnet tool install --global Eir.MFSH --version 2.1.0
 
 ## Command Line Option
 
@@ -217,9 +217,5 @@ The following variables are automatically defined.
 | %BaseDir% |  The current input file directory (relative to the base input directory)|
 | %BaseName% |  The current input file name (no directory) |
 | %SavePath% | The output file path, relative to the base output directory |
-| %Id% | Fsh Id header value, or if not set the Profile value |
-| %Extension% | The name of the current Extension. Valid only after fsh 'Extension:' has been parsed |
-| %ExtensionUrl% | The name of the current Extension's FHIR url. Valid only after fsh 'Extension:' has been parsed |
-| %Profile% | The name of the current Profile. Valid only after fsh 'Profile:' has been parsed |
-| %ProfileUrl% | The name of the current Profile's FHIR url. Valid only after fsh 'Profile:' has been parsed |
-| %Id% | Fsh Id header, or if not set, the %Profile% or %Extension% |
+| %Id% | Fsh Id header value. This is the name of the current Profile or Extension|
+| %Url% | The name of the current Extension's or Profile's FHIR url. |
