@@ -31,7 +31,7 @@ namespace Eir.MFSH.Tests
             MFsh mfsh = new MFsh();
             mfsh.TraceLogging(true, true, true);
             mgr = new MFshManager(mfsh);
-            MIPreFsh b = mgr.ParseOne(input, "test", null);
+            MIPreFsh b = mgr.ParseOne(input, "test");
             Assert.True(mfsh.HasErrors == false);
             return b;
         }

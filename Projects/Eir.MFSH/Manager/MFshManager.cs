@@ -38,7 +38,6 @@ namespace Eir.MFSH
         }
 
         public MIPreFsh ParseOne(String fshText,
-            String sourceName,
             String relativePath)
         {
             fshText = fshText.Replace("\r", "");
@@ -49,7 +48,7 @@ namespace Eir.MFSH
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new MFSHErrorListenerLexer(this.Mfsh,
                 "MFsh Lexer",
-                sourceName,
+                relativePath,
                 inputLines));
 
             Parser.MFSHParserLocal parser = new Parser.MFSHParserLocal(new CommonTokenStream(lexer));
@@ -58,16 +57,16 @@ namespace Eir.MFSH
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new MFSHErrorListenerParser(this.Mfsh,
                 "MFsh Parser",
-                sourceName,
+                relativePath,
                 inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
-            Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this, sourceName);
+            Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this, relativePath);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
             if (visitor.state.Count != 1)
             {
-                String fullMsg = $"Error processing {sourceName}. Unterminated #{{Command}}";
+                String fullMsg = $"Error processing {relativePath}. Unterminated #{{Command}}";
                 this.Mfsh.ConversionError("mfsh", "ProcessInclude", fullMsg);
             }
 

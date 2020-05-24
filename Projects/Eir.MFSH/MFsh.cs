@@ -28,6 +28,7 @@ namespace Eir.MFSH
 
         HashSet<String> appliedMacros = new HashSet<string>();
         HashSet<String> incompatibleMacros = new HashSet<string>();
+        Stack<MIApply> applyStack = new Stack<MIApply>();
 
         public string BaseInputDir
         {
@@ -120,7 +121,7 @@ namespace Eir.MFSH
             this.ConversionInfo(this.GetType().Name, fcn, $"Loading file {path}");
             String mfshText = File.ReadAllText(path);
 
-            this.Mgr.ParseOne(mfshText, Path.GetFileName(path), relativePath);
+            this.Mgr.ParseOne(mfshText, relativePath);
         }
 
         void LoadDir(String path)
@@ -300,6 +301,17 @@ namespace Eir.MFSH
             ProcessHeader();
         }
 
+        public String ApplyStackTrace()
+        {
+            if (this.applyStack.Count == 0)
+                return "";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("");
+            sb.AppendLine("Macro Stack Trace.");
+            foreach (MIApply applyStackFrame in this.applyStack)
+                sb.Append(applyStackFrame.ToString());
+            return sb.ToString();
+        }
         void StartNewExtension(String extensionName)
         {
             this.profileVariables.Remove("%Profile%");
@@ -340,6 +352,7 @@ namespace Eir.MFSH
             if (this.Mgr.TryGetMacro(apply.Name, out MIMacro macro) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
+                fullMsg += ApplyStackTrace();
                 this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
@@ -347,6 +360,7 @@ namespace Eir.MFSH
             if (macro.Parameters.Count != apply.Parameters.Count)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} requires {macro.Parameters.Count} parameters, called with {apply.Parameters.Count}.";
+                fullMsg += ApplyStackTrace();
                 this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
@@ -364,6 +378,7 @@ namespace Eir.MFSH
             if (this.incompatibleMacros.Contains(apply.Name))
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} has been marked as incompatible with this profile";
+                fullMsg += ApplyStackTrace();
                 this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
@@ -387,7 +402,10 @@ namespace Eir.MFSH
             FileData macroData = fd;
             if (String.IsNullOrEmpty(macro.Redirect) == false)
                 this.GetFileData(macro.Redirect, out macroData);
+
+            this.applyStack.Push(apply);                    // this is for stack tracing during errors
             this.Process(macro.Items, macroData, local);
+            this.applyStack.Pop();
         }
 
         void ProcessIncompatible(MIIncompatible incompatible,
@@ -401,6 +419,7 @@ namespace Eir.MFSH
             if (this.appliedMacros.Contains(incompatible.Name) == true)
             {
                 String fullMsg = $"{incompatible.SourceFile}, line {incompatible.LineNumber} Macro {incompatible.Name} is incompatible and has already been applied.";
+                fullMsg += ApplyStackTrace();
                 this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
