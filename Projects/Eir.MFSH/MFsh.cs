@@ -389,7 +389,7 @@ namespace Eir.MFSH
                     vbParameters.Add(pName, pValue);
                 }
 
-                vbParameters.Add("%ApplySourceFile%", apply.SourceFile);
+                vbParameters.Add("%ApplySourceFile%", apply.SourceFile.Replace("\\", "/"));
                 vbParameters.Add("%ApplyLineNumber%", apply.LineNumber.ToString());
 
                 local.Insert(0, vbParameters);
