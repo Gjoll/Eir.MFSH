@@ -70,7 +70,8 @@ namespace Eir.MFSH
             MIPreFsh retVal = new MIPreFsh(relativePath, 0)
             {
                 Items = block.Items,
-                RelativePath = relativePath
+                RelativePath = relativePath,
+                Usings = visitor.Usings
             };
 
             this.Fsh.Add(retVal);

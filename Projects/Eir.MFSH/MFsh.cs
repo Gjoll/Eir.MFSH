@@ -27,6 +27,8 @@ namespace Eir.MFSH
         public bool DebugFlag { get; set; } = false;
         public ParseManager Parser { get; }
 
+        List<String> usings;
+
         /// <summary>
         /// Handles storing and retrieving all macros.
         /// </summary>
@@ -206,7 +208,7 @@ namespace Eir.MFSH
                 Path.GetDirectoryName(fsh.RelativePath),
                 Path.GetFileNameWithoutExtension(fsh.RelativePath) + ".fsh"
             );
-
+            this.usings = fsh.Usings;
             this.profileVariables = new VariablesBlock();
             {
                 String baseRPath = fsh.RelativePath;
@@ -417,8 +419,17 @@ namespace Eir.MFSH
         {
             const String fcn = "ProcessIncompatible";
 
+            if (this.Macros.TryGetMacro(this.usings, incompatible.Name, out MIMacro macro) == false)
+            {
+                String fullMsg = $"{incompatible.SourceFile}, line {incompatible.LineNumber} Macro {incompatible.Name} not found.";
+                fullMsg += ApplyStackTrace();
+                this.ConversionError(ClassName, fcn, fullMsg);
+                return;
+            }
+
             if (this.incompatibleMacros.Contains(incompatible.Name) == true)
                 return;
+
             if (this.appliedMacros.Contains(incompatible.Name) == true)
             {
                 String fullMsg = $"{incompatible.SourceFile}, line {incompatible.LineNumber} Macro {incompatible.Name} is incompatible and has already been applied.";
