@@ -254,6 +254,11 @@ namespace Eir.MFSH
                         i += 1;
                         break;
 
+                    case MIUse use:
+                        this.ProcessUse(use, fd, variableBlocks);
+                        i += 1;
+                        break;
+
                     case MIIncompatible incompatible:
                         this.ProcessIncompatible(incompatible, fd, variableBlocks);
                         i += 1;
@@ -352,7 +357,7 @@ namespace Eir.MFSH
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.AddRange(variableBlocks);
 
-            if (this.Macros.TryGetMacro(apply.Name, out MIMacro macro) == false)
+            if (this.Macros.TryGetMacro(variableBlocks, apply.Name, out MIMacro macro) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
                 fullMsg += ApplyStackTrace();
@@ -411,6 +416,16 @@ namespace Eir.MFSH
             this.applyStack.Pop();
         }
 
+        void ProcessUse(MIUse use,
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
+        {
+            const String fcn = "ProcessUse";
+            if (variableBlocks[0].Usings.Contains(use.Name))
+                return;
+            variableBlocks[0].Usings.Add(use.Name);
+        }
+        
         void ProcessIncompatible(MIIncompatible incompatible,
             FileData fd,
             List<VariablesBlock> variableBlocks)

@@ -1,0 +1,20 @@
+﻿#macro Macro1()
+  Line one
+#end
+
+#macro Alpha.Macro2()
+  Line two
+#end
+
+#macro Alpha.Beta.Macro3()
+  Line three
+#end
+
+#apply Macro1()
+#apply Macro1()
+#apply Alpha.Macro2()
+#use Alpha
+#apply Macro2()
+#apply Beta.Macro3()
+#use Alpha.Beta
+#apply Macro3()

@@ -26,7 +26,7 @@ namespace Eir.MFSH.Manager
             this.Mfsh = mfsh;
         }
 
-        public bool TryGetMacro(String name, out MIMacro macro)
+        bool TryGetMacro(String name, out MIMacro macro)
         {
             macro = null;
             String[] parts = name.Split('\n');
@@ -41,6 +41,21 @@ namespace Eir.MFSH.Manager
             if (ns.Macros.TryGetValue(name, out macro) == false)
                 return false;
             return true;
+        }
+
+        public bool TryGetMacro(List<VariablesBlock> variablesBlock, String name, out MIMacro macro)
+        {
+            if (TryGetMacro(name, out macro) == true)
+                return true;
+            foreach (VariablesBlock variableBlock in variablesBlock)
+            {
+                foreach (String use in variableBlock.Usings)
+                {
+                    if (TryGetMacro($"{use}.{name}", out macro) == true)
+                        return true;
+                }
+            }
+            return false;
         }
 
         public bool TryAddMacro(String name, MIMacro macro)

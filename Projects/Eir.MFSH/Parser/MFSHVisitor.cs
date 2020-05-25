@@ -197,6 +197,14 @@ namespace Eir.MFSH.Parser
             return null;
         }
 
+        public override object VisitUse(MFSHParser.UseContext context)
+        {
+            //const String fcn = "VisitUse";
+            MIUse use = new MIUse(this.SourceName, context.Start.Line);
+            use.Name = context.NAME().GetText();
+            this.Current.Items.Add(use);
+            return null;
+        }
 
         public override object VisitEnd(MFSHParser.EndContext context)
         {

@@ -96,6 +96,28 @@ namespace Eir.MFSH.Tests
             Assert.True(fsh == sb.ToString());
         }
 
+
+        [Fact]
+        public void UseTest2()
+        {
+            MFsh mfsh = CreateMfsh();
+            mfsh.Load(TestFile("MFshUseTest1.mfsh"));
+            mfsh.Process();
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("\n");
+            sb.Append("\n");
+            sb.Append("\n");
+            sb.Append("  Line one\n");
+            sb.Append("  Line one\n");
+            sb.Append("  Line two\n");
+            sb.Append("  Line two\n");
+            sb.Append("  Line three\n");
+            sb.Append("  Line three\n");
+            Assert.True(mfsh.TryGetText("MFshUseTest1.fsh", out String fsh));
+            Assert.True(fsh == sb.ToString());
+        }
+        
         [Fact]
         public void MfshExpandVar1() => ParseTest("MfshExpandVar1", "MfshExpandVar1.results");
 

@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestFiles\MFshUseTest1.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\MfshTickText.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

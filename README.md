@@ -6,13 +6,13 @@ FSH prepropcessor
 
 Open Visual Studio Package Manager Console, and type the following.
 
-dotnet tool install --global Eir.MFSH --version 2.2.1
+dotnet tool install --global Eir.MFSH --version 2.2.2
 
 to upgrade,
 
 dotnet tool uninstall --global Eir.MFSH
 
-dotnet tool install --global Eir.MFSH --version 2.2.1
+dotnet tool install --global Eir.MFSH --version 2.2.2
 
 ## Command Line Option
 
@@ -175,6 +175,30 @@ The syntax of the command is
 | name | meaning |
 | ---- | -------------- |
 | {name}| name of the macro that is being declatred as incompatible |
+
+#### use
+
+The use macro defines a name that will be used in searching for macros (i.e. when calling using \#apply).
+
+A macro name can be defines with periods in the name delimiting the name int seperate pseudo namespaces.
+
+#macro Alpha.Beta.Delta()
+
+The macro can be referenced by its full name
+
+#apply Alpha.Beta.Delta()
+
+or you can use the short cut.
+
+#use Alpha
+#apply Beta.Delta()
+
+#use Alpha.Beta
+#apply Delta()
+
+If the use is defined outside of a macro or profile, it will be valid for the whole file.
+
+If defined inside a macro or profile it will be valid for the life of that item.
 
 ### FSH Text
 

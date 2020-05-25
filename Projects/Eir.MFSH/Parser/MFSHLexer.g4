@@ -17,6 +17,7 @@ END: 'end';
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
 ONCE: 'once';
+USE: 'use';
 
 STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' . )* '"';
 MULTILINE_STRING: '"""' .*? '"""' ;
