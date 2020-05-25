@@ -11,7 +11,7 @@ using Eir.MFSH.Parser;
 
 namespace Eir.MFSH.Tests
 {
-    public class MFSHManagerTests
+    public class ParseManagerTests
     {
         /// <summary>
         /// Get text w/o carriage returns. Makes comparisons easier.
@@ -25,13 +25,12 @@ namespace Eir.MFSH.Tests
             return input;
         }
 
-        MIPreFsh ParseTest(String mfshFile, out MFshManager mgr)
+        MIPreFsh ParseTest(String mfshFile, out MFsh mfsh)
         {
             String input = GetCleanText(mfshFile);
-            MFsh mfsh = new MFsh();
+            mfsh = new MFsh();
             mfsh.TraceLogging(true, true, true);
-            mgr = new MFshManager(mfsh);
-            MIPreFsh b = mgr.ParseOne(input, "test");
+            MIPreFsh b = mfsh.Parser.ParseOne(input, "test");
             Assert.True(mfsh.HasErrors == false);
             return b;
         }
@@ -39,33 +38,33 @@ namespace Eir.MFSH.Tests
         [Fact]
         public void MgrMacroTest1()
         {
-            MIPreFsh b = ParseTest("MgrMacroTest1.mfsh", out MFshManager mgr);
+            MIPreFsh b = ParseTest("MgrMacroTest1.mfsh", out MFsh mfsh);
             Debug.Assert(b.Items.Count == 3);
             Debug.Assert(((MIText)b.Items[0]).Line == "Line 1\n");
             Debug.Assert(((MIText)b.Items[1]).Line == "Line 2\n");
             Debug.Assert(((MIText)b.Items[2]).Line == "Line 5\n");
 
-            Debug.Assert(mgr.TryGetMacro("Macro1", out MIMacro macro1));
+            Debug.Assert(mfsh.Macros.TryGetMacro("Macro1", out MIMacro macro1));
             Debug.Assert(macro1.Items.Count == 2);
             Debug.Assert(((MIText)macro1.Items[0]).Line == "    Line 3\n");
             Debug.Assert(((MIText)macro1.Items[1]).Line == "    Line 4\n");
 
-            Debug.Assert(mgr.TryGetMacro("Macro2", out MIMacro macro2));
-            Debug.Assert(mgr.TryGetMacro("Macro3", out MIMacro macro3));
+            Debug.Assert(mfsh.Macros.TryGetMacro("Macro2", out MIMacro macro2));
+            Debug.Assert(mfsh.Macros.TryGetMacro("Macro3", out MIMacro macro3));
         }
 
         [Fact]
         public void MgrMacroTest2()
         {
-            MIPreFsh b = ParseTest("MgrMacroTest2.mfsh", out MFshManager mgr);
+            MIPreFsh b = ParseTest("MgrMacroTest2.mfsh", out MFsh mfsh);
             Debug.Assert(((MIText)b.Items[0]).Line == "Line 1");
         }
 
         [Fact]
         public void MgrMacroRedirectTest()
         {
-            MIPreFsh b = ParseTest("MgrMacroRedirectTest.mfsh", out MFshManager mgr);
-            Debug.Assert(mgr.TryGetMacro("Macro1", out MIMacro macro1));
+            MIPreFsh b = ParseTest("MgrMacroRedirectTest.mfsh", out MFsh mfsh);
+            Debug.Assert(mfsh.Macros.TryGetMacro("Macro1", out MIMacro macro1));
             Debug.Assert(macro1.Redirect == @"A\B.txt");
             Debug.Assert(macro1.OnceFlag == true);
         }
@@ -73,8 +72,8 @@ namespace Eir.MFSH.Tests
         [Fact]
         public void MgrMacroParametersTest()
         {
-            MIPreFsh b = ParseTest("MgrMacroParametersTest.mfsh", out MFshManager mgr);
-            Debug.Assert(mgr.TryGetMacro("Macro1", out MIMacro macro1));
+            MIPreFsh b = ParseTest("MgrMacroParametersTest.mfsh", out MFsh mfsh);
+            Debug.Assert(mfsh.Macros.TryGetMacro("Macro1", out MIMacro macro1));
             Debug.Assert(macro1.OnceFlag == false);
             Debug.Assert(macro1.Parameters.Count == 3);
             Debug.Assert(macro1.Parameters[0] == "Param1");
@@ -85,7 +84,7 @@ namespace Eir.MFSH.Tests
         [Fact]
         public void MgrApplyTest()
         {
-            MIPreFsh b = ParseTest("MgrApplyTest1.mfsh", out MFshManager mgr);
+            MIPreFsh b = ParseTest("MgrApplyTest1.mfsh", out MFsh mfsh);
             Debug.Assert(b.Items.Count == 3);
 
             MIApply apply1 = (MIApply)b.Items[0];
@@ -107,7 +106,7 @@ namespace Eir.MFSH.Tests
         [Fact]
         public void MgrIncompatibleTest()
         {
-            MIPreFsh b = ParseTest("MgrIncompatibleTest.mfsh", out MFshManager mgr);
+            MIPreFsh b = ParseTest("MgrIncompatibleTest.mfsh", out MFsh mfsh);
             Debug.Assert(b.Items.Count == 1);
 
             MIIncompatible apply1 = (MIIncompatible)b.Items[0];

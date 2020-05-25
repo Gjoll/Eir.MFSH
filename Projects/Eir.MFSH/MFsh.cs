@@ -16,6 +16,7 @@ using Antlr4.Runtime.Tree;
 using Eir.DevTools;
 using Eir.MFSH;
 using System.Text.RegularExpressions;
+using Eir.MFSH.Manager;
 
 namespace Eir.MFSH
 {
@@ -24,7 +25,12 @@ namespace Eir.MFSH
         private const String ClassName = "MFsh";
         private FileCleaner fc = new FileCleaner();
         public bool DebugFlag { get; set; } = false;
-        public MFshManager Mgr { get; }
+        public ParseManager Parser { get; }
+
+        /// <summary>
+        /// Handles storing and retrieving all macros.
+        /// </summary>
+        public MacroManager Macros { get; }
 
         HashSet<String> appliedMacros = new HashSet<string>();
         HashSet<String> incompatibleMacros = new HashSet<string>();
@@ -77,7 +83,8 @@ namespace Eir.MFSH
 
         public MFsh()
         {
-            this.Mgr = new MFshManager(this);
+            this.Parser = new ParseManager(this);
+            this.Macros = new MacroManager(this);
         }
 
         /// <summary>
@@ -121,7 +128,7 @@ namespace Eir.MFSH
             this.ConversionInfo(this.GetType().Name, fcn, $"Loading file {path}");
             String mfshText = File.ReadAllText(path);
 
-            this.Mgr.ParseOne(mfshText, relativePath);
+            this.Parser.ParseOne(mfshText, relativePath);
         }
 
         void LoadDir(String path)
@@ -167,7 +174,7 @@ namespace Eir.MFSH
         {
             if (String.IsNullOrEmpty(this.BaseUrl) == true)
                 throw new Exception($"BaseUrl not set");
-            foreach (MIPreFsh fsh in this.Mgr.Fsh)
+            foreach (MIPreFsh fsh in this.Parser.Fsh)
                 this.Process(fsh);
         }
 
@@ -345,7 +352,7 @@ namespace Eir.MFSH
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.AddRange(variableBlocks);
 
-            if (this.Mgr.TryGetMacro(apply.Name, out MIMacro macro) == false)
+            if (this.Macros.TryGetMacro(apply.Name, out MIMacro macro) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
                 fullMsg += ApplyStackTrace();

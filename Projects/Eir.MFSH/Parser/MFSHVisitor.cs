@@ -19,7 +19,7 @@ namespace Eir.MFSH.Parser
     class MFSHVisitor : MFSHParserBaseVisitor<Object>
     {
         public bool DebugFlag { get; set; } = false;
-        MFshManager mfshMgr;
+        MFsh mfsh;
 
         public Stack<ParseBlock> state = new Stack<ParseBlock>();
         public ParseBlock Current => this.state.Peek();
@@ -37,11 +37,11 @@ namespace Eir.MFSH.Parser
             return s;
         }
 
-        public MFSHVisitor(MFshManager mfshManager,
+        public MFSHVisitor(MFsh mfsh,
             string sourceName)
         {
             this.SourceName = sourceName;
-            this.mfshMgr = mfshManager;
+            this.mfsh = mfsh;
             ParseBlock f = new ParseBlock();
             this.PushState(f);
         }
@@ -208,7 +208,7 @@ namespace Eir.MFSH.Parser
             {
                 case MacroBlock macroBlock:
 
-                    if (this.mfshMgr.TryAddMacro(macroBlock.Macro.Name, macroBlock.Macro) == false)
+                    if (this.mfsh.Macros.TryAddMacro(macroBlock.Macro.Name, macroBlock.Macro) == false)
                     {
                         this.Error(fcn,
                             context.Start.Line.ToString(),
@@ -294,7 +294,7 @@ namespace Eir.MFSH.Parser
             String msg)
         {
             String fullMsg = $"{this.SourceName}, line {location}. {msg}";
-            this.mfshMgr.Mfsh.ConversionError("mfsh", fcn, fullMsg);
+            this.mfsh.ConversionError("mfsh", fcn, fullMsg);
         }
     }
 }

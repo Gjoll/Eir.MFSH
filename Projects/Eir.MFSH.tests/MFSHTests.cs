@@ -43,7 +43,7 @@ namespace Eir.MFSH.Tests
             mfsh.Load(TestFile($"{testFile}.mfsh"));
             mfsh.Process();
             Assert.True(mfsh.HasErrors == false);
-            Assert.True(mfsh.Mgr.Fsh.Count == 1);
+            Assert.True(mfsh.Parser.Fsh.Count == 1);
             String shouldBe = this.GetCleanText(resultsFile);
             Assert.True(mfsh.TryGetText($"{testFile}.fsh", out String actualResults));
             Assert.True(String.Compare(actualResults, shouldBe) == 0);

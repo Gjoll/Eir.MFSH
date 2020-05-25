@@ -17,22 +17,18 @@ using Eir.MFSH.Parser;
 
 namespace Eir.MFSH
 {
-    public class MFshManager
+    public class ParseManager
     {
-        Dictionary<String, MIMacro> Macros = new Dictionary<string, MIMacro>();
-        public List<MIPreFsh> Fsh = new List<MIPreFsh>();
 
-        public bool TryGetMacro(String name, out MIMacro block) => this.Macros.TryGetValue(name, out block);
-        public bool TryAddMacro(String name, MIMacro macro) => this.Macros.TryAdd(name, macro);
+        public List<MIPreFsh> Fsh = new List<MIPreFsh>();
 
         public bool DebugFlag => this.Mfsh.DebugFlag;
 
         public List<String> Paths = new List<string>();
 
-        public String BaseUrl { get; set; }
         public MFsh Mfsh { get; }
 
-        public MFshManager(MFsh mfsh)
+        public ParseManager(MFsh mfsh)
         {
             this.Mfsh = mfsh;
         }
@@ -61,7 +57,7 @@ namespace Eir.MFSH
                 inputLines));
             //parser.ErrorHandler = new BailErrorStrategy();
 
-            Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this, relativePath);
+            Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this.Mfsh, relativePath);
             visitor.DebugFlag = DebugFlag;
             visitor.Visit(parser.document());
             if (visitor.state.Count != 1)
