@@ -43,17 +43,15 @@ namespace Eir.MFSH.Manager
             return true;
         }
 
-        public bool TryGetMacro(List<VariablesBlock> variablesBlock, String name, out MIMacro macro)
+        public bool TryGetMacro(List<String> usings, String name, out MIMacro macro)
         {
             if (TryGetMacro(name, out macro) == true)
                 return true;
-            foreach (VariablesBlock variableBlock in variablesBlock)
+
+            foreach (String use in usings)
             {
-                foreach (String use in variableBlock.Usings)
-                {
-                    if (TryGetMacro($"{use}.{name}", out macro) == true)
-                        return true;
-                }
+                if (TryGetMacro($"{use}.{name}", out macro) == true)
+                    return true;
             }
             return false;
         }

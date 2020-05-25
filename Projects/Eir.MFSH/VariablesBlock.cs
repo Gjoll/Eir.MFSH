@@ -6,8 +6,6 @@ namespace Eir.MFSH
 {
     public class VariablesBlock
     {
-        public List<String> Usings = new List<string>();
-
         Dictionary<String, String> variables =
             new Dictionary<String, string>();
 

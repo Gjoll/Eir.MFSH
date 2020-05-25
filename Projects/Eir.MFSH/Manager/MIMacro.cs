@@ -32,6 +32,11 @@ namespace Eir.MFSH
         public List<String> Parameters = new List<String>();
 
         /// <summary>
+        /// Current use'ings
+        /// </summary>
+        public List<String> Usings = new List<String>();
+
+        /// <summary>
         /// Items in macro
         /// </summary>
         public List<MIBase> Items = new List<MIBase>();

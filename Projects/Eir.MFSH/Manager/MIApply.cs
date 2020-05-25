@@ -15,6 +15,7 @@ namespace Eir.MFSH
     {
         public String Name { get; set; }
         public List<String> Parameters = new List<String>();
+        public List<String> Usings = new List<String>();
 
         public MIApply(String sourceFile,
             Int32 lineNumber) : base(sourceFile, lineNumber)

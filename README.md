@@ -6,13 +6,13 @@ FSH prepropcessor
 
 Open Visual Studio Package Manager Console, and type the following.
 
-dotnet tool install --global Eir.MFSH --version 2.2.2
+dotnet tool install --global Eir.MFSH --version 2.2.3
 
 to upgrade,
 
 dotnet tool uninstall --global Eir.MFSH
 
-dotnet tool install --global Eir.MFSH --version 2.2.2
+dotnet tool install --global Eir.MFSH --version 2.2.3
 
 ## Command Line Option
 
@@ -196,9 +196,7 @@ or you can use the short cut.
 #use Alpha.Beta
 #apply Delta()
 
-If the use is defined outside of a macro or profile, it will be valid for the whole file.
-
-If defined inside a macro or profile it will be valid for the life of that item.
+A use statement is valid for the whole file.
 
 ### FSH Text
 

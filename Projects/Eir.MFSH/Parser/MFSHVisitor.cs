@@ -21,6 +21,7 @@ namespace Eir.MFSH.Parser
         public bool DebugFlag { get; set; } = false;
         MFsh mfsh;
 
+        public List<String> Usings = new List<string>();
         public Stack<ParseBlock> state = new Stack<ParseBlock>();
         public ParseBlock Current => this.state.Peek();
         public string SourceName;
@@ -193,16 +194,15 @@ namespace Eir.MFSH.Parser
                 apply.Parameters.Add(s);
             }
 
+            apply.Usings = this.Usings;
+
             this.Current.Items.Add(apply);
             return null;
         }
 
         public override object VisitUse(MFSHParser.UseContext context)
         {
-            //const String fcn = "VisitUse";
-            MIUse use = new MIUse(this.SourceName, context.Start.Line);
-            use.Name = context.NAME().GetText();
-            this.Current.Items.Add(use);
+            this.Usings.Add(context.NAME().GetText());
             return null;
         }
 
