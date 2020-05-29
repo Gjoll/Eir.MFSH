@@ -400,6 +400,7 @@ namespace Eir.MFSH
                     vbParameters.Add(pName, pValue);
                 }
 
+                vbParameters.Add("%ApplyStackFrame%", this.ApplyStackTrace().Replace("\\", "/"));
                 vbParameters.Add("%ApplySourceFile%", apply.SourceFile.Replace("\\", "/"));
                 vbParameters.Add("%ApplyLineNumber%", apply.LineNumber.ToString());
 

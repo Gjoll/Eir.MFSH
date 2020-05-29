@@ -233,9 +233,10 @@ The following variables are automatically defined.
 | name | meaning |
 | ---- | -------------- |
 
-| %c% | The source file that contained the last #apply command executed. Used for debug tracing.
+| %ApplySourceFile% | The source file that contained the last #apply command executed. Used for debug tracing.
   ApplySourceFile uses unix forward slash directory seperators, not windows backwards slash. |
 | %ApplyLineNumber% | The line number in the file that contained the last #apply command executed. Used for debug tracing |
+| %ApplyStackFrame% | Apply stack trace (all the apply's command leading up to current context) |
 | %BasePath% | The current input file path (relative to the base input directory) |
 | %BaseDir% |  The current input file directory (relative to the base input directory)|
 | %BaseName% |  The current input file name (no directory) |
