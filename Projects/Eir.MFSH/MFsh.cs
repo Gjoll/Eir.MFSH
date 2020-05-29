@@ -213,7 +213,7 @@ namespace Eir.MFSH
             {
                 String baseRPath = fsh.RelativePath;
                 String baseName = Path.GetFileName(baseRPath);
-                String baseNameNoExtension = Path.GetFileName(baseRPath);
+                String baseNameNoExtension = Path.GetFileNameWithoutExtension(baseRPath);
                 String baseDir = Path.GetDirectoryName(baseRPath);
 
                 profileVariables.Set("%BasePath%", baseRPath);
