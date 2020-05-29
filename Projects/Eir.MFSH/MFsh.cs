@@ -213,11 +213,13 @@ namespace Eir.MFSH
             {
                 String baseRPath = fsh.RelativePath;
                 String baseName = Path.GetFileName(baseRPath);
+                String baseNameNoExtension = Path.GetFileName(baseRPath);
                 String baseDir = Path.GetDirectoryName(baseRPath);
 
                 profileVariables.Set("%BasePath%", baseRPath);
                 profileVariables.Set("%BaseDir%", baseDir);
                 profileVariables.Set("%BaseName%", baseName);
+                profileVariables.Set("%BaseNameNoExtension%", baseNameNoExtension);
                 profileVariables.Set("%SavePath%", $"{relativeFshPath}");
             }
             this.variableBlocks = new List<VariablesBlock>();
