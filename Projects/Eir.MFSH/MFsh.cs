@@ -333,6 +333,7 @@ namespace Eir.MFSH
             {
                 sb.Append($"{applyStackFrame.SourceFile}#{applyStackFrame.LineNumber}  ");
             }
+            //Debug.Assert(sb.ToString().Contains("Configure.minc") == false);
             return sb.ToString();
         }
         
