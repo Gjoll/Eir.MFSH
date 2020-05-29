@@ -390,7 +390,6 @@ namespace Eir.MFSH
                 return;
             }
 
-            {
                 VariablesBlock vbParameters = new VariablesBlock();
                 for (Int32 i = 0; i < apply.Parameters.Count; i++)
                 {
@@ -400,18 +399,17 @@ namespace Eir.MFSH
                     vbParameters.Add(pName, pValue);
                 }
 
-                vbParameters.Add("%ApplyStackFrame%", this.ApplyStackTrace().Replace("\\", "/"));
                 vbParameters.Add("%ApplySourceFile%", apply.SourceFile.Replace("\\", "/"));
                 vbParameters.Add("%ApplyLineNumber%", apply.LineNumber.ToString());
 
                 local.Insert(0, vbParameters);
-            }
 
             FileData macroData = fd;
             if (String.IsNullOrEmpty(macro.Redirect) == false)
                 this.GetFileData(macro.Redirect, out macroData);
 
             this.applyStack.Push(apply);                    // this is for stack tracing during errors
+            vbParameters.Add("%ApplyStackFrame%", this.ApplyStackTrace().Replace("\\", "/"));
             this.Process(macro.Items, macroData, local);
             this.applyStack.Pop();
         }
