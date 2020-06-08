@@ -331,7 +331,7 @@ namespace Eir.MFSH
             StringBuilder sb = new StringBuilder();
             foreach (MIApply applyStackFrame in this.applyStack)
             {
-                sb.Append($@"{applyStackFrame.SourceFile}#{applyStackFrame.LineNumber}\\n");
+                sb.Append($@"{applyStackFrame.SourceFile}#{applyStackFrame.LineNumber}\n");
             }
             //Debug.Assert(sb.ToString().Contains("Configure.minc") == false);
             return sb.ToString();
