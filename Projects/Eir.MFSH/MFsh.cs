@@ -93,7 +93,12 @@ namespace Eir.MFSH
         /// Turn on file cleaning. if on, then files in output dir that are not updated will
         /// be deleted.
         /// </summary>
-        public void FileClean(String path, String fileFilter) => this.fc.Add(Path.GetFullPath(path), fileFilter);
+        public void FileClean(String path, String fileFilter)
+        {
+            String fullPath = Path.GetFullPath(path);
+            this.fc.Add(fullPath, fileFilter);
+        }
+
 
         /// <summary>
         /// Only valid after Process() called.
