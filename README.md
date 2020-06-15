@@ -243,4 +243,5 @@ The following variables are automatically defined.
 | %BaseNameNoExtension% |  The current input file name (no directory, no extension) |
 | %SavePath% | The output file path, relative to the base output directory |
 | %Id% | Fsh Id header value. This is the name of the current Profile or Extension|
+| %Title% | Fsh Title header value. This is the title of the current Profile or Extension|
 | %Url% | The name of the current Extension's or Profile's FHIR url. |

@@ -9,7 +9,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType></RepositoryType>
     <RepositoryUrl>https://github.com/Gjoll/Eir.MFSH</RepositoryUrl>
-    <Version>2.5.0</Version>
+    <Version>2.6.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

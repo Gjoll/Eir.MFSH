@@ -326,6 +326,16 @@ namespace Eir.MFSH
                         return;
                     }
                 }
+                {
+                    Regex r = new Regex("^[ \t]*Title[ \t\n]*:[ \t\n]*\"([A-Za-z0-9\\-]+)\"");
+                    Match m = r.Match(text.Line);
+                    if (m.Success == true)
+                    {
+                        String title = m.Groups[1].Value;
+                        this.profileVariables.Set("%Title%", title);
+                        return;
+                    }
+                }
             }
 
             String expandedText = variableBlocks.ReplaceText(text.Line);
