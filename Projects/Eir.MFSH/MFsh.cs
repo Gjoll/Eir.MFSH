@@ -89,6 +89,22 @@ namespace Eir.MFSH
             this.Macros = new MacroManager(this);
         }
 
+        public override void ConversionError(String className, String method, String msg)
+        {
+            base.ConversionError(className, method, msg);
+        }
+
+        public override void ConversionInfo(String className, String method, String msg)
+        {
+            base.ConversionInfo(className, method, msg);
+        }
+
+        public override void ConversionWarn(String className, String method, String msg)
+        {
+            base.ConversionWarn(className, method, msg);
+        }
+
+
         /// <summary>
         /// Turn on file cleaning. if on, then files in output dir that are not updated will
         /// be deleted.
@@ -341,7 +357,7 @@ namespace Eir.MFSH
             //Debug.Assert(sb.ToString().Contains("Configure.minc") == false);
             return sb.ToString();
         }
-        
+
         void StartNewExtension(String extensionName)
         {
             // %Id% defaults to profile unless explicitly set (later)
@@ -409,19 +425,19 @@ namespace Eir.MFSH
                 return;
             }
 
-                VariablesBlock vbParameters = new VariablesBlock();
-                for (Int32 i = 0; i < apply.Parameters.Count; i++)
-                {
-                    String pName = macro.Parameters[i];
-                    String pValue = apply.Parameters[i];
-                    pValue = variableBlocks.ReplaceText(pValue);
-                    vbParameters.Add(pName, pValue);
-                }
+            VariablesBlock vbParameters = new VariablesBlock();
+            for (Int32 i = 0; i < apply.Parameters.Count; i++)
+            {
+                String pName = macro.Parameters[i];
+                String pValue = apply.Parameters[i];
+                pValue = variableBlocks.ReplaceText(pValue);
+                vbParameters.Add(pName, pValue);
+            }
 
-                vbParameters.Add("%ApplySourceFile%", apply.SourceFile.Replace("\\", "/"));
-                vbParameters.Add("%ApplyLineNumber%", apply.LineNumber.ToString());
+            vbParameters.Add("%ApplySourceFile%", apply.SourceFile.Replace("\\", "/"));
+            vbParameters.Add("%ApplyLineNumber%", apply.LineNumber.ToString());
 
-                local.Insert(0, vbParameters);
+            local.Insert(0, vbParameters);
 
             FileData macroData = fd;
             if (String.IsNullOrEmpty(macro.Redirect) == false)
@@ -475,6 +491,10 @@ namespace Eir.MFSH
                 if (text.Length == 0)
                     return;
 
+                // Mark file as updated. If file cleaning on, this will stop file
+                // from being deleted during clean phase.
+                this.fc.Mark(outputPath);
+
                 String dir = Path.GetDirectoryName(outputPath);
                 if (Directory.Exists(dir) == false)
                     Directory.CreateDirectory(dir);
@@ -483,10 +503,6 @@ namespace Eir.MFSH
                     this.ConversionInfo(this.GetType().Name,
                         fcn,
                         $"Saving {Path.GetFileName(outputPath)}");
-
-                // Mark file as updated. If file cleaning on, this will stop file
-                // from being deleted during clean phase.
-                this.fc.Mark(outputPath);
             }
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
