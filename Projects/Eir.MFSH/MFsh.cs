@@ -290,6 +290,11 @@ namespace Eir.MFSH
             }
         }
 
+        Regex rTitle = new Regex("^[ \t]*Title[ \t\n]*:[ \t\n]*\"([^\"]+)\"");
+        Regex rProfile = new Regex("^[ \t]*Profile[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+        Regex rExtension = new Regex("^[ \t]*Extension[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+        Regex rId = new Regex("^[ \t]*Id[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+
         void ProcessText(MIText text,
             FileData fd,
             List<VariablesBlock> variableBlocks)
@@ -297,8 +302,7 @@ namespace Eir.MFSH
             void ProcessHeader()
             {
                 {
-                    Regex r = new Regex("^[ \t]*Profile[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
-                    Match m = r.Match(text.Line);
+                    Match m = rProfile.Match(text.Line);
                     if (m.Success == true)
                     {
                         String profileName = m.Groups[1].Value;
@@ -307,8 +311,7 @@ namespace Eir.MFSH
                     }
                 }
                 {
-                    Regex r = new Regex("^[ \t]*Extension[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
-                    Match m = r.Match(text.Line);
+                    Match m = rExtension.Match(text.Line);
                     if (m.Success == true)
                     {
                         String extensionName = m.Groups[1].Value;
@@ -317,8 +320,7 @@ namespace Eir.MFSH
                     }
                 }
                 {
-                    Regex r = new Regex("^[ \t]*Id[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
-                    Match m = r.Match(text.Line);
+                    Match m = rId.Match(text.Line);
                     if (m.Success == true)
                     {
                         String idName = m.Groups[1].Value;
@@ -327,8 +329,7 @@ namespace Eir.MFSH
                     }
                 }
                 {
-                    Regex r = new Regex("^[ \t]*Title[ \t\n]*:[ \t\n]*\"([A-Za-z0-9\\-]+)\"");
-                    Match m = r.Match(text.Line);
+                    Match m = rTitle.Match(text.Line);
                     if (m.Success == true)
                     {
                         String title = m.Groups[1].Value;
