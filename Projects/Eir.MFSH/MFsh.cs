@@ -290,10 +290,12 @@ namespace Eir.MFSH
             }
         }
 
-        Regex rTitle = new Regex("^[ \t]*Title[ \t\n]*:[ \t\n]*\"([^\"]+)\"");
         Regex rProfile = new Regex("^[ \t]*Profile[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+        Regex rCodeSystem = new Regex("^[ \t]*CodeSystem[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+        Regex rValueSet = new Regex("^[ \t]*ValueSet[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
         Regex rExtension = new Regex("^[ \t]*Extension[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
         Regex rId = new Regex("^[ \t]*Id[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+        Regex rTitle = new Regex("^[ \t]*Title[ \t\n]*:[ \t\n]*\"([^\"]+)\"");
 
         void ProcessText(MIText text,
             FileData fd,
@@ -307,6 +309,24 @@ namespace Eir.MFSH
                     {
                         String profileName = m.Groups[1].Value;
                         StartNewProfile(profileName);
+                        return;
+                    }
+                }
+                {
+                    Match m = rValueSet.Match(text.Line);
+                    if (m.Success == true)
+                    {
+                        String vsName = m.Groups[1].Value;
+                        this.profileVariables.Set("%Id%", vsName);
+                        return;
+                    }
+                }
+                {
+                    Match m = rCodeSystem.Match(text.Line);
+                    if (m.Success == true)
+                    {
+                        String csName = m.Groups[1].Value;
+                        this.profileVariables.Set("%Id%", csName);
                         return;
                     }
                 }
