@@ -93,6 +93,9 @@ namespace Eir.MFSH
             foreach (String mfshPath in this.options.mfshPaths)
                 this.mfsh.Load(mfshPath);
 
+            if (this.mfsh.HasErrors == false)
+                return false;
+
             this.mfsh.Process();
             this.mfsh.SaveAll();
 
