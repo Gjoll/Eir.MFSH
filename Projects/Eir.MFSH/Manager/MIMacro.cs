@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Text;
 using Eir.MFSH;
@@ -13,9 +14,20 @@ namespace Eir.MFSH
     public class MIMacro : MIBase
     {
         /// <summary>
-        /// If set, this macro is onlyh instantiated once per profile.
+        /// If set, this macro is only instantiated once per profile.
         /// </summary>
         public bool OnceFlag { get; set; }
+
+        /// <summary>
+        /// If set, this macro has been applied.
+        /// </summary>
+        public bool AppliedFlag { get; set; } = false;
+
+        /// <summary>
+        /// If set, this macro is only instantiated once.
+        /// </summary>
+        public bool SingleFlag { get; set; }
+
         /// <summary>
         /// Output path if redirection set
         /// </summary>

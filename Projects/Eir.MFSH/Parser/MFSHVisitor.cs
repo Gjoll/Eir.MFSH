@@ -154,14 +154,15 @@ namespace Eir.MFSH.Parser
             if (redirectContext != null)
                 macroBlock.Macro.Redirect = (String)(this.Visit(redirectContext.singleString()));
 
+            macroBlock.Macro.SingleFlag = (context.SINGLE() != null);
             macroBlock.Macro.OnceFlag = (context.ONCE() != null);
             if (
-                (macroBlock.Macro.OnceFlag == true) &&
+                (macroBlock.Macro.OnceFlag || macroBlock.Macro.SingleFlag) &&
                 (macroBlock.Macro.Parameters.Count > 0))
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),
-                    $"Error adding macro '{macroBlock.Macro.Name}'. OnceFlag can not be used with macro parameters");
+                    $"Error adding macro '{macroBlock.Macro.Name}'. Single/Once can not be used with macro parameters");
                 return null;
             }
 

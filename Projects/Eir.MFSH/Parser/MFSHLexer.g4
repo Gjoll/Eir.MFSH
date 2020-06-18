@@ -17,6 +17,7 @@ END: 'end';
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
 ONCE: 'once';
+SINGLE: 'single';
 USE: 'use';
 
 STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' . )* '"';

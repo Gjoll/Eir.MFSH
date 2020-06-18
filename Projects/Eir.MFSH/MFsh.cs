@@ -389,28 +389,26 @@ namespace Eir.MFSH
             return sb.ToString();
         }
 
-        void StartNewExtension(String extensionName)
+        void StartNewItem(String name)
         {
             // %Id% defaults to profile unless explicitly set (later)
-            this.profileVariables.Set("%Id%", extensionName);
+            this.profileVariables.Set("%Id%", name);
 
-            String profileUrl = $"{this.BaseUrl}/StructureDefinition/{extensionName}";
+            String profileUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
             this.profileVariables.Set("%Url%", profileUrl);
 
             this.appliedMacros.Clear();
             this.incompatibleMacros.Clear();
         }
 
+        void StartNewExtension(String extensionName)
+        {
+            StartNewItem(extensionName);
+        }
+
         void StartNewProfile(String profileName)
         {
-            // %Id% defaults to profile unless explicitly set (later)
-            this.profileVariables.Set("%Id%", profileName);
-
-            String profileUrl = $"{this.BaseUrl}/StructureDefinition/{profileName}";
-            this.profileVariables.Set("%Url%", profileUrl);
-
-            this.appliedMacros.Clear();
-            this.incompatibleMacros.Clear();
+            StartNewItem(profileName);
         }
 
         void ProcessApply(MIApply apply,
@@ -438,6 +436,10 @@ namespace Eir.MFSH
                 return;
             }
 
+            if (macro.SingleFlag && macro.AppliedFlag)
+                return;
+
+            macro.AppliedFlag = true;
             bool firstFlag = false;
             if (this.appliedMacros.Contains(apply.Name) == false)
             {

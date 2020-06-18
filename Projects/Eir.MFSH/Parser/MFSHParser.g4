@@ -20,7 +20,7 @@ mfshCmd: apply | end | incompatible | macro | use ;
 apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 incompatible: INCOMPATIBLE NAME ;
-macro: MACRO ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
+macro: MACRO SINGLE? ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
 redirect: GT singleString ;
 use: USE NAME ;
 
