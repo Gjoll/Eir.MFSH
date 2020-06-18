@@ -207,9 +207,11 @@ namespace Eir.MFSH
         /// create a new one.
         /// </summary>
         /// <returns>true if new one created</returns>
-        bool GetFileData(String relativePath, out FileData fd)
+        bool GetFileData(String relativePath,
+            List<VariablesBlock> variableBlocks,
+            out FileData fd)
         {
-            relativePath = this.variableBlocks.ReplaceText(relativePath);
+            relativePath = variableBlocks.ReplaceText(relativePath);
             if (this.FileItems.TryGetValue(relativePath, out fd))
                 return false;
             fd = new FileData();
@@ -247,7 +249,7 @@ namespace Eir.MFSH
             variableBlocks.Insert(0, this.GlobalVars);
             variableBlocks.Insert(0, profileVariables);
 
-            if (GetFileData(relativeFshPath, out FileData fd) == false)
+            if (GetFileData(relativeFshPath, this.variableBlocks, out FileData fd) == false)
             {
                 this.ConversionError(ClassName, fcn, $"Output file {fd.RelativePath} already exists!");
                 return;
@@ -458,6 +460,8 @@ namespace Eir.MFSH
                 return;
             }
 
+            local.Insert(0, macro.MacroVariables);
+            Debug.Assert(apply.Name != "CSBuild.MacroDefineInterface");
             VariablesBlock vbParameters = new VariablesBlock();
             for (Int32 i = 0; i < apply.Parameters.Count; i++)
             {
@@ -474,7 +478,7 @@ namespace Eir.MFSH
 
             FileData macroData = fd;
             if (String.IsNullOrEmpty(macro.Redirect) == false)
-                this.GetFileData(macro.Redirect, out macroData);
+                this.GetFileData(macro.Redirect, local, out macroData);
 
             this.applyStack.Push(apply);                    // this is for stack tracing during errors
             vbParameters.Add("%ApplyStackFrame%", this.ApplyShortStackTrace().Replace("\\", "/"));

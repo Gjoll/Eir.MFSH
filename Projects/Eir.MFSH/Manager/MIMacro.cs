@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using Eir.MFSH;
 
@@ -13,6 +14,11 @@ namespace Eir.MFSH
     [DebuggerDisplay("Macro '{Name}'")]
     public class MIMacro : MIBase
     {
+        /// <summary>
+        /// Variables that are local to this macro
+        /// </summary>
+        public VariablesBlock MacroVariables { get; } = new VariablesBlock();
+
         /// <summary>
         /// If set, this macro is only instantiated once per profile.
         /// </summary>
@@ -36,12 +42,12 @@ namespace Eir.MFSH
         /// <summary>
         /// Name of macro
         /// </summary>
-        public String Name { get; set; }
+        public String Name { get; }
 
         /// <summary>
         /// Macro parameters
         /// </summary>
-        public List<String> Parameters = new List<String>();
+        public List<String> Parameters { get; } = new List<String>();
 
         /// <summary>
         /// Current use'ings
@@ -53,8 +59,22 @@ namespace Eir.MFSH
         /// </summary>
         public List<MIBase> Items = new List<MIBase>();
         public MIMacro(String sourceFile,
-            Int32 lineNumber) : base(sourceFile, lineNumber)
+            Int32 lineNumber,
+            String macroName,
+            IEnumerable<String> parameters) : base(sourceFile, lineNumber)
         {
+            this.Name = macroName;
+            this.Parameters.AddRange(parameters);
+            String macroRPath = sourceFile;
+            String macroFileNameNoExtension = Path.GetFileNameWithoutExtension(macroRPath);
+            String macroFileName = Path.GetFileName(macroRPath);
+            String macroDir = Path.GetDirectoryName(macroRPath);
+
+            this.MacroVariables.Set("%MacroName%", macroName);
+            this.MacroVariables.Set("%MacroPath%", macroRPath);
+            this.MacroVariables.Set("%MacroDir%", macroDir);
+            this.MacroVariables.Set("%MacroFileName%", macroFileName);
+            this.MacroVariables.Set("%MacroFileNameNoExtension%", macroFileNameNoExtension);
         }
     }
 }

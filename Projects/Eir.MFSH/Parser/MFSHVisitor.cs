@@ -142,14 +142,16 @@ namespace Eir.MFSH.Parser
         {
             const String fcn = "VisitMacro";
             TraceMsg(context, fcn);
-            MacroBlock macroBlock = new MacroBlock(this.SourceName, context.Start.Line);
-            this.PushState(macroBlock);
             String[] names = context
                 .NAME()
                 .Select((a) => a.GetText())
                 .ToArray();
-            macroBlock.Macro.Name = names[0];
-            macroBlock.Macro.Parameters.AddRange(names.Skip(1));
+            MacroBlock macroBlock = new MacroBlock(this.SourceName,
+                context.Start.Line,
+                names[0],
+                names.Skip(1));
+            this.PushState(macroBlock);
+
             var redirectContext = context.redirect();
             if (redirectContext != null)
                 macroBlock.Macro.Redirect = (String)(this.Visit(redirectContext.singleString()));

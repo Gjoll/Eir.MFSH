@@ -243,6 +243,13 @@ The following variables are automatically defined.
 | %BaseDir% |  The current input file directory (relative to the base input directory)|
 | %BaseName% |  The current input file name (no directory) |
 | %BaseNameNoExtension% |  The current input file name (no directory, no extension) |
+
+| %MacroName% | The name of the current macro |
+| %MacroPath% | The path to the file containing the current macro |
+| %MacroDir% | The name of the directory containing the current macro file |
+| %MacroFileName% | The file name of the current macro file |
+| %MacroFileNameNoExtension% | The file name of the current macro file |
+
 | %SavePath% | The output file path, relative to the base output directory |
 | %Id% | Fsh Id header value. This is the name of the current Profile or Extension|
 | %Title% | Fsh Title header value. This is the title of the current Profile or Extension|
