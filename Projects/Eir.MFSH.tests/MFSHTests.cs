@@ -41,12 +41,24 @@ namespace Eir.MFSH.Tests
             MFsh mfsh = CreateMfsh();
             mfsh.TraceLogging(true, true, true);
             mfsh.Load(TestFile($"{testFile}.mfsh"));
+            CheckErrors(mfsh);
             mfsh.Process();
-            Assert.True(mfsh.HasErrors == false);
+            CheckErrors(mfsh);
             Assert.True(mfsh.Parser.Fsh.Count == 1);
             String shouldBe = this.GetCleanText(resultsFile);
             Assert.True(mfsh.TryGetText($"{testFile}.fsh", out String actualResults));
             Assert.True(String.Compare(actualResults, shouldBe) == 0);
+        }
+
+        void CheckErrors(MFsh mfsh)
+        {
+            if (mfsh.HasErrors == false)
+                return;
+
+            StringBuilder sb = new StringBuilder();
+            mfsh.FormatErrorMessages(sb);
+            Trace.WriteLine(sb.ToString());
+            Assert.True(false);
         }
 
         [Fact]
@@ -56,7 +68,9 @@ namespace Eir.MFSH.Tests
                 MFsh mfsh = CreateMfsh();
                 mfsh.GlobalVars.Add("CVar", "abc");
                 mfsh.Load(TestFile("MFshConditional1.mfsh"));
+                CheckErrors(mfsh);
                 mfsh.Process();
+                CheckErrors(mfsh);
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Yes\n");
@@ -68,7 +82,9 @@ namespace Eir.MFSH.Tests
                 MFsh mfsh = CreateMfsh();
                 mfsh.GlobalVars.Add("CVar", "def");
                 mfsh.Load(TestFile("MFshConditional1.mfsh"));
+                CheckErrors(mfsh);
                 mfsh.Process();
+                CheckErrors(mfsh);
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("No\n");
@@ -83,8 +99,11 @@ namespace Eir.MFSH.Tests
             {
                 MFsh mfsh = CreateMfsh();
                 mfsh.Load(TestFile("MFshMacroTest1A.mfsh"));
+                CheckErrors(mfsh);
                 mfsh.Load(TestFile("MFshMacroTest1B.mfsh"));
+                CheckErrors(mfsh);
                 mfsh.Process();
+                CheckErrors(mfsh);
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Line 1\n");
@@ -97,8 +116,11 @@ namespace Eir.MFSH.Tests
             {
                 MFsh mfsh = CreateMfsh();
                 mfsh.Load(TestFile("MFshMacroTest1A.mfsh"));
+                CheckErrors(mfsh);
                 mfsh.Load(TestFile("MFshMacroTest1C.mfsh"));
+                CheckErrors(mfsh);
                 mfsh.Process();
+                CheckErrors(mfsh);
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Line 1\n");
@@ -114,7 +136,9 @@ namespace Eir.MFSH.Tests
         {
             MFsh mfsh = CreateMfsh();
             mfsh.Load(TestFile("MFshMacroTest2.mfsh"));
+            CheckErrors(mfsh);
             mfsh.Process();
+            CheckErrors(mfsh);
 
             StringBuilder sb = new StringBuilder();
             sb.Append("Line one\n");
@@ -130,7 +154,9 @@ namespace Eir.MFSH.Tests
         {
             MFsh mfsh = CreateMfsh();
             mfsh.Load(TestFile("MFshUseTest1.mfsh"));
+            CheckErrors(mfsh);
             mfsh.Process();
+            CheckErrors(mfsh);
 
             StringBuilder sb = new StringBuilder();
             sb.Append("\n");

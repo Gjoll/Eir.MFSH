@@ -39,16 +39,14 @@ namespace Eir.MFSH
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
 
-            Parser.MFSHLexerLocal lexer = new Parser.MFSHLexerLocal(new AntlrInputStream(fshText));
-            lexer.DebugFlag = DebugFlag;
+            Parser.MFSHLexer lexer = new Parser.MFSHLexer(new AntlrInputStream(fshText));
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new MFSHErrorListenerLexer(this.Mfsh,
                 "MFsh Lexer",
                 relativePath,
                 inputLines));
 
-            Parser.MFSHParserLocal parser = new Parser.MFSHParserLocal(new CommonTokenStream(lexer));
-            parser.DebugFlag = DebugFlag;
+            Parser.MFSHParser parser = new Parser.MFSHParser(new CommonTokenStream(lexer));
             parser.Trace = false;
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new MFSHErrorListenerParser(this.Mfsh,

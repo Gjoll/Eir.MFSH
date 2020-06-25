@@ -28,7 +28,7 @@ use: USE NAME ;
 
 if: IF condition ;
 elseIf: ELSE IF condition ;
-else: ELSE condition ;
+else: ELSE ;
 
 condition: conditionStrEq | conditionNumEq | conditionNumLt | conditionNumLe | conditionNumGt | conditionNumGe ;
 conditionStrEq: anyString EQ anyString;
