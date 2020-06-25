@@ -50,6 +50,34 @@ namespace Eir.MFSH.Tests
         }
 
         [Fact]
+        public void ConditionalTest1()
+        {
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.GlobalVars.Add("CVar", "abc");
+                mfsh.Load(TestFile("MFshConditional1.mfsh"));
+                mfsh.Process();
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Yes\n");
+                Assert.True(mfsh.TryGetText("MFshConditional1.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.GlobalVars.Add("CVar", "def");
+                mfsh.Load(TestFile("MFshConditional1.mfsh"));
+                mfsh.Process();
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("No\n");
+                Assert.True(mfsh.TryGetText("MFshConditional1.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+        }
+
+        [Fact]
         public void MacroTest1()
         {
             {
@@ -117,7 +145,7 @@ namespace Eir.MFSH.Tests
             Assert.True(mfsh.TryGetText("MFshUseTest1.fsh", out String fsh));
             Assert.True(fsh == sb.ToString());
         }
-        
+
         [Fact]
         public void MfshExpandVar1() => ParseTest("MfshExpandVar1", "MfshExpandVar1.results");
 

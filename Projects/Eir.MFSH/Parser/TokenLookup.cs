@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace Eir.MFSH.Parser
@@ -29,10 +30,26 @@ namespace Eir.MFSH.Parser
                     this.tokenFile);
                 foreach (String token in File.ReadAllLines(tokenPath))
                 {
-                    String[] parts = token.Split('=');
-                    Int32 tNum = Int32.Parse(parts[1]);
+                    // If token name contains '=', then name is put in single quotes, otherwise not.
+                    String tName;
+                    String tNumStr;
+                    String t = token.Trim();
+                    if (t[0] == '\'')
+                    {
+                        Int32 index = t.IndexOf('\'', 2);
+                        tName = t.Substring(1, index - 1);
+                        tNumStr = t.Substring(t.IndexOf('=', index) + 1);
+                    }
+                    else
+                    {
+                        String[] parts = t.Split('=');
+                        tName = parts[0];
+                        tNumStr = parts[1];
+                    }
+
+                    Int32 tNum = Int32.Parse(tNumStr);
                     if (!this.tokenDict.ContainsKey(tNum))
-                        this.tokenDict.Add(tNum, parts[0]);
+                        this.tokenDict.Add(tNum, tName);
                 }
             }
 

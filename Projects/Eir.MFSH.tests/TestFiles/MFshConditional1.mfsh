@@ -1,0 +1,5 @@
+#if "CVar" == "abc"
+Yes
+#else
+No
+#end

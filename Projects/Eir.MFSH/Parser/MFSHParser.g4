@@ -6,16 +6,18 @@ document:
     ;
 
 command: textA | textB | textC | textD | tickText | mfshExit | mfshCmds;
+
 textA: TEXTA ;
 textB: TEXTB ;
 textC: TEXTC ;
 textD: TEXTD ;
 tickText: TICKTEXT ;
+
 mfshExit: MFSHExit;
 
 mfshCmds: MFSH mfshCmd* ;
 
-mfshCmd: apply | end | if | incompatible | macro | use ;
+mfshCmd: apply | end | if | elseIf | else | incompatible | macro | use ;
 
 apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
@@ -24,17 +26,19 @@ macro: MACRO SINGLE? ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
 redirect: GT singleString ;
 use: USE NAME ;
 
-if: IF condition elseIf* else? ;
-elseIf: ELSE if condition ;
+if: IF condition ;
+elseIf: ELSE IF condition ;
 else: ELSE condition ;
-condition: conditionEq | conditionLt | conditionLe | conditionGt | conditionGe ;
 
-conditionEq: NAME EQ conditionValue ;
-conditionLt: NAME LT conditionValue ;
-conditionLe: NAME LE conditionValue ;
-conditionGt: NAME GT conditionValue ;
-conditionGe: NAME GE conditionValue ;
-conditionValue: NUMBER | NAME | anyString ;
+condition: conditionStrEq | conditionNumEq | conditionNumLt | conditionNumLe | conditionNumGt | conditionNumGe ;
+conditionStrEq: anyString EQ anyString;
+conditionNumEq: conditionValueNum EQ conditionValueNum;
+conditionNumLt: conditionValueNum LT conditionValueNum ;
+conditionNumLe: conditionValueNum LE conditionValueNum ;
+conditionNumGt: conditionValueNum GT conditionValueNum ;
+conditionNumGe: conditionValueNum GE conditionValueNum ;
+conditionValueNum: NAME | NUMBER ;
+conditionValueStr: anyString ;
 
 anyString:  singleString | multiLineString;
 multiLineString:  MULTILINE_STRING ;

@@ -153,41 +153,53 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCondition([NotNull] MFSHParser.ConditionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.conditionEq"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionStrEq"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitConditionEq([NotNull] MFSHParser.ConditionEqContext context);
+	Result VisitConditionStrEq([NotNull] MFSHParser.ConditionStrEqContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.conditionLt"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionNumEq"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitConditionLt([NotNull] MFSHParser.ConditionLtContext context);
+	Result VisitConditionNumEq([NotNull] MFSHParser.ConditionNumEqContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.conditionLe"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionNumLt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitConditionLe([NotNull] MFSHParser.ConditionLeContext context);
+	Result VisitConditionNumLt([NotNull] MFSHParser.ConditionNumLtContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.conditionGt"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionNumLe"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitConditionGt([NotNull] MFSHParser.ConditionGtContext context);
+	Result VisitConditionNumLe([NotNull] MFSHParser.ConditionNumLeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.conditionGe"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionNumGt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitConditionGe([NotNull] MFSHParser.ConditionGeContext context);
+	Result VisitConditionNumGt([NotNull] MFSHParser.ConditionNumGtContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.conditionValue"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionNumGe"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitConditionValue([NotNull] MFSHParser.ConditionValueContext context);
+	Result VisitConditionNumGe([NotNull] MFSHParser.ConditionNumGeContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionValueNum"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConditionValueNum([NotNull] MFSHParser.ConditionValueNumContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionValueStr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConditionValueStr([NotNull] MFSHParser.ConditionValueStrContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.anyString"/>.
 	/// </summary>

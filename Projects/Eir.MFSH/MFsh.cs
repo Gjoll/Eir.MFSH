@@ -286,6 +286,11 @@ namespace Eir.MFSH
                         i += 1;
                         break;
 
+                    case MIConditional conditional:
+                        this.ProcessConditional(conditional, fd, variableBlocks);
+                        i += 1;
+                        break;
+
                     default:
                         throw new Exception("Internal error. Unknown MIXXX type");
                 }
@@ -461,7 +466,6 @@ namespace Eir.MFSH
             }
 
             local.Insert(0, macro.MacroVariables);
-            Debug.Assert(apply.Name != "CSBuild.MacroDefineInterface");
             VariablesBlock vbParameters = new VariablesBlock();
             for (Int32 i = 0; i < apply.Parameters.Count; i++)
             {
@@ -485,10 +489,24 @@ namespace Eir.MFSH
             this.Process(macro.Items, macroData, local);
             this.applyStack.Pop();
         }
-
-        void ProcessIncompatible(MIIncompatible incompatible,
+        
+        void ProcessConditional(MIConditional conditional,
             FileData fd,
             List<VariablesBlock> variableBlocks)
+        {
+            foreach (MIConditional.Condition c in conditional.Conditions)
+            {
+                if (c.State.IsTrue(variableBlocks))
+                {
+                    this.Process(c.Items, fd, variableBlocks);
+                    return;
+                }
+            }
+        }
+
+        void ProcessIncompatible(MIIncompatible incompatible,
+        FileData fd,
+        List<VariablesBlock> variableBlocks)
         {
             const String fcn = "ProcessIncompatible";
 

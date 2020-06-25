@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Dfa;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Eir.MFSH;
 using Microsoft.VisualBasic.CompilerServices;
@@ -23,14 +24,10 @@ namespace Eir.MFSH.Parser
 
         public List<String> Usings = new List<string>();
         public Stack<ParseBlock> state = new Stack<ParseBlock>();
-        public ParseBlock Current => this.state.Peek();
         public string SourceName;
 
-        void PushState(ParseBlock s)
-        {
-            this.state.Push(s);
-        }
-
+        public ParseBlock Current => this.state.Peek();
+        void PushState(ParseBlock s) => this.state.Push(s);
         ParseBlock PopState()
         {
             ParseBlock s = this.state.Peek();
@@ -209,6 +206,52 @@ namespace Eir.MFSH.Parser
             return null;
         }
 
+        public override Object VisitIf([NotNull] MFSHParser.IfContext context)
+        {
+            const String fcn = "VisitIf";
+            TraceMsg(context, fcn);
+            ConditionalBlock conditionalBlock = new ConditionalBlock(this.SourceName,
+                context.Start.Line);
+            this.PushState(conditionalBlock);
+            MIConditional.Condition condition = new MIConditional.Condition();
+            condition.State = (MIConditional.CState)this.Visit(context.condition());
+            conditionalBlock.AddCondition(condition);
+            return null;
+        }
+
+        public override Object VisitElse([NotNull] MFSHParser.ElseContext context)
+        {
+            const String fcn = "VisitElse";
+            TraceMsg(context, fcn);
+            ConditionalBlock conditionalBlock = this.Current as ConditionalBlock;
+            if (conditionalBlock == null)
+            {
+                this.Error(fcn,
+                    context.Start.Line.ToString(),
+                    $"Error #else found with no matching?");
+            }
+            MIConditional.Condition condition = new MIConditional.Condition();
+            condition.State = new MIConditional.CStateTrue();
+            conditionalBlock.AddCondition(condition);
+            return null;
+        }
+
+        public override Object VisitElseIf([NotNull] MFSHParser.ElseIfContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Object VisitConditionStrEq([NotNull] MFSHParser.ConditionStrEqContext context)
+        {
+            MFSHParser.AnyStringContext[] values = context.anyString();
+            MIConditional.CStateIsString retVal = new MIConditional.CStateIsString
+            {
+                Lhs = values[0].GetText(),
+                Rhs = values[1].GetText()
+            };
+            return retVal;
+        }
+
         public override object VisitEnd(MFSHParser.EndContext context)
         {
             const String fcn = "VisitEnd";
@@ -227,6 +270,10 @@ namespace Eir.MFSH.Parser
                     }
                     break;
 
+                case ConditionalBlock conditionalBlock:
+                    this.Current.Items.Add(conditionalBlock.Conditional);
+                    break;
+
                 default:
                     Error(fcn,
                         context.Start.Line.ToString(),
@@ -235,6 +282,7 @@ namespace Eir.MFSH.Parser
             }
             return null;
         }
+
 
         public override object VisitAnyString(MFSHParser.AnyStringContext context)
         {
