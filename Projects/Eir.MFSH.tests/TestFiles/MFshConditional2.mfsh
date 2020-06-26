@@ -1,0 +1,7 @@
+#if "CVar" == "abc"
+One
+#else if "CVar" == "def"
+Two
+#else
+Three
+#end

@@ -228,7 +228,7 @@ namespace Eir.MFSH.Parser
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),
-                    $"Error #else found with no matching?");
+                    $"Error '#else' found with no starting '#if'");
             }
             MIConditional.Condition condition = new MIConditional.Condition();
             condition.State = new MIConditional.CStateTrue();
@@ -238,7 +238,20 @@ namespace Eir.MFSH.Parser
 
         public override Object VisitElseIf([NotNull] MFSHParser.ElseIfContext context)
         {
-            throw new NotImplementedException();
+            const String fcn = "VisitElseIf";
+            TraceMsg(context, fcn);
+            ConditionalBlock conditionalBlock = this.Current as ConditionalBlock;
+            if (conditionalBlock == null)
+            {
+                this.Error(fcn,
+                    context.Start.Line.ToString(),
+                    $"Error '#else if' found with no starting '#if'");
+            }
+
+            MIConditional.Condition condition = new MIConditional.Condition();
+            condition.State = (MIConditional.CState)this.Visit(context.condition());
+            conditionalBlock.AddCondition(condition);
+            return null;
         }
 
         public override Object VisitConditionStrEq([NotNull] MFSHParser.ConditionStrEqContext context)
@@ -250,6 +263,56 @@ namespace Eir.MFSH.Parser
                 Rhs = values[1].GetText()
             };
             return retVal;
+        }
+
+        public override Object VisitConditionNumEq([NotNull] MFSHParser.ConditionNumEqContext context)
+        {
+            MFSHParser.ConditionValueNumContext[] values = context.conditionValueNum();
+            return new MIConditional.CStateNumEq
+            {
+                Lhs = values[0].GetText(),
+                Rhs = values[1].GetText()
+            };
+        }
+
+        public override Object VisitConditionNumLt([NotNull] MFSHParser.ConditionNumLtContext context)
+        {
+            MFSHParser.ConditionValueNumContext[] values = context.conditionValueNum();
+            return new MIConditional.CStateNumLt
+            {
+                Lhs = values[0].GetText(),
+                Rhs = values[1].GetText()
+            };
+        }
+
+        public override Object VisitConditionNumLe([NotNull] MFSHParser.ConditionNumLeContext context)
+        {
+            MFSHParser.ConditionValueNumContext[] values = context.conditionValueNum();
+            return new MIConditional.CStateNumLe
+            {
+                Lhs = values[0].GetText(),
+                Rhs = values[1].GetText()
+            };
+        }
+
+        public override Object VisitConditionNumGt([NotNull] MFSHParser.ConditionNumGtContext context)
+        {
+            MFSHParser.ConditionValueNumContext[] values = context.conditionValueNum();
+            return new MIConditional.CStateNumGt
+            {
+                Lhs = values[0].GetText(),
+                Rhs = values[1].GetText()
+            };
+        }
+
+        public override Object VisitConditionNumGe([NotNull] MFSHParser.ConditionNumGeContext context)
+        {
+            MFSHParser.ConditionValueNumContext[] values = context.conditionValueNum();
+            return new MIConditional.CStateNumGe
+            {
+                Lhs = values[0].GetText(),
+                Rhs = values[1].GetText()
+            };
         }
 
         public override object VisitEnd(MFSHParser.EndContext context)

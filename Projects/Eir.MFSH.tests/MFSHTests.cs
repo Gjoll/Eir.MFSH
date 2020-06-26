@@ -94,6 +94,80 @@ namespace Eir.MFSH.Tests
         }
 
         [Fact]
+        public void ConditionalTest2()
+        {
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.GlobalVars.Add("CVar", "abc");
+                mfsh.Load(TestFile("MFshConditional2.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Process();
+                CheckErrors(mfsh);
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("One\n");
+                Assert.True(mfsh.TryGetText("MFshConditional2.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.GlobalVars.Add("CVar", "def");
+                mfsh.Load(TestFile("MFshConditional2.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Process();
+                CheckErrors(mfsh);
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Two\n");
+                Assert.True(mfsh.TryGetText("MFshConditional2.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+
+
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.GlobalVars.Add("CVar", "ghi");
+                mfsh.Load(TestFile("MFshConditional2.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Process();
+                CheckErrors(mfsh);
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Three\n");
+                Assert.True(mfsh.TryGetText("MFshConditional2.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+        }
+
+        [Fact]
+        public void ConditionalTest3()
+        {
+            void Test(String val, String result)
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.GlobalVars.Add("CVar", val);
+                mfsh.Load(TestFile("MFshConditional3.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Process();
+                CheckErrors(mfsh);
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append($"{result}\n");
+                Assert.True(mfsh.TryGetText("MFshConditional3.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+            Test("4", "LT");
+            Test("9", "LE");
+            Test("8", "LE");
+
+            Test("16", "GT");
+            Test("12", "GE");
+            Test("14", "GE");
+        }
+
+
+        [Fact]
         public void MacroTest1()
         {
             {

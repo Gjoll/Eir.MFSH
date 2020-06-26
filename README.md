@@ -254,3 +254,59 @@ The following variables are automatically defined.
 | %Id% | Fsh Id header value. This is the name of the current Profile or Extension|
 | %Title% | Fsh Title header value. This is the title of the current Profile or Extension|
 | %Url% | The name of the current Extension's or Profile's FHIR url. |
+
+
+
+
+
+
+
+
+
+
+#### #if
+
+Con ditionally include element.
+The syntax of the command is
+
+```text
+\#if {condition}
+Fsh/Mfsh lines
+\#else if {condition}
+Fsh/Mfsh lines
+...
+\#else
+Fsh/Mfsh lines
+\#end
+
+```
+
+'else' amd ;else if' are not required and the commadn may consist of just the 'if'...'end' commands.
+'
+| name | meaning |
+| ---- | -------------- |
+| {condition}| a condition that evaluates to true.|
+
+Conditions can be one of the following
+| condition | meaning |
+| {string} == {string} | compare one string to another. True if both strings are the same. The string can be a simple string (enclosd in quotes)
+or a multi line string. The contents of the string can be variables which get expanded. |
+| {number} == {number} | compare one number to another. True if both numbers are the same. The {number} can be a variable which get expanded. |
+| {number} >  {number} | compare one number to another. True if lhs > rhs. |
+| {number} >=  {number} | compare one number to another. True if lhs >= rhs. |
+| {number} <  {number} | compare one number to another. True if lhs < rhs. |
+| {number} >=  {number} | compare one number to another. True if lhs >= rhs. |
+
+Example
+
+```text
+#if "mySlice" == "MyValueSet"
+...
+#end
+```
+
+```text
+#if Counter == 10
+...
+#end
+```

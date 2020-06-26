@@ -1,0 +1,11 @@
+#if CVar == 10
+EQ
+#else if CVar < 5
+LT
+#else if CVar <= 9
+LE
+#else if CVar > 15
+GT
+#else if CVar >= 12
+GE
+#end
