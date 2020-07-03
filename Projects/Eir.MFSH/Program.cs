@@ -97,6 +97,9 @@ namespace Eir.MFSH
                 return false;
 
             this.mfsh.Process();
+            if (this.mfsh.HasErrors == true)
+                return false;
+
             this.mfsh.SaveAll();
 
             return this.mfsh.HasErrors == false;
