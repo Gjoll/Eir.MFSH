@@ -8,6 +8,7 @@ namespace Eir.MFSH.Parser
     public class MacroBlock : ParseBlock
     {
         public MIMacro Macro { get; }
+        public String FragmentBase { get; set; }
 
         public MacroBlock(String sourceFile,
             Int32 lineNumber,

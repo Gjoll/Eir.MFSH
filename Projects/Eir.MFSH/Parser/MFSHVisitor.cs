@@ -147,6 +147,11 @@ namespace Eir.MFSH.Parser
                 context.Start.Line,
                 names[0],
                 names.Skip(1));
+            {
+                MFSHParser.FragContext frag = context.frag();
+                if (frag != null)
+                    macroBlock.FragmentBase = (String)this.Visit(frag);
+            }
             this.PushState(macroBlock);
 
             var redirectContext = context.redirect();
@@ -166,6 +171,11 @@ namespace Eir.MFSH.Parser
             }
 
             return null;
+        }
+
+        public override object VisitFrag(MFSHParser.FragContext context)
+        {
+            return context.NAME().GetText();
         }
 
         public override object VisitIncompatible(MFSHParser.IncompatibleContext context)

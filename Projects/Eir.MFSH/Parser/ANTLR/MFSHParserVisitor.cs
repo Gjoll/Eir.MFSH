@@ -123,6 +123,12 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRedirect([NotNull] MFSHParser.RedirectContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.frag"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFrag([NotNull] MFSHParser.FragContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.use"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

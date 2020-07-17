@@ -22,8 +22,10 @@ mfshCmd: apply | end | if | elseIf | else | incompatible | macro | use ;
 apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 incompatible: INCOMPATIBLE NAME ;
-macro: MACRO SINGLE? ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR redirect?;
+macro: MACRO SINGLE? ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR frag? ? redirect?;
 redirect: GT singleString ;
+frag: COLON NAME ;
+
 use: USE NAME ;
 
 if: IF condition ;
