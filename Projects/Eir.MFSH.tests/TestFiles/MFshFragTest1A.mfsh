@@ -1,3 +1,6 @@
-﻿#frag Frag1 : Observation
+﻿#Fragment: once Frag1
+#Parent: Observation
+#Title: "Frag1 Title"
+#Description: "Frag1 Description"
 Line 2
 #end

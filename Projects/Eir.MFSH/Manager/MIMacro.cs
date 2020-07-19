@@ -25,11 +25,6 @@ namespace Eir.MFSH
         public String FragmentDefinition { get; set; } = null;
 
         /// <summary>
-        /// If set, this macro is only instantiated once per profile.
-        /// </summary>
-        public bool OnceFlag { get; set; }
-
-        /// <summary>
         /// If set, this macro has been applied.
         /// </summary>
         public bool AppliedFlag { get; set; } = false;

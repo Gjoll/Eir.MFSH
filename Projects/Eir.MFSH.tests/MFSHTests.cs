@@ -46,7 +46,7 @@ namespace Eir.MFSH.Tests
             CheckErrors(mfsh);
             Assert.True(mfsh.Parser.Fsh.Count == 1);
             String shouldBe = this.GetCleanText(resultsFile);
-            Assert.True(mfsh.TryGetText($"{testFile}.fsh", out String actualResults));
+            Assert.True(mfsh.TryGetTextByRelativePath($"{testFile}.fsh", out String actualResults));
             Assert.True(String.Compare(actualResults, shouldBe) == 0);
         }
 
@@ -74,7 +74,7 @@ namespace Eir.MFSH.Tests
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Yes\n");
-                Assert.True(mfsh.TryGetText("MFshConditional1.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshConditional1.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
 
@@ -88,7 +88,7 @@ namespace Eir.MFSH.Tests
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("No\n");
-                Assert.True(mfsh.TryGetText("MFshConditional1.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshConditional1.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
         }
@@ -106,7 +106,7 @@ namespace Eir.MFSH.Tests
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("One\n");
-                Assert.True(mfsh.TryGetText("MFshConditional2.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshConditional2.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
 
@@ -120,7 +120,7 @@ namespace Eir.MFSH.Tests
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Two\n");
-                Assert.True(mfsh.TryGetText("MFshConditional2.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshConditional2.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
 
@@ -135,7 +135,7 @@ namespace Eir.MFSH.Tests
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Three\n");
-                Assert.True(mfsh.TryGetText("MFshConditional2.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshConditional2.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
         }
@@ -154,7 +154,7 @@ namespace Eir.MFSH.Tests
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append($"{result}\n");
-                Assert.True(mfsh.TryGetText("MFshConditional3.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshConditional3.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
             Test("4", "LT");
@@ -183,7 +183,7 @@ namespace Eir.MFSH.Tests
                 sb.Append("Line 1\n");
                 sb.Append("Line 2\n");
                 sb.Append("Line 3\n");
-                Assert.True(mfsh.TryGetText("MFshMacroTest1B.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshMacroTest1B.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
 
@@ -200,7 +200,7 @@ namespace Eir.MFSH.Tests
                 sb.Append("Line 1\n");
                 sb.Append("Line 2\n");
                 sb.Append("Line 3\n");
-                Assert.True(mfsh.TryGetText("MFshMacroTest1C.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshMacroTest1C.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
         }
@@ -217,11 +217,18 @@ namespace Eir.MFSH.Tests
                 mfsh.Process();
                 CheckErrors(mfsh);
 
+                Assert.True(mfsh.MacroMgr.TryGetItem("Frag1", out MIApplicable item));
+                MIFragment frag = (MIFragment)item;
+                Assert.True(frag.Name == "Frag1");
+                Assert.True(frag.Parent == "Observation");
+                Assert.True(frag.Title == "Frag1 Title");
+                Assert.True(frag.Description == "Frag1 Description");
+
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Line 1\n");
                 sb.Append("Line 2\n");
                 sb.Append("Line 3\n");
-                Assert.True(mfsh.TryGetText("MFshFragTest1B.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshFragTest1B.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
 
@@ -237,11 +244,8 @@ namespace Eir.MFSH.Tests
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Line 1\n");
                 sb.Append("Line 2\n");
-                sb.Append("Line 2\n");
-                sb.Append("Line 2\n");
-                sb.Append("Line 2\n");
                 sb.Append("Line 3\n");
-                Assert.True(mfsh.TryGetText("MFshFragTest1C.fsh", out String fsh));
+                Assert.True(mfsh.TryGetTextByRelativePath("MFshFragTest1C.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());
             }
         }
@@ -259,7 +263,7 @@ namespace Eir.MFSH.Tests
             sb.Append("Line one\n");
             sb.Append("Line two\n");
             sb.Append("Line three\n");
-            Assert.True(mfsh.TryGetText("MFshMacroTest2.fsh", out String fsh));
+            Assert.True(mfsh.TryGetTextByRelativePath("MFshMacroTest2.fsh", out String fsh));
             Assert.True(fsh == sb.ToString());
         }
 
@@ -283,7 +287,7 @@ namespace Eir.MFSH.Tests
             sb.Append("  Line two\n");
             sb.Append("  Line three\n");
             sb.Append("  Line three\n");
-            Assert.True(mfsh.TryGetText("MFshUseTest1.fsh", out String fsh));
+            Assert.True(mfsh.TryGetTextByRelativePath("MFshUseTest1.fsh", out String fsh));
             Assert.True(fsh == sb.ToString());
         }
 

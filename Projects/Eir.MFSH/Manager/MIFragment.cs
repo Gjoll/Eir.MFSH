@@ -15,9 +15,19 @@ namespace Eir.MFSH
     public class MIFragment : MIApplicable
     {
         /// <summary>
-        /// If set, base output dir for fragment definition
+        /// Parent fhir class
         /// </summary>
-        public String FragmentBase { get; set; } = null;
+        public String Parent { get; set; } = null;
+
+        /// <summary>
+        /// Fhir title
+        /// </summary>
+        public String Title { get; set; } = null;
+
+        /// <summary>
+        /// Fhir description
+        /// </summary>
+        public String Description { get; set; } = null;
 
         /// <summary>
         /// If set text definition of fragment
@@ -26,13 +36,8 @@ namespace Eir.MFSH
 
         public MIFragment(String sourceFile,
             Int32 lineNumber,
-            String fragName,
-            String fragmentBase,
-            String fragmentDefinition) : base(sourceFile, lineNumber, fragName)
+            String fragName) : base(sourceFile, lineNumber, fragName)
         {
-            this.FragmentBase = fragmentBase;
-            this.FragmentDefinition = fragmentDefinition;
-
             String fragRPath = sourceFile;
             String fragFileNameNoExtension = Path.GetFileNameWithoutExtension(fragRPath);
             String fragFileName = Path.GetFileName(fragRPath);

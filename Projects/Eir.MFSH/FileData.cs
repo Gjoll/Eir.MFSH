@@ -8,10 +8,10 @@ using System.Text;
 
 namespace Eir.MFSH
 {
-    [DebuggerDisplay("{" + nameof(FileData.RelativePath) + "}")]
+    [DebuggerDisplay("{" + nameof(FileData.AbsoluteOutputPath) + "}")]
     public class FileData
     {
-        public String RelativePath { get; set; }
+        public String AbsoluteOutputPath { get; set; }
         public StringBuilder Text { get; }  = new StringBuilder();
 
         public FileData()

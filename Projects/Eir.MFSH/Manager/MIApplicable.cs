@@ -20,6 +20,11 @@ namespace Eir.MFSH
         public String Name { get; }
 
         /// <summary>
+        /// If set, this macro is only instantiated once per profile.
+        /// </summary>
+        public bool OnceFlag { get; set; }
+
+        /// <summary>
         /// Variables that are local to this macro
         /// </summary>
         public VariablesBlock ApplicableVariables { get; } = new VariablesBlock();

@@ -16,12 +16,16 @@ APPLY: 'apply';
 END: 'end';
 IF: 'if' ;
 ELSE: 'else' ;
-FRAG: 'frag' ;
+FRAGMENT: 'Fragment' ;
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
 ONCE: 'once';
 SINGLE: 'single';
 USE: 'use';
+
+PARENT : 'Parent' ;
+TITLE : 'Title' ;
+DESCRIPTION : 'Description' ;
 
 STRING: '"' (~('"' | '\\' | '\r' | '\n') | '\\' . )* '"';
 MULTILINE_STRING: '"""' .*? '"""' ;

@@ -36,19 +36,31 @@ namespace Eir.MFSH.Manager
             }
         }
 
-        public IEnumerable<MIApplicable> Macros()
+        public IEnumerable<MIMacro> Macros()
         {
             foreach (Namespace ns in Namespaces(this.nameSpaces))
             {
                 foreach (var item in ns.Items.Values)
                 {
-                    if (item is MIApplicable)
-                        yield return item as MIApplicable;
+                    if (item is MIMacro)
+                        yield return item as MIMacro;
                 }
             }
         }
 
-        bool TryGetItem(String name, out MIApplicable item)
+        public IEnumerable<MIFragment> Fragments()
+        {
+            foreach (Namespace ns in Namespaces(this.nameSpaces))
+            {
+                foreach (var item in ns.Items.Values)
+                {
+                    if (item is MIFragment)
+                        yield return item as MIFragment;
+                }
+            }
+        }
+
+        public bool TryGetItem(String name, out MIApplicable item)
         {
             item = null;
             String[] parts = name.Split('\n');

@@ -172,20 +172,71 @@ namespace Eir.MFSH.Parser
             const String fcn = "VisitFrag";
 
             TraceMsg(context, fcn);
-            String[] names = context
-                .NAME()
-                .Select((a) => a.GetText())
-                .ToArray();
+            String fragName = context.NAME().GetText();
 
             String fragmentDefinition = String.Empty;
-            MFSHParser.AnyStringContext def = context.anyString();
-            if (def != null)
-                fragmentDefinition = (String)this.Visit(def);
 
-            MIFragment frag = new MIFragment(this.SourceName, context.Start.Line, names[0], names[1], fragmentDefinition);
+            MIFragment frag = new MIFragment(this.SourceName, context.Start.Line, fragName);
             MacroBlock macroBlock = new MacroBlock("frag", frag);
+            frag.OnceFlag = (context.ONCE() != null);
             this.PushState(macroBlock);
 
+            return null;
+        }
+
+        public MIFragment GetFragmentState(String fcn, Int32 lineNumber, String visitName)
+        {
+            void Err()
+            {
+                Error(fcn,
+                    lineNumber.ToString(),
+                    $"Unexpected '#parent'");
+                throw new Exception($"Unexpected '#{visitName}'");
+            }
+
+            switch (this.state.Peek())
+            {
+                case MacroBlock mBlock:
+                    MIFragment f = mBlock.Item as MIFragment;
+                    if (f == null)
+                        Err();
+                    return f;
+
+                default:
+                    Err();
+                    break;
+            }
+
+            return null;
+        }
+
+        public override object VisitParent(MFSHParser.ParentContext context)
+        {
+            const String fcn = "VisitFragParent";
+
+            TraceMsg(context, fcn);
+            MIFragment f = GetFragmentState(fcn, context.Start.Line, "Parent");
+            f.Parent = context.NAME().GetText();
+            return null;
+        }
+
+        public override object VisitDescription(MFSHParser.DescriptionContext context)
+        {
+            const String fcn = "VisitFragDescription";
+
+            TraceMsg(context, fcn);
+            MIFragment f = GetFragmentState(fcn, context.Start.Line, "Title");
+            f.Description = (String)this.Visit(context.anyString());
+            return null;
+        }
+
+        public override object VisitTitle(MFSHParser.TitleContext context)
+        {
+            const String fcn = "VisitFragTitle";
+
+            TraceMsg(context, fcn);
+            MIFragment f = GetFragmentState(fcn, context.Start.Line, "Title");
+            f.Title = (String)this.Visit(context.anyString());
             return null;
         }
 

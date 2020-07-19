@@ -129,6 +129,24 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFrag([NotNull] MFSHParser.FragContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.parent"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParent([NotNull] MFSHParser.ParentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.description"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDescription([NotNull] MFSHParser.DescriptionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.title"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTitle([NotNull] MFSHParser.TitleContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.use"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

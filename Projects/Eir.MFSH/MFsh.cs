@@ -113,10 +113,11 @@ namespace Eir.MFSH
         /// </summary>
         /// <param name="relativeFileName"></param>
         /// <returns></returns>
-        public bool TryGetText(String relativePath, out String text)
+        public bool TryGetTextByRelativePath(String relativePath, out String text)
         {
             text = null;
-            if (this.FileItems.TryGetValue(relativePath, out FileData fd) == false)
+            String absolutePath = Path.Combine(this.BaseOutputDir, relativePath);
+            if (this.FileItems.TryGetValue(absolutePath, out FileData fd) == false)
                 return false;
             text = fd.Text.ToString();
             return true;
@@ -197,15 +198,70 @@ namespace Eir.MFSH
         {
             if (String.IsNullOrEmpty(this.FragDir))
                 return;
-
-            foreach (var macro in this.MacroMgr.Macros())
-                this.ProcessFragment(macro);
+            Dictionary<String, FileData> fragFileData = new Dictionary<string, FileData>();
+            foreach (MIFragment frag in this.MacroMgr.Fragments())
+                this.ProcessFragment(fragFileData, frag);
         }
 
-        void ProcessFragment(MIApplicable macro)
+        void ProcessFragment(Dictionary<String, FileData> fragFileData, MIFragment frag)
         {
-            //$if (String.IsNullOrEmpty(macro.FragmentBase))
-            //    return;
+            const String fcn = "ProcessFragment";
+
+            String relativePath = Path.Combine(
+                Path.GetDirectoryName(frag.SourceFile),
+                Path.GetFileNameWithoutExtension(frag.SourceFile) + ".fsh");
+
+            if (String.IsNullOrEmpty(frag.Parent) == true)
+            {
+                this.ConversionError(ClassName, fcn, $"Fragment {frag.Name} missing parent!");
+                return;
+            }
+
+            if (fragFileData.TryGetValue(relativePath, out FileData fd) == false)
+            {
+                fd = new FileData();
+                this.FileItems.Add(relativePath, fd);
+            }
+            else
+            {
+                fd.Text.AppendLine("");
+                fd.Text.AppendLine("");
+                fd.Text.AppendLine("");
+            }
+
+            void StringHdr(String hdrName, String text)
+            {
+                if (String.IsNullOrEmpty(text) == true)
+                    return;
+
+                String[] lines = text.Split('\n');
+                if (lines.Length == 1)
+                {
+                    fd.Text.AppendLine($"{hdrName}: \"{lines[0]}\"");
+                }
+                else
+                {
+                    fd.Text.AppendLine($"{hdrName}: \"\"\"");
+                    foreach (String line in lines)
+                        fd.Text.AppendLine($"  {line}");
+                    fd.Text.AppendLine($"  \"\"\"");
+                }
+            }
+
+            String name = frag.Name;
+            if (name.Contains('.'))
+                name = name.Substring(name.LastIndexOf('.')+1);
+            fd.Text.AppendLine($"Profile: {frag.Name}");
+            fd.Text.AppendLine($"Parent: {frag.Parent}");
+
+            StringHdr("Title", frag.Title);
+            StringHdr("Description", frag.Description);
+
+            fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
+
+            List<VariablesBlock> local = new List<VariablesBlock>();
+            local.Insert(0, this.GlobalVars);
+            this.Process(frag.Items, fd, local);
         }
 
         void ProcessPreFsh()
@@ -225,11 +281,12 @@ namespace Eir.MFSH
             out FileData fd)
         {
             relativePath = variableBlocks.ReplaceText(relativePath);
-            if (this.FileItems.TryGetValue(relativePath, out fd))
+            String absolutePath = Path.Combine(this.BaseOutputDir, relativePath);
+            if (this.FileItems.TryGetValue(absolutePath, out fd))
                 return false;
             fd = new FileData();
-            fd.RelativePath = relativePath;
-            this.FileItems.Add(relativePath, fd);
+            fd.AbsoluteOutputPath = absolutePath;
+            this.FileItems.Add(fd.AbsoluteOutputPath, fd);
             return true;
         }
 
@@ -264,7 +321,7 @@ namespace Eir.MFSH
 
             if (GetFileData(relativeFshPath, this.variableBlocks, out FileData fd) == false)
             {
-                this.ConversionError(ClassName, fcn, $"Output file {fd.RelativePath} already exists!");
+                this.ConversionError(ClassName, fcn, $"Output file {fd.AbsoluteOutputPath} already exists!");
                 return;
             }
 
@@ -505,7 +562,8 @@ namespace Eir.MFSH
             {
                 String pName = macro.Parameters[i];
                 String pValue = apply.Parameters[i];
-                pValue = variableBlocks.ReplaceText(pValue);
+                if (variableBlocks != null)
+                    pValue = variableBlocks.ReplaceText(pValue);
                 vbParameters.Add(pName, pValue);
             }
 
@@ -539,8 +597,15 @@ namespace Eir.MFSH
                 return;
             }
 
+            bool firstFlag = false;
             if (this.appliedMacros.Contains(apply.Name) == false)
+            {
                 this.appliedMacros.Add(apply.Name);
+                firstFlag = true;
+            }
+
+            if ((frag.OnceFlag == true) && (firstFlag == false))
+                return;
 
             if (this.incompatibleMacros.Contains(apply.Name))
             {
@@ -629,9 +694,8 @@ namespace Eir.MFSH
             this.ConversionInfo(this.GetType().Name, fcn, $"Saving all processed files");
             foreach (FileData f in this.FileItems.Values)
             {
-                String outputPath = Path.Combine(BaseOutputDir, f.RelativePath);
                 string outText = f.Text.ToString();
-                Save(outputPath, outText);
+                Save(f.AbsoluteOutputPath, outText);
             }
 
             this.fc.DeleteUnMarkedFiles();
