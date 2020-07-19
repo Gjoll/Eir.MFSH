@@ -64,7 +64,11 @@ namespace Eir.MFSH.Tests
         public void MgrMacroRedirectTest()
         {
             MIPreFsh b = ParseTest("MgrMacroRedirectTest.mfsh", out MFsh mfsh);
-            Debug.Assert(mfsh.MacroMgr.TryGetItem(null, "Macro1", out MIApplicable item1));
+            if (mfsh.MacroMgr.TryGetItem(null, "Macro1", out MIApplicable item1) == false)
+            {
+                Debug.Assert(false);
+                throw new NotImplementedException();
+            }
             MIMacro macro1 = (MIMacro)item1;
             Debug.Assert(macro1.Redirect == @"A\B.txt");
             Debug.Assert(macro1.OnceFlag == true);
