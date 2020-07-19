@@ -16,6 +16,7 @@ APPLY: 'apply';
 END: 'end';
 IF: 'if' ;
 ELSE: 'else' ;
+FRAG: 'frag' ;
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
 ONCE: 'once';
@@ -28,12 +29,13 @@ MULTILINE_STRING: '"""' .*? '"""' ;
 OPAR: '(' ;
 COMMA: ',' ;
 CPAR: ')' ;
+COLON: ':' ;
+
 GT: '>' ;
 LT: '<' ;
 GE: '>=' ;
 LE: '<=' ;
 EQ: '==' ;
-COLON: ':' ;
 
 NAME: [A-Za-z][A-Za-z0-9.]+ | '$' [A-Za-z][A-Za-z0-9.]+ '$' | '%' [A-Za-z][A-Za-z0-9.]+ '%' ;
 NUMBER: [0-9.]+;

@@ -206,6 +206,47 @@ namespace Eir.MFSH.Tests
         }
 
         [Fact]
+        public void FragTest1()
+        {
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.Load(TestFile("MFshFragTest1A.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Load(TestFile("MFshFragTest1B.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Process();
+                CheckErrors(mfsh);
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Line 1\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 3\n");
+                Assert.True(mfsh.TryGetText("MFshFragTest1B.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+
+            {
+                MFsh mfsh = CreateMfsh();
+                mfsh.Load(TestFile("MFshFragTest1A.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Load(TestFile("MFshFragTest1C.mfsh"));
+                CheckErrors(mfsh);
+                mfsh.Process();
+                CheckErrors(mfsh);
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Line 1\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 3\n");
+                Assert.True(mfsh.TryGetText("MFshFragTest1C.fsh", out String fsh));
+                Assert.True(fsh == sb.ToString());
+            }
+        }
+
+        [Fact]
         public void MacroTest2()
         {
             MFsh mfsh = CreateMfsh();

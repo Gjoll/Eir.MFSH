@@ -12,12 +12,17 @@ namespace Eir.MFSH
     /// Macro definition
     /// </summary>
     [DebuggerDisplay("Macro '{Name}'")]
-    public class MIMacro : MIBase
+    public class MIMacro : MIApplicable
     {
         /// <summary>
-        /// Variables that are local to this macro
+        /// If set, base output dir for fragment definition
         /// </summary>
-        public VariablesBlock MacroVariables { get; } = new VariablesBlock();
+        public String FragmentBase { get; set; } = null;
+
+        /// <summary>
+        /// If set text definition of fragment
+        /// </summary>
+        public String FragmentDefinition { get; set; } = null;
 
         /// <summary>
         /// If set, this macro is only instantiated once per profile.
@@ -40,11 +45,6 @@ namespace Eir.MFSH
         public String Redirect { get; set; }
 
         /// <summary>
-        /// Name of macro
-        /// </summary>
-        public String Name { get; }
-
-        /// <summary>
         /// Macro parameters
         /// </summary>
         public List<String> Parameters { get; } = new List<String>();
@@ -54,27 +54,22 @@ namespace Eir.MFSH
         /// </summary>
         public List<String> Usings = new List<String>();
 
-        /// <summary>
-        /// Items in macro
-        /// </summary>
-        public List<MIBase> Items = new List<MIBase>();
         public MIMacro(String sourceFile,
             Int32 lineNumber,
             String macroName,
-            IEnumerable<String> parameters) : base(sourceFile, lineNumber)
+            IEnumerable<String> parameters) : base(sourceFile, lineNumber, macroName)
         {
-            this.Name = macroName;
             this.Parameters.AddRange(parameters);
             String macroRPath = sourceFile;
             String macroFileNameNoExtension = Path.GetFileNameWithoutExtension(macroRPath);
             String macroFileName = Path.GetFileName(macroRPath);
             String macroDir = Path.GetDirectoryName(macroRPath);
 
-            this.MacroVariables.Set("%MacroName%", macroName);
-            this.MacroVariables.Set("%MacroPath%", macroRPath);
-            this.MacroVariables.Set("%MacroDir%", macroDir);
-            this.MacroVariables.Set("%MacroFileName%", macroFileName);
-            this.MacroVariables.Set("%MacroFileNameNoExtension%", macroFileNameNoExtension);
+            this.ApplicableVariables.Set("%MacroName%", macroName);
+            this.ApplicableVariables.Set("%MacroPath%", macroRPath);
+            this.ApplicableVariables.Set("%MacroDir%", macroDir);
+            this.ApplicableVariables.Set("%MacroFileName%", macroFileName);
+            this.ApplicableVariables.Set("%MacroFileNameNoExtension%", macroFileNameNoExtension);
         }
     }
 }

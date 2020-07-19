@@ -8,8 +8,10 @@ namespace Eir.MFSH.Parser
     public class ParseBlock
     {
         public List<MIBase> Items = new List<MIBase>();
-        public ParseBlock()
+        public String Name { get; }
+        public ParseBlock(String name)
         {
+            this.Name = name;
         }
     }
 }

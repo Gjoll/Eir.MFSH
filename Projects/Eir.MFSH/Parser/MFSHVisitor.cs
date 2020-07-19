@@ -40,7 +40,7 @@ namespace Eir.MFSH.Parser
         {
             this.SourceName = sourceName;
             this.mfsh = mfsh;
-            ParseBlock f = new ParseBlock();
+            ParseBlock f = new ParseBlock("base");
             this.PushState(f);
         }
 
@@ -135,6 +135,7 @@ namespace Eir.MFSH.Parser
             return null;
         }
 
+
         public override object VisitMacro(MFSHParser.MacroContext context)
         {
             const String fcn = "VisitMacro";
@@ -143,30 +144,23 @@ namespace Eir.MFSH.Parser
                 .NAME()
                 .Select((a) => a.GetText())
                 .ToArray();
-            MacroBlock macroBlock = new MacroBlock(this.SourceName,
-                context.Start.Line,
-                names[0],
-                names.Skip(1));
-            {
-                MFSHParser.FragContext frag = context.frag();
-                if (frag != null)
-                    macroBlock.FragmentBase = (String)this.Visit(frag);
-            }
+            MIMacro macro = new MIMacro(this.SourceName, context.Start.Line, names[0], names.Skip(1));
+            MacroBlock macroBlock = new MacroBlock("macro", macro);
             this.PushState(macroBlock);
 
             var redirectContext = context.redirect();
             if (redirectContext != null)
-                macroBlock.Macro.Redirect = (String)(this.Visit(redirectContext.singleString()));
+                macro.Redirect = (String)(this.Visit(redirectContext.singleString()));
 
-            macroBlock.Macro.SingleFlag = (context.SINGLE() != null);
-            macroBlock.Macro.OnceFlag = (context.ONCE() != null);
+            macro.SingleFlag = (context.SINGLE() != null);
+            macro.OnceFlag = (context.ONCE() != null);
             if (
-                (macroBlock.Macro.OnceFlag || macroBlock.Macro.SingleFlag) &&
-                (macroBlock.Macro.Parameters.Count > 0))
+                (macro.OnceFlag || macro.SingleFlag) &&
+                (macro.Parameters.Count > 0))
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),
-                    $"Error adding macro '{macroBlock.Macro.Name}'. Single/Once can not be used with macro parameters");
+                    $"Error adding macro '{macroBlock.Item.Name}'. Single/Once can not be used with macro parameters");
                 return null;
             }
 
@@ -175,7 +169,24 @@ namespace Eir.MFSH.Parser
 
         public override object VisitFrag(MFSHParser.FragContext context)
         {
-            return context.NAME().GetText();
+            const String fcn = "VisitFrag";
+
+            TraceMsg(context, fcn);
+            String[] names = context
+                .NAME()
+                .Select((a) => a.GetText())
+                .ToArray();
+
+            String fragmentDefinition = String.Empty;
+            MFSHParser.AnyStringContext def = context.anyString();
+            if (def != null)
+                fragmentDefinition = (String)this.Visit(def);
+
+            MIFragment frag = new MIFragment(this.SourceName, context.Start.Line, names[0], names[1], fragmentDefinition);
+            MacroBlock macroBlock = new MacroBlock("frag", frag);
+            this.PushState(macroBlock);
+
+            return null;
         }
 
         public override object VisitIncompatible(MFSHParser.IncompatibleContext context)
@@ -335,11 +346,11 @@ namespace Eir.MFSH.Parser
             {
                 case MacroBlock macroBlock:
 
-                    if (this.mfsh.Macros.TryAddMacro(macroBlock.Macro.Name, macroBlock.Macro) == false)
+                    if (this.mfsh.MacroMgr.TryAddItem(macroBlock.Item.Name, macroBlock.Item) == false)
                     {
                         this.Error(fcn,
                             context.Start.Line.ToString(),
-                            $"Error adding macro '{macroBlock.Macro.Name}'. Does macro already exist?");
+                            $"Error adding macro '{macroBlock.Item.Name}'. Does macro already exist?");
                     }
                     break;
 

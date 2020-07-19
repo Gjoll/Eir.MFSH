@@ -10,7 +10,7 @@ namespace Eir.MFSH.Parser
         public MIConditional Conditional { get; }
 
         public ConditionalBlock(String sourceFile,
-            Int32 lineNumber)
+            Int32 lineNumber) : base("conditional")
         {
             this.Conditional = new MIConditional(sourceFile, lineNumber);
         }

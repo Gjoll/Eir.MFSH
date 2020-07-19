@@ -17,14 +17,15 @@ mfshExit: MFSHExit;
 
 mfshCmds: MFSH mfshCmd* ;
 
-mfshCmd: apply | end | if | elseIf | else | incompatible | macro | use ;
+mfshCmd: apply | end | if | elseIf | else | frag | incompatible | macro | use ;
 
 apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 incompatible: INCOMPATIBLE NAME ;
-macro: MACRO SINGLE? ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR frag? ? redirect?;
+macro: MACRO SINGLE? ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR ? redirect?;
 redirect: GT singleString ;
-frag: COLON NAME ;
+
+frag: FRAG NAME COLON NAME anyString? ;
 
 use: USE NAME ;
 

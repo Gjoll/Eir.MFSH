@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Eir.MFSH.Manager
 {
-    public class MacroManager
+    public class ApplicableManager
     {
         class Namespace
         {
             public Dictionary<String, Namespace> NameSpaces = new Dictionary<string, Namespace>();
-            public Dictionary<String, MIMacro> Macros = new Dictionary<string, MIMacro>();
+            public Dictionary<String, MIApplicable> Items = new Dictionary<string, MIApplicable>();
         }
 
         public bool DebugFlag => this.Mfsh.DebugFlag;
@@ -18,7 +18,7 @@ namespace Eir.MFSH.Manager
         Namespace baseNamespace;
         Dictionary<String, Namespace> nameSpaces;
 
-        public MacroManager(MFsh mfsh)
+        public ApplicableManager(MFsh mfsh)
         {
             this.baseNamespace = new Namespace();
             this.nameSpaces = new Dictionary<string, Namespace>();
@@ -26,9 +26,31 @@ namespace Eir.MFSH.Manager
             this.Mfsh = mfsh;
         }
 
-        bool TryGetMacro(String name, out MIMacro macro)
+        IEnumerable<Namespace> Namespaces(Dictionary<String, Namespace> nsDict)
         {
-            macro = null;
+            foreach (Namespace ns in nsDict.Values)
+            {
+                yield return ns;
+                foreach (Namespace nsChild in this.Namespaces(ns.NameSpaces))
+                    yield return nsChild;
+            }
+        }
+
+        public IEnumerable<MIApplicable> Macros()
+        {
+            foreach (Namespace ns in Namespaces(this.nameSpaces))
+            {
+                foreach (var item in ns.Items.Values)
+                {
+                    if (item is MIApplicable)
+                        yield return item as MIApplicable;
+                }
+            }
+        }
+
+        bool TryGetItem(String name, out MIApplicable item)
+        {
+            item = null;
             String[] parts = name.Split('\n');
             Namespace ns = this.baseNamespace;
             for (Int32 i = 0; i < parts.Length - 1; i++)
@@ -38,25 +60,25 @@ namespace Eir.MFSH.Manager
                 ns = nsChild;
             }
 
-            if (ns.Macros.TryGetValue(name, out macro) == false)
+            if (ns.Items.TryGetValue(name, out item) == false)
                 return false;
             return true;
         }
 
-        public bool TryGetMacro(List<String> usings, String name, out MIMacro macro)
+        public bool TryGetItem(List<String> usings, String name, out MIApplicable item)
         {
-            if (TryGetMacro(name, out macro) == true)
+            if (TryGetItem(name, out item) == true)
                 return true;
 
             foreach (String use in usings)
             {
-                if (TryGetMacro($"{use}.{name}", out macro) == true)
+                if (TryGetItem($"{use}.{name}", out item) == true)
                     return true;
             }
             return false;
         }
 
-        public bool TryAddMacro(String name, MIMacro macro)
+        public bool TryAddItem(String name, MIApplicable item)
         {
             String[] parts = name.Split('\n');
             Namespace ns = this.baseNamespace;
@@ -70,7 +92,7 @@ namespace Eir.MFSH.Manager
                 ns = nsChild;
             }
 
-            if (ns.Macros.TryAdd(name, macro) == false)
+            if (ns.Items.TryAdd(name, item) == false)
                 return false;
             return true;
         }

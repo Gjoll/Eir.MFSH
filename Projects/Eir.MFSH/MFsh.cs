@@ -17,6 +17,7 @@ using Eir.DevTools;
 using Eir.MFSH;
 using System.Text.RegularExpressions;
 using Eir.MFSH.Manager;
+using System.Xml.Serialization;
 
 namespace Eir.MFSH
 {
@@ -32,25 +33,16 @@ namespace Eir.MFSH
         /// <summary>
         /// Handles storing and retrieving all macros.
         /// </summary>
-        public MacroManager Macros { get; }
+        public ApplicableManager MacroMgr { get; }
 
         HashSet<String> appliedMacros = new HashSet<string>();
         HashSet<String> incompatibleMacros = new HashSet<string>();
         Stack<MIApply> applyStack = new Stack<MIApply>();
 
-        public string BaseInputDir
-        {
-            get => this.baseInputDir;
-            set => this.baseInputDir = Path.GetFullPath(value);
-        }
-        private string baseInputDir;
+        public string BaseInputDir { get; set; }
+        public string BaseOutputDir { get; set; }
 
-        public string BaseOutputDir
-        {
-            get => this.baseOutputDir;
-            set => this.baseOutputDir = Path.GetFullPath(value);
-        }
-        private string baseOutputDir;
+        public string FragDir { get; set; }
 
         // Keep track of include files so we dont end up in recursive loop.
         List<String> sources = new List<string>();
@@ -86,7 +78,7 @@ namespace Eir.MFSH
         public MFsh()
         {
             this.Parser = new ParseManager(this);
-            this.Macros = new MacroManager(this);
+            this.MacroMgr = new ApplicableManager(this);
         }
 
         public override void ConversionError(String className, String method, String msg)
@@ -197,6 +189,27 @@ namespace Eir.MFSH
         {
             if (String.IsNullOrEmpty(this.BaseUrl) == true)
                 throw new Exception($"BaseUrl not set");
+            this.ProcessPreFsh();
+            this.ProcessFragments();
+        }
+
+        void ProcessFragments()
+        {
+            if (String.IsNullOrEmpty(this.FragDir))
+                return;
+
+            foreach (var macro in this.MacroMgr.Macros())
+                this.ProcessFragment(macro);
+        }
+
+        void ProcessFragment(MIApplicable macro)
+        {
+            //$if (String.IsNullOrEmpty(macro.FragmentBase))
+            //    return;
+        }
+
+        void ProcessPreFsh()
+        {
             foreach (MIPreFsh fsh in this.Parser.Fsh)
                 this.Process(fsh);
         }
@@ -427,13 +440,34 @@ namespace Eir.MFSH
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.AddRange(variableBlocks);
 
-            if (this.Macros.TryGetMacro(apply.Usings, apply.Name, out MIMacro macro) == false)
+            if (this.MacroMgr.TryGetItem(apply.Usings, apply.Name, out MIApplicable applicableItem) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
                 fullMsg += this.ApplyLongStackTrace();
                 this.ConversionError(ClassName, fcn, fullMsg);
                 return;
             }
+            switch (applicableItem)
+            {
+                case MIMacro macro:
+                    ProcessApplyMacro(apply, fd, macro, local);
+                    break;
+
+                case MIFragment frag:
+                    ProcessApplyFrag(apply, fd, frag, local);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        void ProcessApplyMacro(MIApply apply,
+            FileData fd,
+            MIMacro macro,
+            List<VariablesBlock> local)
+        {
+            const String fcn = "ProcessApplyMacro";
 
             if (macro.Parameters.Count != apply.Parameters.Count)
             {
@@ -465,7 +499,7 @@ namespace Eir.MFSH
                 return;
             }
 
-            local.Insert(0, macro.MacroVariables);
+            local.Insert(0, macro.ApplicableVariables);
             VariablesBlock vbParameters = new VariablesBlock();
             for (Int32 i = 0; i < apply.Parameters.Count; i++)
             {
@@ -489,10 +523,42 @@ namespace Eir.MFSH
             this.Process(macro.Items, macroData, local);
             this.applyStack.Pop();
         }
-        
-        void ProcessConditional(MIConditional conditional,
+
+        void ProcessApplyFrag(MIApply apply,
             FileData fd,
-            List<VariablesBlock> variableBlocks)
+            MIFragment frag,
+            List<VariablesBlock> local)
+        {
+            const String fcn = "ProcessApplyMacro";
+
+            if (apply.Parameters.Count != 0)
+            {
+                String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Fragment {apply.Name} takes no parameters.";
+                fullMsg += this.ApplyLongStackTrace();
+                this.ConversionError(ClassName, fcn, fullMsg);
+                return;
+            }
+
+            if (this.appliedMacros.Contains(apply.Name) == false)
+                this.appliedMacros.Add(apply.Name);
+
+            if (this.incompatibleMacros.Contains(apply.Name))
+            {
+                String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} {apply.Name} has been marked as incompatible with this profile";
+                fullMsg += this.ApplyLongStackTrace();
+                this.ConversionError(ClassName, fcn, fullMsg);
+                return;
+            }
+
+            FileData macroData = fd;
+            this.applyStack.Push(apply);                    // this is for stack tracing during errors
+            this.Process(frag.Items, macroData, local);
+            this.applyStack.Pop();
+        }
+
+        void ProcessConditional(MIConditional conditional,
+                FileData fd,
+                List<VariablesBlock> variableBlocks)
         {
             foreach (MIConditional.Condition c in conditional.Conditions)
             {
@@ -510,7 +576,7 @@ namespace Eir.MFSH
         {
             const String fcn = "ProcessIncompatible";
 
-            if (this.Macros.TryGetMacro(this.usings, incompatible.Name, out MIMacro macro) == false)
+            if (this.MacroMgr.TryGetItem(this.usings, incompatible.Name, out MIApplicable macro) == false)
             {
                 String fullMsg = $"{incompatible.SourceFile}, line {incompatible.LineNumber} Macro {incompatible.Name} not found.";
                 fullMsg += this.ApplyLongStackTrace();

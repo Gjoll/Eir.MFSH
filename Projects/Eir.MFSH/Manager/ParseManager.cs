@@ -60,7 +60,7 @@ namespace Eir.MFSH
             visitor.Visit(parser.document());
             if (visitor.state.Count != 1)
             {
-                String fullMsg = $"Error processing {relativePath}. Unterminated #{{Command}}";
+                String fullMsg = $"Error processing {relativePath}. Unterminated #{visitor.state.Peek().Name}";
                 this.Mfsh.ConversionError("mfsh", "ProcessInclude", fullMsg);
             }
 

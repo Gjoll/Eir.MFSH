@@ -29,7 +29,8 @@ namespace Eir.MFSH
             };
 
             public String baseInputDir { get; set; }
-            public String baseOutputDir  { get; set; }
+            public String baseOutputDir { get; set; }
+            public String fragDir { get; set; }
             public String baseUrl { get; set; }
             public Clean[] cleanDirs { get; set; }
             public String[] mfshPaths { get; set; }
@@ -44,6 +45,7 @@ namespace Eir.MFSH
             this.mfsh = new MFsh();
             this.mfsh.BaseInputDir = Path.GetFullPath(".");
             this.mfsh.BaseOutputDir = Path.GetFullPath(".");
+            this.mfsh.FragDir = null;
             this.mfsh.ConsoleLogging();
         }
 
@@ -73,12 +75,14 @@ namespace Eir.MFSH
         bool Process()
         {
             if (options.baseInputDir == null)
-                throw new Exception("Missing 'baseInputDir  ' option setting");
-            this.mfsh.BaseInputDir = options.baseInputDir;
+                throw new Exception("Missing 'baseInputDir' option setting");
+            this.mfsh.BaseInputDir = Path.GetFullPath(options.baseInputDir);
 
             if (options.baseOutputDir == null)
-                throw new Exception("Missing 'baseOutputDir  ' option setting");
-            this.mfsh.BaseOutputDir = options.baseOutputDir;
+                throw new Exception("Missing 'baseOutputDir' option setting");
+            this.mfsh.BaseOutputDir = Path.GetFullPath(options.baseOutputDir);
+
+            this.mfsh.FragDir = Path.GetFullPath(options.fragDir);
 
             if (options.baseUrl == null)
                 throw new Exception("Missing 'baseUrl' option setting");

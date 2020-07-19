@@ -34,6 +34,15 @@
     <None Update="TestFiles\MFshConditional1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\MFshFragTest1A.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFiles\MFshFragTest1B.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFiles\MFshFragTest1C.mfsh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\MFshUseTest1.mfsh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

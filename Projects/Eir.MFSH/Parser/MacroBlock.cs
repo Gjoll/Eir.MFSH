@@ -7,17 +7,23 @@ namespace Eir.MFSH.Parser
 {
     public class MacroBlock : ParseBlock
     {
-        public MIMacro Macro { get; }
-        public String FragmentBase { get; set; }
+        public MIApplicable Item { get; }
 
-        public MacroBlock(String sourceFile,
-            Int32 lineNumber,
-            String macroName,
-            IEnumerable<String> parameters)
+        public MacroBlock(String name, MIApplicable item) : base(name)
         {
-            this.Macro = new MIMacro(sourceFile, lineNumber, macroName, parameters);
+            this.Item = item;
             // We want all items parsed to go into Macro.items.
-            this.Items = this.Macro.Items;
+            this.Items = this.Item.Items;
         }
-}
+
+        //public MacroBlock(String sourceFile,
+        //    Int32 lineNumber,
+        //    String macroName,
+        //    IEnumerable<String> parameters)
+        //{
+        //    this.Item = new MIMacro(sourceFile, lineNumber, macroName, parameters);
+        //    // We want all items parsed to go into Macro.items.
+        //    this.Items = this.Item.Items;
+        //}
+    }
 }
