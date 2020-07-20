@@ -23,6 +23,7 @@ namespace Eir.MFSH
 {
     public class MFsh : ConverterBase
     {
+        private bool skipRedirects = false;
         private const String ClassName = "MFsh";
         private FileCleaner fc = new FileCleaner();
         public bool DebugFlag { get; set; } = false;
@@ -119,7 +120,7 @@ namespace Eir.MFSH
             String absolutePath = Path.Combine(this.BaseOutputDir, relativePath);
             if (this.FileItems.TryGetValue(absolutePath, out FileData fd) == false)
                 return false;
-            text = fd.Text.ToString();
+            text = fd.Text;
             return true;
         }
 
@@ -138,7 +139,7 @@ namespace Eir.MFSH
             if (relativePath.StartsWith("\\"))
                 relativePath = relativePath.Substring((1));
 
-            if (path.StartsWith(BaseInputDir) == false)
+            if (path.StartsWith(this.BaseInputDir) == false)
                 throw new Exception("Internal error. Path does not start with correct base path");
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Loading file {path}");
@@ -198,6 +199,7 @@ namespace Eir.MFSH
         {
             if (String.IsNullOrEmpty(this.FragDir))
                 return;
+            this.skipRedirects = true;
             Dictionary<String, FileData> fragFileData = new Dictionary<string, FileData>();
             foreach (MIFragment frag in this.MacroMgr.Fragments())
                 this.ProcessFragment(fragFileData, frag);
@@ -207,9 +209,7 @@ namespace Eir.MFSH
         {
             const String fcn = "ProcessFragment";
 
-            String relativePath = Path.Combine(
-                Path.GetDirectoryName(frag.SourceFile),
-                Path.GetFileNameWithoutExtension(frag.SourceFile) + ".fsh");
+            String relativePath = this.SetProfileVariables(frag.SourceFile);
 
             if (String.IsNullOrEmpty(frag.Parent) == true)
             {
@@ -224,9 +224,9 @@ namespace Eir.MFSH
             }
             else
             {
-                fd.Text.AppendLine("");
-                fd.Text.AppendLine("");
-                fd.Text.AppendLine("");
+                fd.AppendLine("");
+                fd.AppendLine("");
+                fd.AppendLine("");
             }
 
             void StringHdr(String hdrName, String text)
@@ -237,35 +237,38 @@ namespace Eir.MFSH
                 String[] lines = text.Split('\n');
                 if (lines.Length == 1)
                 {
-                    fd.Text.AppendLine($"{hdrName}: \"{lines[0]}\"");
+                    fd.AppendLine($"{hdrName}: \"{lines[0]}\"");
                 }
                 else
                 {
-                    fd.Text.AppendLine($"{hdrName}: \"\"\"");
+                    fd.AppendLine($"{hdrName}: \"\"\"");
                     foreach (String line in lines)
-                        fd.Text.AppendLine($"  {line}");
-                    fd.Text.AppendLine($"  \"\"\"");
+                        fd.AppendLine($"  {line}");
+                    fd.AppendLine($"  \"\"\"");
                 }
             }
 
             String name = frag.Name;
             if (name.Contains('.'))
                 name = name.Substring(name.LastIndexOf('.')+1);
-            fd.Text.AppendLine($"Profile: {frag.Name}");
-            fd.Text.AppendLine($"Parent: {frag.Parent}");
+            fd.AppendLine($"Profile: {frag.Name}");
+            fd.AppendLine($"Parent: {frag.Parent}");
 
             StringHdr("Title", frag.Title);
             StringHdr("Description", frag.Description);
 
+            Debug.Assert(relativePath.Contains("%") == false);
             fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
 
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.Insert(0, this.GlobalVars);
+            local.Insert(0, this.profileVariables);
             this.Process(frag.Items, fd, local);
         }
 
         void ProcessPreFsh()
         {
+            this.skipRedirects = false;
             foreach (MIPreFsh fsh in this.Parser.Fsh)
                 this.Process(fsh);
         }
@@ -281,13 +284,38 @@ namespace Eir.MFSH
             out FileData fd)
         {
             relativePath = variableBlocks.ReplaceText(relativePath);
+            Debug.Assert(relativePath.Contains("%") == false);
             String absolutePath = Path.Combine(this.BaseOutputDir, relativePath);
             if (this.FileItems.TryGetValue(absolutePath, out fd))
                 return false;
             fd = new FileData();
             fd.AbsoluteOutputPath = absolutePath;
+            Debug.Assert(relativePath.Contains("%") == false);
             this.FileItems.Add(fd.AbsoluteOutputPath, fd);
             return true;
+        }
+
+        String SetProfileVariables(String relativePath)
+        {
+            String relativeFshPath = Path.Combine(
+                Path.GetDirectoryName(relativePath),
+                Path.GetFileNameWithoutExtension(relativePath) + ".fsh"
+            );
+
+            this.profileVariables = new VariablesBlock();
+            {
+                String baseRPath = relativePath;
+                String baseName = Path.GetFileName(baseRPath);
+                String baseNameNoExtension = Path.GetFileNameWithoutExtension(baseRPath);
+                String baseDir = Path.GetDirectoryName(baseRPath);
+
+                this.profileVariables.Set("%BasePath%", baseRPath);
+                this.profileVariables.Set("%BaseDir%", baseDir);
+                this.profileVariables.Set("%BaseName%", baseName);
+                this.profileVariables.Set("%BaseNameNoExtension%", baseNameNoExtension);
+                this.profileVariables.Set("%SavePath%", $"{relativeFshPath}");
+            }
+            return relativeFshPath;
         }
 
         public void Process(MIPreFsh fsh)
@@ -297,35 +325,19 @@ namespace Eir.MFSH
             if (Path.GetExtension(fsh.RelativePath).ToLower() == MINCSuffix)
                 return;
 
-            String relativeFshPath = Path.Combine(
-                Path.GetDirectoryName(fsh.RelativePath),
-                Path.GetFileNameWithoutExtension(fsh.RelativePath) + ".fsh"
-            );
             this.usings = fsh.Usings;
-            this.profileVariables = new VariablesBlock();
-            {
-                String baseRPath = fsh.RelativePath;
-                String baseName = Path.GetFileName(baseRPath);
-                String baseNameNoExtension = Path.GetFileNameWithoutExtension(baseRPath);
-                String baseDir = Path.GetDirectoryName(baseRPath);
-
-                profileVariables.Set("%BasePath%", baseRPath);
-                profileVariables.Set("%BaseDir%", baseDir);
-                profileVariables.Set("%BaseName%", baseName);
-                profileVariables.Set("%BaseNameNoExtension%", baseNameNoExtension);
-                profileVariables.Set("%SavePath%", $"{relativeFshPath}");
-            }
+            String relativeFshPath = this.SetProfileVariables(fsh.RelativePath);
             this.variableBlocks = new List<VariablesBlock>();
-            variableBlocks.Insert(0, this.GlobalVars);
-            variableBlocks.Insert(0, profileVariables);
+            this.variableBlocks.Insert(0, this.GlobalVars);
+            this.variableBlocks.Insert(0, this.profileVariables);
 
-            if (GetFileData(relativeFshPath, this.variableBlocks, out FileData fd) == false)
+            if (this.GetFileData(relativeFshPath, this.variableBlocks, out FileData fd) == false)
             {
                 this.ConversionError(ClassName, fcn, $"Output file {fd.AbsoluteOutputPath} already exists!");
                 return;
             }
 
-            this.Process(fsh.Items, fd, variableBlocks);
+            this.Process(fsh.Items, fd, this.variableBlocks);
 
             this.variableBlocks = null;
             this.profileVariables = null;
@@ -381,16 +393,16 @@ namespace Eir.MFSH
             void ProcessHeader()
             {
                 {
-                    Match m = rProfile.Match(text.Line);
+                    Match m = this.rProfile.Match(text.Line);
                     if (m.Success == true)
                     {
                         String profileName = m.Groups[1].Value;
-                        StartNewProfile(profileName);
+                        this.StartNewProfile(profileName);
                         return;
                     }
                 }
                 {
-                    Match m = rValueSet.Match(text.Line);
+                    Match m = this.rValueSet.Match(text.Line);
                     if (m.Success == true)
                     {
                         String vsName = m.Groups[1].Value;
@@ -399,7 +411,7 @@ namespace Eir.MFSH
                     }
                 }
                 {
-                    Match m = rCodeSystem.Match(text.Line);
+                    Match m = this.rCodeSystem.Match(text.Line);
                     if (m.Success == true)
                     {
                         String csName = m.Groups[1].Value;
@@ -408,16 +420,16 @@ namespace Eir.MFSH
                     }
                 }
                 {
-                    Match m = rExtension.Match(text.Line);
+                    Match m = this.rExtension.Match(text.Line);
                     if (m.Success == true)
                     {
                         String extensionName = m.Groups[1].Value;
-                        StartNewExtension(extensionName);
+                        this.StartNewExtension(extensionName);
                         return;
                     }
                 }
                 {
-                    Match m = rId.Match(text.Line);
+                    Match m = this.rId.Match(text.Line);
                     if (m.Success == true)
                     {
                         String idName = m.Groups[1].Value;
@@ -426,7 +438,7 @@ namespace Eir.MFSH
                     }
                 }
                 {
-                    Match m = rTitle.Match(text.Line);
+                    Match m = this.rTitle.Match(text.Line);
                     if (m.Success == true)
                     {
                         String title = m.Groups[1].Value;
@@ -437,7 +449,7 @@ namespace Eir.MFSH
             }
 
             String expandedText = variableBlocks.ReplaceText(text.Line);
-            fd.Text.Append(expandedText);
+            fd.Append(expandedText);
             ProcessHeader();
         }
 
@@ -480,12 +492,12 @@ namespace Eir.MFSH
 
         void StartNewExtension(String extensionName)
         {
-            StartNewItem(extensionName);
+            this.StartNewItem(extensionName);
         }
 
         void StartNewProfile(String profileName)
         {
-            StartNewItem(profileName);
+            this.StartNewItem(profileName);
         }
 
         void ProcessApply(MIApply apply,
@@ -507,11 +519,11 @@ namespace Eir.MFSH
             switch (applicableItem)
             {
                 case MIMacro macro:
-                    ProcessApplyMacro(apply, fd, macro, local);
+                    this.ProcessApplyMacro(apply, fd, macro, local);
                     break;
 
                 case MIFragment frag:
-                    ProcessApplyFrag(apply, fd, frag, local);
+                    this.ProcessApplyFrag(apply, fd, frag, local);
                     break;
 
                 default:
@@ -562,8 +574,8 @@ namespace Eir.MFSH
             {
                 String pName = macro.Parameters[i];
                 String pValue = apply.Parameters[i];
-                if (variableBlocks != null)
-                    pValue = variableBlocks.ReplaceText(pValue);
+                if (this.variableBlocks != null)
+                    pValue = this.variableBlocks.ReplaceText(pValue);
                 vbParameters.Add(pName, pValue);
             }
 
@@ -574,7 +586,11 @@ namespace Eir.MFSH
 
             FileData macroData = fd;
             if (String.IsNullOrEmpty(macro.Redirect) == false)
+            {
+                if (this.skipRedirects == true)
+                    return;
                 this.GetFileData(macro.Redirect, local, out macroData);
+            }
 
             this.applyStack.Push(apply);                    // this is for stack tracing during errors
             vbParameters.Add("%ApplyStackFrame%", this.ApplyShortStackTrace().Replace("\\", "/"));

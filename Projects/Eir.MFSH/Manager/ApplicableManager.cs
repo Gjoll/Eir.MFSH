@@ -38,7 +38,7 @@ namespace Eir.MFSH.Manager
 
         public IEnumerable<MIMacro> Macros()
         {
-            foreach (Namespace ns in Namespaces(this.nameSpaces))
+            foreach (Namespace ns in this.Namespaces(this.nameSpaces))
             {
                 foreach (var item in ns.Items.Values)
                 {
@@ -50,7 +50,7 @@ namespace Eir.MFSH.Manager
 
         public IEnumerable<MIFragment> Fragments()
         {
-            foreach (Namespace ns in Namespaces(this.nameSpaces))
+            foreach (Namespace ns in this.Namespaces(this.nameSpaces))
             {
                 foreach (var item in ns.Items.Values)
                 {
@@ -79,12 +79,12 @@ namespace Eir.MFSH.Manager
 
         public bool TryGetItem(List<String> usings, String name, out MIApplicable item)
         {
-            if (TryGetItem(name, out item) == true)
+            if (this.TryGetItem(name, out item) == true)
                 return true;
 
             foreach (String use in usings)
             {
-                if (TryGetItem($"{use}.{name}", out item) == true)
+                if (this.TryGetItem($"{use}.{name}", out item) == true)
                     return true;
             }
             return false;

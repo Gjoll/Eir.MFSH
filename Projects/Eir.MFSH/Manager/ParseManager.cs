@@ -56,7 +56,7 @@ namespace Eir.MFSH
             //parser.ErrorHandler = new BailErrorStrategy();
 
             Parser.MFSHVisitor visitor = new Parser.MFSHVisitor(this.Mfsh, relativePath);
-            visitor.DebugFlag = DebugFlag;
+            visitor.DebugFlag = this.DebugFlag;
             visitor.Visit(parser.document());
             if (visitor.state.Count != 1)
             {

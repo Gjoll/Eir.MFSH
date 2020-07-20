@@ -62,10 +62,10 @@ namespace Eir.MFSH
             switch (args.Length)
             {
                 case 0:
-                    ParseCommands("mfsh.json");
+                    this.ParseCommands("mfsh.json");
                     break;
                 case 1:
-                    ParseCommands(args[0]);
+                    this.ParseCommands(args[0]);
                     break;
                 default:
                     throw new Exception($"Unexpected parameters");
@@ -74,19 +74,19 @@ namespace Eir.MFSH
 
         bool Process()
         {
-            if (options.baseInputDir == null)
+            if (this.options.baseInputDir == null)
                 throw new Exception("Missing 'baseInputDir' option setting");
-            this.mfsh.BaseInputDir = Path.GetFullPath(options.baseInputDir);
+            this.mfsh.BaseInputDir = Path.GetFullPath(this.options.baseInputDir);
 
-            if (options.baseOutputDir == null)
+            if (this.options.baseOutputDir == null)
                 throw new Exception("Missing 'baseOutputDir' option setting");
-            this.mfsh.BaseOutputDir = Path.GetFullPath(options.baseOutputDir);
+            this.mfsh.BaseOutputDir = Path.GetFullPath(this.options.baseOutputDir);
 
-            this.mfsh.FragDir = Path.GetFullPath(options.fragDir);
+            this.mfsh.FragDir = Path.GetFullPath(this.options.fragDir);
 
-            if (options.baseUrl == null)
+            if (this.options.baseUrl == null)
                 throw new Exception("Missing 'baseUrl' option setting");
-            this.mfsh.BaseUrl = options.baseUrl;
+            this.mfsh.BaseUrl = this.options.baseUrl;
 
             foreach (Options.Clean cleanDir in this.options.cleanDirs)
                 this.mfsh.FileClean(cleanDir.path, cleanDir.filter);

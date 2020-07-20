@@ -46,7 +46,7 @@ namespace Eir.MFSH.Parser
 
         void TraceMsg(ParserRuleContext context, String fcn)
         {
-            if (!DebugFlag)
+            if (!this.DebugFlag)
                 return;
             String text = context
                 .GetText()
@@ -58,7 +58,7 @@ namespace Eir.MFSH.Parser
         public override object VisitDocument(MFSHParser.DocumentContext context)
         {
             const String fcn = "VisitDocument";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
             this.VisitChildren(context);
             return null;
         }
@@ -66,7 +66,7 @@ namespace Eir.MFSH.Parser
         public override object VisitTextA(MFSHParser.TextAContext context)
         {
             const String fcn = "VisitTextA";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
 
             String line = context.GetText();
             MIText t = new MIText(this.SourceName, context.Start.Line)
@@ -80,7 +80,7 @@ namespace Eir.MFSH.Parser
         public override object VisitTextB(MFSHParser.TextBContext context)
         {
             const String fcn = "VisitTextB";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
 
             String line = context.GetText();
             MIText t = new MIText(this.SourceName, context.Start.Line)
@@ -94,7 +94,7 @@ namespace Eir.MFSH.Parser
         public override object VisitTextC(MFSHParser.TextCContext context)
         {
             const String fcn = "VisitTextC";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
 
             String line = context.GetText();
             MIText t = new MIText(this.SourceName, context.Start.Line)
@@ -108,7 +108,7 @@ namespace Eir.MFSH.Parser
         public override object VisitTextD(MFSHParser.TextDContext context)
         {
             const String fcn = "VisitTextD";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
 
             String line = context.GetText();
             MIText t = new MIText(this.SourceName, context.Start.Line)
@@ -122,7 +122,7 @@ namespace Eir.MFSH.Parser
         public override object VisitTickText(MFSHParser.TickTextContext context)
         {
             const String fcn = "VisitTickText";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
 
             String line = context.GetText();
             Int32 tickIndex = line.IndexOf('`');
@@ -139,7 +139,7 @@ namespace Eir.MFSH.Parser
         public override object VisitMacro(MFSHParser.MacroContext context)
         {
             const String fcn = "VisitMacro";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
             String[] names = context
                 .NAME()
                 .Select((a) => a.GetText())
@@ -171,7 +171,7 @@ namespace Eir.MFSH.Parser
         {
             const String fcn = "VisitFrag";
 
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
             String fragName = context.NAME().GetText();
 
             String fragmentDefinition = String.Empty;
@@ -188,7 +188,7 @@ namespace Eir.MFSH.Parser
         {
             void Err()
             {
-                Error(fcn,
+                this.Error(fcn,
                     lineNumber.ToString(),
                     $"Unexpected '#parent'");
                 throw new Exception($"Unexpected '#{visitName}'");
@@ -214,8 +214,8 @@ namespace Eir.MFSH.Parser
         {
             const String fcn = "VisitFragParent";
 
-            TraceMsg(context, fcn);
-            MIFragment f = GetFragmentState(fcn, context.Start.Line, "Parent");
+            this.TraceMsg(context, fcn);
+            MIFragment f = this.GetFragmentState(fcn, context.Start.Line, "Parent");
             f.Parent = context.NAME().GetText();
             return null;
         }
@@ -224,8 +224,8 @@ namespace Eir.MFSH.Parser
         {
             const String fcn = "VisitFragDescription";
 
-            TraceMsg(context, fcn);
-            MIFragment f = GetFragmentState(fcn, context.Start.Line, "Title");
+            this.TraceMsg(context, fcn);
+            MIFragment f = this.GetFragmentState(fcn, context.Start.Line, "Title");
             f.Description = (String)this.Visit(context.anyString());
             return null;
         }
@@ -234,8 +234,8 @@ namespace Eir.MFSH.Parser
         {
             const String fcn = "VisitFragTitle";
 
-            TraceMsg(context, fcn);
-            MIFragment f = GetFragmentState(fcn, context.Start.Line, "Title");
+            this.TraceMsg(context, fcn);
+            MIFragment f = this.GetFragmentState(fcn, context.Start.Line, "Title");
             f.Title = (String)this.Visit(context.anyString());
             return null;
         }
@@ -281,7 +281,7 @@ namespace Eir.MFSH.Parser
         public override Object VisitIf([NotNull] MFSHParser.IfContext context)
         {
             const String fcn = "VisitIf";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
             ConditionalBlock conditionalBlock = new ConditionalBlock(this.SourceName,
                 context.Start.Line);
             this.PushState(conditionalBlock);
@@ -294,7 +294,7 @@ namespace Eir.MFSH.Parser
         public override Object VisitElse([NotNull] MFSHParser.ElseContext context)
         {
             const String fcn = "VisitElse";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
             ConditionalBlock conditionalBlock = this.Current as ConditionalBlock;
             if (conditionalBlock == null)
             {
@@ -311,7 +311,7 @@ namespace Eir.MFSH.Parser
         public override Object VisitElseIf([NotNull] MFSHParser.ElseIfContext context)
         {
             const String fcn = "VisitElseIf";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
             ConditionalBlock conditionalBlock = this.Current as ConditionalBlock;
             if (conditionalBlock == null)
             {
@@ -390,7 +390,7 @@ namespace Eir.MFSH.Parser
         public override object VisitEnd(MFSHParser.EndContext context)
         {
             const String fcn = "VisitEnd";
-            TraceMsg(context, fcn);
+            this.TraceMsg(context, fcn);
 
             ParseBlock s = this.PopState();
             switch (s)
@@ -410,7 +410,7 @@ namespace Eir.MFSH.Parser
                     break;
 
                 default:
-                    Error(fcn,
+                    this.Error(fcn,
                         context.Start.Line.ToString(),
                         $"Unexpected '#end'");
                     throw new Exception($"Unexpected '#end'");

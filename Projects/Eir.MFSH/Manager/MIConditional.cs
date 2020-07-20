@@ -60,7 +60,7 @@ namespace Eir.MFSH
         {
             public override bool IsTrue(List<VariablesBlock> variableBlocks)
             {
-                if (Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
+                if (this.Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
                     return false;
                 return lhsValue == rhsValue;
             }
@@ -70,7 +70,7 @@ namespace Eir.MFSH
         {
             public override bool IsTrue(List<VariablesBlock> variableBlocks)
             {
-                if (Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
+                if (this.Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
                     return false;
                 return lhsValue < rhsValue;
             }
@@ -80,7 +80,7 @@ namespace Eir.MFSH
         {
             public override bool IsTrue(List<VariablesBlock> variableBlocks)
             {
-                if (Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
+                if (this.Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
                     return false;
                 return lhsValue <= rhsValue;
             }
@@ -90,7 +90,7 @@ namespace Eir.MFSH
         {
             public override bool IsTrue(List<VariablesBlock> variableBlocks)
             {
-                if (Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
+                if (this.Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
                     return false;
                 return lhsValue > rhsValue;
             }
@@ -100,7 +100,7 @@ namespace Eir.MFSH
         {
             public override bool IsTrue(List<VariablesBlock> variableBlocks)
             {
-                if (Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
+                if (this.Values(variableBlocks, out Int32 lhsValue, out Int32 rhsValue) == false)
                     return false;
                 return lhsValue >= rhsValue;
             }

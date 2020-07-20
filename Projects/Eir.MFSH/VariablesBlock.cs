@@ -18,8 +18,8 @@ namespace Eir.MFSH
 
         public void Set(String key, String value)
         {
-            Remove(key);
-            Add(key, value);
+            this.Remove(key);
+            this.Add(key, value);
         }
 
         public String ReplaceText(String text)
@@ -29,7 +29,7 @@ namespace Eir.MFSH
             foreach (String key in this.variables.Keys)
             {
                 String value = this.variables[key];
-                text = ReplaceText(text, key, value);
+                text = this.ReplaceText(text, key, value);
             }
 
             return text;
@@ -43,7 +43,7 @@ namespace Eir.MFSH
             if (word[0] == '%')
                 text = text.Replace(word, byWhat);
             else
-                text = ReplaceWholeWord(text, word, byWhat);
+                text = this.ReplaceWholeWord(text, word, byWhat);
             return text;
         }
 

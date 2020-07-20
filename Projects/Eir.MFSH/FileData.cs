@@ -11,11 +11,26 @@ namespace Eir.MFSH
     [DebuggerDisplay("{" + nameof(FileData.AbsoluteOutputPath) + "}")]
     public class FileData
     {
+        StringBuilder txtBuilder = new StringBuilder();
+
         public String AbsoluteOutputPath { get; set; }
-        public StringBuilder Text { get; }  = new StringBuilder();
+
+        public String Text => this.txtBuilder.ToString();
 
         public FileData()
         {
+        }
+
+        public void AppendLine(String text)
+        {
+            //Debug.Assert(text.Contains('%') == false);
+            this.txtBuilder.AppendLine(text);
+        }
+
+        public void Append(String text)
+        {
+            //Debug.Assert(text.Contains('%') == false);
+            this.txtBuilder.Append(text);
         }
     }
 }

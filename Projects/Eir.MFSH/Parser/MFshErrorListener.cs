@@ -64,7 +64,7 @@ namespace Eir.MFSH.Parser
                 sb.AppendLine(msg);
 
                 this.mFsh.ConversionError("mFsh",
-                    sourceName,
+                    this.sourceName,
                     sb.ToString());
             }
         }
@@ -86,7 +86,7 @@ namespace Eir.MFSH.Parser
             String msg,
             RecognitionException e)
         {
-            Error(recognizer, line, charPositionInLine, msg, e);
+            this.Error(recognizer, line, charPositionInLine, msg, e);
         }
     }
 
@@ -108,7 +108,7 @@ namespace Eir.MFSH.Parser
         String msg,
         RecognitionException e)
         {
-            Error(recognizer, line, charPositionInLine, msg, e);
+            this.Error(recognizer, line, charPositionInLine, msg, e);
         }
     }
 }
