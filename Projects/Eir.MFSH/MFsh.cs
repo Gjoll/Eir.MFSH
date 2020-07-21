@@ -215,15 +215,16 @@ namespace Eir.MFSH
                 return;
             }
 
-            String fragmentTemplate = File.ReadAllText(this.FragTemplatePath);
-            this.skipRedirects = true;
+            String fragTempText = File.ReadAllText(this.FragTemplatePath);
+            MIPreFsh fragTempCmds = this.Parser.ParseOne(fragTempText, this.FragTemplatePath);
+            
             Dictionary<String, FileData> fragFileData = new Dictionary<string, FileData>();
             foreach (MIFragment frag in this.MacroMgr.Fragments())
-                this.ProcessFragment(fragFileData, fragmentTemplate, frag);
+                this.ProcessFragment(fragFileData, fragTempCmds, frag);
         }
 
         void ProcessFragment(Dictionary<String, FileData> fragFileData,
-            String fragmentTemplate,
+            MIPreFsh fragTempCmds,
             MIFragment frag)
         {
             const String fcn = "ProcessFragment";
@@ -266,8 +267,10 @@ namespace Eir.MFSH
             local.Insert(0, this.profileVariables);
             local.Insert(0, localVb);
 
-            String expandedFragTemplate = local.ReplaceText(fragmentTemplate);
-            fd.Append(expandedFragTemplate);
+            this.skipRedirects = false;
+            this.Process(fragTempCmds.Items, fd, local);
+            this.skipRedirects = true;
+
             this.Process(frag.Items, fd, local);
         }
 

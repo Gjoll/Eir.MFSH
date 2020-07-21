@@ -36,6 +36,15 @@ namespace Eir.MFSH
         public MIPreFsh ParseOne(String fshText,
             String relativePath)
         {
+            MIPreFsh retVal = ParseOneOnly(fshText, relativePath);
+            this.Fsh.Add(retVal);
+            return retVal;
+        }
+
+
+        public MIPreFsh ParseOneOnly(String fshText,
+            String relativePath)
+        {
             fshText = fshText.Replace("\r", "");
             String[] inputLines = fshText.Split('\n');
 
@@ -72,7 +81,6 @@ namespace Eir.MFSH
                 Usings = visitor.Usings
             };
 
-            this.Fsh.Add(retVal);
             return retVal;
         }
     }
