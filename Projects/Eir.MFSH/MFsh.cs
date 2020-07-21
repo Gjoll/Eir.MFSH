@@ -251,7 +251,7 @@ namespace Eir.MFSH
             String name = frag.Name;
             if (name.Contains('.'))
                 name = name.Substring(name.LastIndexOf('.')+1);
-            fd.AppendLine($"Profile: {frag.Name}");
+            fd.AppendLine($"Profile: {name}");
             fd.AppendLine($"Parent: {frag.Parent}");
 
             StringHdr("Title", frag.Title);
