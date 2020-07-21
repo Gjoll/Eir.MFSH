@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace Eir.MFSH
@@ -41,13 +43,68 @@ namespace Eir.MFSH
                 return text;
 
             if (word[0] == '%')
-                text = text.Replace(word, byWhat);
+                text = this.Replace(text, word, byWhat);
             else
                 text = this.ReplaceWholeWord(text, word, byWhat);
             return text;
         }
 
-        public String ReplaceWholeWord(String s, String wordToReplace, String bywhat)
+        public String Replace(String s, String wordToReplace, String byWhat)
+        {
+            StringBuilder margin = new StringBuilder();
+            {
+                Int32 i = 0;
+                while ((i < s.Length) && (Char.IsWhiteSpace(s[i])))
+                    margin.Append(s[i++]);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            Int32 index = 0;
+            while (true)
+            {
+                void CopyText(Int32 j)
+                {
+                    if (j <= index)
+                        return;
+                    sb.Append(s.Substring(index, j - index));
+                }
+
+                Int32 i = s.IndexOf(wordToReplace, index, s.Length - index);
+                if (i < 0)
+                {
+                    CopyText(s.Length);
+                    return sb.ToString();
+                }
+
+                CopyText(i);
+                if (byWhat.Contains('\n') == false)
+                {
+                    sb.Append(byWhat);
+                }
+                else
+                {
+                    String[] byWhatLines = byWhat.Split('\n');
+                    sb.AppendLine(byWhatLines[0]);
+                    for (Int32 j = 1; j < byWhatLines.Length - 1; j++)
+                    {
+                        String line = byWhatLines[j].TrimStart();
+                        sb.Append(margin);
+                        sb.AppendLine(line);
+                    }
+                    {
+                        String line = byWhatLines[byWhatLines.Length - 1].TrimStart();
+                        sb.Append(margin);
+                        sb.Append(line);
+                    }
+                }
+                i += wordToReplace.Length;
+                index = i;
+            }
+
+        }
+
+
+        public String ReplaceWholeWord(String s, String wordToReplace, String byWhat)
         {
             bool IsBreakChar(char c)
             {
@@ -72,6 +129,11 @@ namespace Eir.MFSH
                 }
             }
 
+            StringBuilder margin = new StringBuilder();
+            while ((i < s.Length) && (Char.IsWhiteSpace(s[i])))
+                margin.Append(s[i++]);
+            i = 0;
+
             String GetWholeWord()
             {
                 StringBuilder w = new StringBuilder();
@@ -91,7 +153,29 @@ namespace Eir.MFSH
                 SkipLeading();
                 String wholeWord = GetWholeWord();
                 if (String.Compare(wholeWord, wordToReplace, StringComparison.Ordinal) == 0)
-                    sb.Append(bywhat);
+                {
+                    if (byWhat.Contains('\n') == false)
+                    {
+                        sb.Append(byWhat);
+                    }
+                    else
+                    {
+                        String[] byWhatLines = byWhat.Split('\n');
+                        sb.AppendLine(byWhatLines[0]);
+                        for (Int32 j = 1; j < byWhatLines.Length-1; j++)
+                        {
+                            String line = byWhatLines[j].TrimStart();
+                            sb.Append(margin);
+                            sb.AppendLine(line);
+                        }
+
+                        {
+                            String line = byWhatLines[byWhatLines.Length - 1].TrimStart();
+                            sb.Append(margin);
+                            sb.Append(line);
+                        }
+                    }
+                }
                 else
                     sb.Append(wholeWord);
             }

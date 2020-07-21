@@ -251,13 +251,13 @@ namespace Eir.MFSH
             String name = frag.Name;
             if (name.Contains('.'))
                 name = name.Substring(name.LastIndexOf('.')+1);
+            StartNewItem(name);
             fd.AppendLine($"Profile: {name}");
             fd.AppendLine($"Parent: {frag.Parent}");
 
             StringHdr("Title", frag.Title);
             StringHdr("Description", frag.Description);
 
-            Debug.Assert(relativePath.Contains("%") == false);
             fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
 
             List<VariablesBlock> local = new List<VariablesBlock>();
@@ -284,13 +284,11 @@ namespace Eir.MFSH
             out FileData fd)
         {
             relativePath = variableBlocks.ReplaceText(relativePath);
-            Debug.Assert(relativePath.Contains("%") == false);
             String absolutePath = Path.Combine(this.BaseOutputDir, relativePath);
             if (this.FileItems.TryGetValue(absolutePath, out fd))
                 return false;
             fd = new FileData();
             fd.AbsoluteOutputPath = absolutePath;
-            Debug.Assert(relativePath.Contains("%") == false);
             this.FileItems.Add(fd.AbsoluteOutputPath, fd);
             return true;
         }
@@ -474,7 +472,6 @@ namespace Eir.MFSH
             {
                 sb.Append($@"{applyStackFrame.SourceFile}#{applyStackFrame.LineNumber}\n");
             }
-            //Debug.Assert(sb.ToString().Contains("Configure.minc") == false);
             return sb.ToString();
         }
 

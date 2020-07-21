@@ -23,13 +23,11 @@ namespace Eir.MFSH
 
         public void AppendLine(String text)
         {
-            //Debug.Assert(text.Contains('%') == false);
             this.txtBuilder.AppendLine(text);
         }
 
         public void Append(String text)
         {
-            //Debug.Assert(text.Contains('%') == false);
             this.txtBuilder.Append(text);
         }
     }
