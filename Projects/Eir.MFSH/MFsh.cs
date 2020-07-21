@@ -44,6 +44,7 @@ namespace Eir.MFSH
         public string BaseOutputDir { get; set; }
 
         public string FragDir { get; set; }
+        public String FragTemplatePath { get; set; }
 
         // Keep track of include files so we dont end up in recursive loop.
         List<String> sources = new List<string>();
@@ -197,15 +198,33 @@ namespace Eir.MFSH
 
         void ProcessFragments()
         {
+            const String fcn = "ProcessFragments";
+
             if (String.IsNullOrEmpty(this.FragDir))
                 return;
+
+            if (String.IsNullOrEmpty(this.FragTemplatePath) == true)
+            {
+                this.ConversionError(ClassName, fcn, $"Fragment template not set!");
+                return;
+            }
+
+            if (File.Exists(this.FragTemplatePath) == false)
+            {
+                this.ConversionError(ClassName, fcn, $"Fragment template {this.FragTemplatePath} does not exist!");
+                return;
+            }
+
+            String fragmentTemplate = File.ReadAllText(this.FragTemplatePath);
             this.skipRedirects = true;
             Dictionary<String, FileData> fragFileData = new Dictionary<string, FileData>();
             foreach (MIFragment frag in this.MacroMgr.Fragments())
-                this.ProcessFragment(fragFileData, frag);
+                this.ProcessFragment(fragFileData, fragmentTemplate, frag);
         }
 
-        void ProcessFragment(Dictionary<String, FileData> fragFileData, MIFragment frag)
+        void ProcessFragment(Dictionary<String, FileData> fragFileData,
+            String fragmentTemplate,
+            MIFragment frag)
         {
             const String fcn = "ProcessFragment";
 
@@ -229,40 +248,26 @@ namespace Eir.MFSH
                 fd.AppendLine("");
             }
 
-            void StringHdr(String hdrName, String text)
-            {
-                if (String.IsNullOrEmpty(text) == true)
-                    return;
-
-                String[] lines = text.Split('\n');
-                if (lines.Length == 1)
-                {
-                    fd.AppendLine($"{hdrName}: \"{lines[0]}\"");
-                }
-                else
-                {
-                    fd.AppendLine($"{hdrName}: \"\"\"");
-                    foreach (String line in lines)
-                        fd.AppendLine($"  {line}");
-                    fd.AppendLine($"  \"\"\"");
-                }
-            }
-
             String name = frag.Name;
             if (name.Contains('.'))
                 name = name.Substring(name.LastIndexOf('.')+1);
             StartNewItem(name);
-            fd.AppendLine($"Profile: {name}");
-            fd.AppendLine($"Parent: {frag.Parent}");
-
-            StringHdr("Title", frag.Title);
-            StringHdr("Description", frag.Description);
 
             fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
+
+            VariablesBlock localVb = new VariablesBlock();
+            localVb.Add("%Name%", name);
+            localVb.Add("%Parent%", frag.Parent);
+            localVb.Add("%Title%", frag.Title);
+            localVb.Add("%Description%", frag.Description);
 
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.Insert(0, this.GlobalVars);
             local.Insert(0, this.profileVariables);
+            local.Insert(0, localVb);
+
+            String expandedFragTemplate = local.ReplaceText(fragmentTemplate);
+            fd.Append(expandedFragTemplate);
             this.Process(frag.Items, fd, local);
         }
 

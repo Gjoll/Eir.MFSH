@@ -31,6 +31,7 @@ namespace Eir.MFSH
             public String baseInputDir { get; set; }
             public String baseOutputDir { get; set; }
             public String fragDir { get; set; }
+            public String fragTemplatePath { get; set; }
             public String baseUrl { get; set; }
             public Clean[] cleanDirs { get; set; }
             public String[] mfshPaths { get; set; }
@@ -45,7 +46,6 @@ namespace Eir.MFSH
             this.mfsh = new MFsh();
             this.mfsh.BaseInputDir = Path.GetFullPath(".");
             this.mfsh.BaseOutputDir = Path.GetFullPath(".");
-            this.mfsh.FragDir = null;
             this.mfsh.ConsoleLogging();
         }
 
@@ -83,6 +83,8 @@ namespace Eir.MFSH
             this.mfsh.BaseOutputDir = Path.GetFullPath(this.options.baseOutputDir);
 
             this.mfsh.FragDir = Path.GetFullPath(this.options.fragDir);
+            if (String.IsNullOrEmpty(this.options.fragTemplatePath) == false)
+                this.mfsh.FragTemplatePath = Path.GetFullPath(this.options.fragTemplatePath);
 
             if (this.options.baseUrl == null)
                 throw new Exception("Missing 'baseUrl' option setting");
