@@ -257,10 +257,12 @@ namespace Eir.MFSH
             fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
 
             VariablesBlock localVb = new VariablesBlock();
-            localVb.Add("%Name%", name);
-            localVb.Add("%Parent%", frag.Parent);
-            localVb.Add("%Title%", frag.Title);
-            localVb.Add("%Description%", frag.Description);
+            localVb.Add("%FId%", name);
+            localVb.Add("%FParent%", frag.Parent);
+            localVb.Add("%FTitle%", frag.Title);
+            localVb.Add("%FDescription%", frag.Description);
+            String fragmentUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
+            localVb.Add("%FUrl%", fragmentUrl);
 
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.Insert(0, this.GlobalVars);
