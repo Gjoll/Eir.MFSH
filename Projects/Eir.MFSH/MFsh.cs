@@ -217,7 +217,7 @@ namespace Eir.MFSH
 
             String fragTempText = File.ReadAllText(this.FragTemplatePath);
             MIPreFsh fragTempCmds = this.Parser.ParseOne(fragTempText, this.FragTemplatePath);
-            
+
             Dictionary<String, FileData> fragFileData = new Dictionary<string, FileData>();
             foreach (MIFragment frag in this.MacroMgr.Fragments())
                 this.ProcessFragment(fragFileData, fragTempCmds, frag);
@@ -249,25 +249,13 @@ namespace Eir.MFSH
                 fd.AppendLine("");
             }
 
-            String name = frag.Name;
-            if (name.Contains('.'))
-                name = name.Substring(name.LastIndexOf('.')+1);
-            StartNewItem(name);
-
-            fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
-
-            VariablesBlock localVb = new VariablesBlock();
-            localVb.Add("%FId%", name);
-            localVb.Add("%FParent%", frag.Parent);
-            localVb.Add("%FTitle%", frag.Title);
-            localVb.Add("%FDescription%", frag.Description);
-            String fragmentUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
-            localVb.Add("%FUrl%", fragmentUrl);
-
+            VariablesBlock localVb = StartNewFrag(frag, out String name);
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.Insert(0, this.GlobalVars);
             local.Insert(0, this.profileVariables);
             local.Insert(0, localVb);
+
+            fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
 
             this.skipRedirects = false;
             this.Process(fragTempCmds.Items, fd, local);
@@ -507,6 +495,25 @@ namespace Eir.MFSH
             this.StartNewItem(profileName);
         }
 
+        VariablesBlock StartNewFrag(MIFragment frag,
+            out String name)
+        {
+            name = frag.Name;
+            if (name.Contains('.'))
+                name = name.Substring(name.LastIndexOf('.') + 1);
+
+            VariablesBlock localVb = new VariablesBlock();
+            localVb.Add("%FId%", name);
+            localVb.Add("%FParent%", frag.Parent);
+            localVb.Add("%FTitle%", frag.Title);
+            localVb.Add("%FDescription%", frag.Description);
+            String fragmentUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
+            localVb.Add("%FUrl%", fragmentUrl);
+
+            return localVb;
+        }
+
+
         void ProcessApply(MIApply apply,
             FileData fd,
             List<VariablesBlock> variableBlocks)
@@ -638,9 +645,14 @@ namespace Eir.MFSH
                 return;
             }
 
+            VariablesBlock localVb = StartNewFrag(frag, out String name);
+            List<VariablesBlock> fragLocal = new List<VariablesBlock>();
+            fragLocal.AddRange(local);
+            fragLocal.Insert(0, localVb);
+
             FileData macroData = fd;
             this.applyStack.Push(apply);                    // this is for stack tracing during errors
-            this.Process(frag.Items, macroData, local);
+            this.Process(frag.Items, macroData, fragLocal);
             this.applyStack.Pop();
         }
 
