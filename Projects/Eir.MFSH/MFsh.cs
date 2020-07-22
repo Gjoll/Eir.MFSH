@@ -510,6 +510,8 @@ namespace Eir.MFSH
             String fragmentUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
             localVb.Add("%FUrl%", fragmentUrl);
 
+            this.appliedMacros.Clear();
+            this.incompatibleMacros.Clear();
             return localVb;
         }
 
