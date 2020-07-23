@@ -30,11 +30,6 @@ namespace Eir.MFSH
         public bool AppliedFlag { get; set; } = false;
 
         /// <summary>
-        /// If set, this macro is only instantiated once.
-        /// </summary>
-        public bool SingleFlag { get; set; }
-
-        /// <summary>
         /// Output path if redirection set
         /// </summary>
         public String Redirect { get; set; }

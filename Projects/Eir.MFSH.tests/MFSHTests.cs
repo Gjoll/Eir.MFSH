@@ -244,6 +244,9 @@ namespace Eir.MFSH.Tests
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Line 1\n");
                 sb.Append("Line 2\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 2\n");
+                sb.Append("Line 2\n");
                 sb.Append("Line 3\n");
                 Assert.True(mfsh.TryGetTextByRelativePath("MFshFragTest1C.fsh", out String fsh));
                 Assert.True(fsh == sb.ToString());

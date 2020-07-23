@@ -510,8 +510,8 @@ namespace Eir.MFSH
             String fragmentUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
             localVb.Add("%FUrl%", fragmentUrl);
 
-            this.appliedMacros.Clear();
-            this.incompatibleMacros.Clear();
+            //this.appliedMacros.Clear();
+            //this.incompatibleMacros.Clear();
             return localVb;
         }
 
@@ -562,7 +562,10 @@ namespace Eir.MFSH
                 return;
             }
 
-            if (macro.SingleFlag && macro.AppliedFlag)
+            if (
+                (macro.UniqueFlag == MIApplicable.UniqueFlags.Global) &&
+                (macro.AppliedFlag == true)
+                )
                 return;
 
             macro.AppliedFlag = true;
@@ -573,7 +576,10 @@ namespace Eir.MFSH
                 firstFlag = true;
             }
 
-            if ((macro.OnceFlag == true) && (firstFlag == false))
+            if (
+                (macro.UniqueFlag == MIApplicable.UniqueFlags.Profile) &&
+                (firstFlag == false)
+                )
                 return;
 
             if (this.incompatibleMacros.Contains(apply.Name))
@@ -636,7 +642,7 @@ namespace Eir.MFSH
                 firstFlag = true;
             }
 
-            if ((frag.OnceFlag == true) && (firstFlag == false))
+            if ((frag.UniqueFlag == MIApplicable.UniqueFlags.Profile) && (firstFlag == false))
                 return;
 
             if (this.incompatibleMacros.Contains(apply.Name))

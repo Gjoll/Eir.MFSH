@@ -71,7 +71,7 @@ namespace Eir.MFSH.Tests
             }
             MIMacro macro1 = (MIMacro)item1;
             Assert.True(macro1.Redirect == @"A\B.txt");
-            Assert.True(macro1.OnceFlag == true);
+            Assert.True(macro1.UniqueFlag == MIApplicable.UniqueFlags.Profile);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Eir.MFSH.Tests
             MIPreFsh b = ParseTest("MgrMacroParametersTest.mfsh", out MFsh mfsh);
             Assert.True(mfsh.MacroMgr.TryGetItem(null, "Macro1", out MIApplicable item1));
             MIMacro macro1 = (MIMacro)item1;
-            Assert.True(macro1.OnceFlag == false);
+            Assert.True(macro1.UniqueFlag == MIApplicable.UniqueFlags.Always);
             Assert.True(macro1.Parameters.Count == 3);
             Assert.True(macro1.Parameters[0] == "Param1");
             Assert.True(macro1.Parameters[1] == "Param2");

@@ -151,12 +151,14 @@ namespace Eir.MFSH.Parser
             var redirectContext = context.redirect();
             if (redirectContext != null)
                 macro.Redirect = (String)(this.Visit(redirectContext.singleString()));
+            macro.UniqueFlag = MIApplicable.UniqueFlags.Always;
+            {
+                var uniquenessCtx = context.uniqueness();
+                if (uniquenessCtx != null)
+                    macro.UniqueFlag = (MIApplicable.UniqueFlags)this.Visit(uniquenessCtx);
+            }
 
-            macro.SingleFlag = (context.SINGLE() != null);
-            macro.OnceFlag = (context.ONCE() != null);
-            if (
-                (macro.OnceFlag || macro.SingleFlag) &&
-                (macro.Parameters.Count > 0))
+            if ((macro.UniqueFlag != MIApplicable.UniqueFlags.Always) && (macro.Parameters.Count > 0))
             {
                 this.Error(fcn,
                     context.Start.Line.ToString(),
@@ -165,6 +167,16 @@ namespace Eir.MFSH.Parser
             }
 
             return null;
+        }
+
+        public override Object VisitProfile([NotNull] MFSHParser.ProfileContext context)
+        {
+            return MIApplicable.UniqueFlags.Profile;
+        }
+
+        public override Object VisitGlobal([NotNull] MFSHParser.GlobalContext context)
+        {
+            return MIApplicable.UniqueFlags.Global;
         }
 
         public override object VisitFrag(MFSHParser.FragContext context)
@@ -178,7 +190,17 @@ namespace Eir.MFSH.Parser
 
             MIFragment frag = new MIFragment(this.SourceName, context.Start.Line, fragName);
             MacroBlock macroBlock = new MacroBlock("frag", frag);
-            frag.OnceFlag = (context.ONCE() != null);
+
+
+
+            frag.UniqueFlag = MIApplicable.UniqueFlags.Always;
+            {
+                var profileCtx = context.profile();
+                if (profileCtx != null)
+                    frag.UniqueFlag = (MIApplicable.UniqueFlags)this.Visit(profileCtx);
+            }
+
+
             this.PushState(macroBlock);
 
             return null;

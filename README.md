@@ -86,10 +86,10 @@ macro value (i.e. fsh text)
 | name | meaning |
 | ---- | -------------- |
 | {name}| name of the macro. The name must be unique in the project |
-| {once} | optional flag indicating that the macro should only be referenced once in any profile.
+| {profile} | optional flag indicating that the macro should only be referenced once in any profile.
 All references after the initial reference will be ignored. 
 If once is included, then the macro must have no macros |
-| {single} | Similar to once, except that the macro should only be referenced a single time,
+| {global} | Similar to profile, except that the macro should only be referenced a single time,
 even if called from multiple profiles |
 | {parameter names} | A comma separated list of parameter names that define paraneters to expand when the macro is invoked.
 Each parameter will be treated like a variable, and can have the format name or %name%. |

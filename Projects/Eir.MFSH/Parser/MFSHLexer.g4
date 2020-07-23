@@ -17,10 +17,10 @@ END: 'end';
 IF: 'if' ;
 ELSE: 'else' ;
 FRAGMENT: 'Fragment' ;
+GLOBAL: 'global';
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
-ONCE: 'once';
-SINGLE: 'single';
+PROFILE: 'profile';
 USE: 'use';
 
 PARENT : 'Parent' ;
