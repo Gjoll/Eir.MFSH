@@ -229,6 +229,9 @@ namespace Eir.MFSH
         {
             const String fcn = "ProcessFragment";
 
+            this.appliedMacros.Clear();
+            this.incompatibleMacros.Clear();
+
             String relativePath = this.SetProfileVariables(frag.SourceFile);
 
             if (String.IsNullOrEmpty(frag.Parent) == true)
