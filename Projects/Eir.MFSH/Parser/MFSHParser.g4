@@ -22,12 +22,9 @@ mfshCmd: apply | description | end | if | elseIf | else | frag | incompatible | 
 apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 incompatible: INCOMPATIBLE NAME ;
-macro: MACRO uniqueness? NAME OPAR (NAME (COMMA NAME)* )? CPAR ? redirect?;
+macro: MACRO ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR ? redirect?;
 redirect: GT singleString ;
-uniqueness: global | profile;
-global: GLOBAL;
-profile: PROFILE ;
-frag: FRAGMENT COLON profile? NAME ;
+frag: FRAGMENT COLON ONCE? NAME ;
 parent: PARENT COLON NAME ;
 description: DESCRIPTION COLON anyString ;
 title: TITLE COLON anyString ;

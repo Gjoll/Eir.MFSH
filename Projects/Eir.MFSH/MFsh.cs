@@ -569,12 +569,6 @@ namespace Eir.MFSH
                 return;
             }
 
-            if (
-                (macro.UniqueFlag == MIApplicable.UniqueFlags.Global) &&
-                (macro.AppliedFlag == true)
-                )
-                return;
-
             macro.AppliedFlag = true;
             bool firstFlag = false;
             if (this.appliedMacros.Contains(apply.Name) == false)
@@ -583,10 +577,7 @@ namespace Eir.MFSH
                 firstFlag = true;
             }
 
-            if (
-                (macro.UniqueFlag == MIApplicable.UniqueFlags.Profile) &&
-                (firstFlag == false)
-                )
+            if ((macro.OnceFlag == true) && (firstFlag == false))
                 return;
 
             if (this.incompatibleMacros.Contains(apply.Name))
@@ -649,7 +640,7 @@ namespace Eir.MFSH
                 firstFlag = true;
             }
 
-            if ((frag.UniqueFlag == MIApplicable.UniqueFlags.Profile) && (firstFlag == false))
+            if ((frag.OnceFlag == true) && (firstFlag == false))
                 return;
 
             if (this.incompatibleMacros.Contains(apply.Name))

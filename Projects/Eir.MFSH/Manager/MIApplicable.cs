@@ -14,13 +14,6 @@ namespace Eir.MFSH
     [DebuggerDisplay("{Name}")]
     public class MIApplicable : MIBase
     {
-        public enum UniqueFlags
-        {
-            Always,
-            Profile,
-            Global
-        };
-
         /// <summary>
         /// Name of macro
         /// </summary>
@@ -29,7 +22,7 @@ namespace Eir.MFSH
         /// <summary>
         /// If set, this macro is only instantiated once.
         /// </summary>
-        public UniqueFlags UniqueFlag { get; set; }
+        public bool OnceFlag { get; set; }
 
         /// <summary>
         /// Variables that are local to this macro
