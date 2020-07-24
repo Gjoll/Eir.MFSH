@@ -13,7 +13,23 @@ namespace Eir.MFSH
     [DebuggerDisplay("Apply'{Name}'")]
     public class MIApply : MIBase
     {
+        /// <summary>
+        /// Name of macro to apply.
+        /// </summary>
         public String Name { get; set; }
+
+        /// <summary>
+        /// True if once specified on call.
+        /// If true, then macro is actually only applied once 
+        /// (first time called).
+        /// </summary>
+        public bool OnceFlag { get; set; } = false;
+
+        /// <summary>
+        /// Number of times that this apply has been executed.
+        /// </summary>
+        public Int32 ApplyCount { get; set; } = 0;
+
         public List<String> Parameters = new List<String>();
         public List<String> Usings = new List<String>();
 

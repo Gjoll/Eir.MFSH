@@ -20,6 +20,7 @@ FRAGMENT: 'Fragment' ;
 GLOBAL: 'global';
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
+ONCE: 'once';
 PROFILE: 'profile';
 USE: 'use';
 

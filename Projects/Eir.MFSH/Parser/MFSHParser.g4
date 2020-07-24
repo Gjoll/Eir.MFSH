@@ -19,7 +19,7 @@ mfshCmds: MFSH mfshCmd* ;
 
 mfshCmd: apply | description | end | if | elseIf | else | frag | incompatible | macro | parent | title | use ;
 
-apply: APPLY NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
+apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
 incompatible: INCOMPATIBLE NAME ;
 macro: MACRO uniqueness? NAME OPAR (NAME (COMMA NAME)* )? CPAR ? redirect?;

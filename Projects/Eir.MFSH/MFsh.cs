@@ -528,6 +528,10 @@ namespace Eir.MFSH
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.AddRange(variableBlocks);
 
+            apply.ApplyCount += 1;
+            if ((apply.OnceFlag) && (apply.ApplyCount > 1))
+                return;
+
             if (this.MacroMgr.TryGetItem(apply.Usings, apply.Name, out MIApplicable applicableItem) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";

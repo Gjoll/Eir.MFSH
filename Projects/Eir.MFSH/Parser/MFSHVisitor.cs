@@ -288,6 +288,7 @@ namespace Eir.MFSH.Parser
                 apply.Parameters.Add(s);
             }
 
+            apply.OnceFlag = (context.ONCE() != null);
             apply.Usings = this.Usings;
 
             this.Current.Items.Add(apply);
