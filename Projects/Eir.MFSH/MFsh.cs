@@ -405,6 +405,7 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String vsName = m.Groups[1].Value;
+                        this.profileVariables.Set("%ValueSetId%", vsName);
                         this.profileVariables.Set("%Id%", vsName);
                         return;
                     }
@@ -414,6 +415,7 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String csName = m.Groups[1].Value;
+                        this.profileVariables.Set("%CodeSystemId%", csName);
                         this.profileVariables.Set("%Id%", csName);
                         return;
                     }
@@ -432,6 +434,7 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String idName = m.Groups[1].Value;
+                        this.profileVariables.Set("%ProfileId%", idName);
                         this.profileVariables.Set("%Id%", idName);
                         return;
                     }
@@ -479,6 +482,7 @@ namespace Eir.MFSH
         void StartNewItem(String name)
         {
             // %Id% defaults to profile unless explicitly set (later)
+            this.profileVariables.Set("%ProfileId%", name);
             this.profileVariables.Set("%Id%", name);
 
             String profileUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
@@ -506,7 +510,8 @@ namespace Eir.MFSH
                 name = name.Substring(name.LastIndexOf('.') + 1);
 
             VariablesBlock localVb = new VariablesBlock();
-            localVb.Add("%FId%", name);
+            localVb.Add("%Id%", name);
+            localVb.Add("%FragmentId%", name);
             localVb.Add("%FParent%", frag.Parent);
             localVb.Add("%FTitle%", frag.Title);
             localVb.Add("%FDescription%", frag.Description);
