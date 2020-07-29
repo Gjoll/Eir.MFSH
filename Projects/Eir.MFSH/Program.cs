@@ -10,6 +10,12 @@ using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+/*
+ * TODO
+ * Document %ProfileId%, %FragmentId%, %CodeSystemId%, %ValueSetName% and
+ * modifications to %Id%
+ *
+ */
 namespace Eir.MFSH
 {
     class Program
