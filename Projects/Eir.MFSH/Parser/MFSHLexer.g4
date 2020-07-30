@@ -1,6 +1,6 @@
 lexer grammar MFSHLexer;
 
-MFSH: [ \t]* '#' -> pushMode(MFSHMode);
+MFSH: [\n\r \t]* '#' -> pushMode(MFSHMode);
 TEXTA: [ \t]* ~[ \t#\n`]+  ~'\n'* '\n';
 TEXTB: [ \t]* ~[ \t#\n`]+  ~'\n'* EOF;
 TEXTC: [ \t]* '\n';
