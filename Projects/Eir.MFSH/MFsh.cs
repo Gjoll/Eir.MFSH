@@ -310,8 +310,7 @@ namespace Eir.MFSH
 
                 this.profileVariables.Set("%BasePath%", baseRPath);
                 this.profileVariables.Set("%BaseDir%", baseDir);
-                this.profileVariables.Set("%BaseName%", baseName);
-                this.profileVariables.Set("%BaseNameNoExtension%", baseNameNoExtension);
+                this.profileVariables.Set("%BaseName%", baseNameNoExtension);
                 this.profileVariables.Set("%SavePath%", $"{relativeFshPath}");
             }
             return relativeFshPath;
@@ -533,6 +532,7 @@ namespace Eir.MFSH
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.AddRange(variableBlocks);
 
+            //Debug.Assert(apply.Name != "CSBuild.DefineFragment");
             apply.ApplyCount += 1;
             if ((apply.OnceFlag) && (apply.ApplyCount > 1))
                 return;
