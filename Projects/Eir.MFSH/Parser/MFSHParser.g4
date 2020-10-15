@@ -48,4 +48,3 @@ conditionValueStr: anyString ;
 anyString:  singleString | multiLineString;
 multiLineString:  MULTILINE_STRING ;
 singleString: STRING ;
-

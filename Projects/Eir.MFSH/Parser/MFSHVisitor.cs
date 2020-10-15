@@ -265,7 +265,14 @@ namespace Eir.MFSH.Parser
 
         public override object VisitUse(MFSHParser.UseContext context)
         {
-            this.Usings.Add(context.NAME().GetText());
+            const String fcn = "VisitUse";
+            this.TraceMsg(context, fcn);
+
+            String useName = context.NAME().GetText();
+            this.Usings.Add(useName);
+            UseBlock useBlock = new UseBlock("macro", useName);
+            this.PushState(useBlock);
+
             return null;
         }
 
@@ -386,6 +393,10 @@ namespace Eir.MFSH.Parser
             ParseBlock s = this.PopState();
             switch (s)
             {
+                case UseBlock useBlock:
+                    this.Usings.Remove(useBlock.Use);
+                    break;
+
                 case MacroBlock macroBlock:
 
                     if (this.mfsh.MacroMgr.TryAddItem(macroBlock.Item.Name, macroBlock.Item) == false)
