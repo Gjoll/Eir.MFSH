@@ -17,7 +17,8 @@ mfshExit: MFSHExit;
 
 mfshCmds: MFSH mfshCmd* ;
 
-mfshCmd: apply | description | end | if | elseIf | else | frag | incompatible | macro | parent | title | use ;
+mfshCmd: apply | description | end | if | elseIf | else | 
+         frag | incompatible | macro | parent | title | use;
 
 apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
