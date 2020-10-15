@@ -537,6 +537,7 @@ namespace Eir.MFSH
             if ((apply.OnceFlag) && (apply.ApplyCount > 1))
                 return;
 
+            //Debug.Assert(apply.Name.EndsWith("NodeProfile") == false);
             if (this.MacroMgr.TryGetItem(apply.Usings, apply.Name, out MIApplicable applicableItem) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";

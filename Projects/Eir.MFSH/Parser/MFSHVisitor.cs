@@ -250,6 +250,7 @@ namespace Eir.MFSH.Parser
             MIApply apply = new MIApply(this.SourceName, context.Start.Line);
             apply.Name = context.NAME().GetText();
 
+
             foreach (MFSHParser.AnyStringContext varContext in context.anyString())
             {
                 String s = (String)this.VisitChildren(varContext);
@@ -257,7 +258,7 @@ namespace Eir.MFSH.Parser
             }
 
             apply.OnceFlag = (context.ONCE() != null);
-            apply.Usings = this.Usings;
+            apply.Usings.AddRange(this.Usings);
 
             this.Current.Items.Add(apply);
             return null;
@@ -395,6 +396,7 @@ namespace Eir.MFSH.Parser
             {
                 case UseBlock useBlock:
                     this.Usings.Remove(useBlock.Use);
+                    this.Current.Items.AddRange(useBlock.Items);
                     break;
 
                 case MacroBlock macroBlock:
