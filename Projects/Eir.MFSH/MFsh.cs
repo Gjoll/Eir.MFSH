@@ -218,13 +218,11 @@ namespace Eir.MFSH
             String fragTempText = File.ReadAllText(this.FragTemplatePath);
             MIPreFsh fragTempCmds = this.Parser.ParseOne(fragTempText, this.FragTemplatePath);
 
-            Dictionary<String, FileData> fragFileData = new Dictionary<string, FileData>();
             foreach (MIFragment frag in this.MacroMgr.Fragments())
-                this.ProcessFragment(fragFileData, fragTempCmds, frag);
+                this.ProcessFragment(fragTempCmds, frag);
         }
 
-        void ProcessFragment(Dictionary<String, FileData> fragFileData,
-            MIPreFsh fragTempCmds,
+        void ProcessFragment(MIPreFsh fragTempCmds,
             MIFragment frag)
         {
             const String fcn = "ProcessFragment";
@@ -240,10 +238,16 @@ namespace Eir.MFSH
                 return;
             }
 
-            if (fragFileData.TryGetValue(relativePath, out FileData fd) == false)
+            if (relativePath.ToUpper().StartsWith(@"FRAGMENTS\"))
+                relativePath = relativePath.Substring(10);
+            String absolutePath = Path.Combine(this.FragDir, relativePath);
+            absolutePath = Path.GetFullPath(absolutePath);
+
+            if (this.FileItems.TryGetValue(absolutePath.ToUpper().Trim(), out FileData fd) == false)
             {
                 fd = new FileData();
-                this.FileItems.Add(relativePath, fd);
+                fd.AbsoluteOutputPath = absolutePath;
+                this.FileItems.Add(absolutePath.ToUpper().Trim(), fd);
             }
             else
             {
@@ -257,8 +261,6 @@ namespace Eir.MFSH
             local.Insert(0, this.GlobalVars);
             local.Insert(0, this.profileVariables);
             local.Insert(0, localVb);
-
-            fd.AbsoluteOutputPath = Path.Combine(this.FragDir, relativePath);
 
             this.skipRedirects = false;
             this.Process(fragTempCmds.Items, fd, local);
@@ -286,11 +288,13 @@ namespace Eir.MFSH
         {
             relativePath = variableBlocks.ReplaceText(relativePath);
             String absolutePath = Path.Combine(this.BaseOutputDir, relativePath);
-            if (this.FileItems.TryGetValue(absolutePath, out fd))
+            absolutePath = Path.GetFullPath(absolutePath);
+            if (this.FileItems.TryGetValue(absolutePath.ToUpper().Trim(), out fd))
                 return false;
+            //Debug.Assert(absolutePath.ToUpper().EndsWith("ABNORMALITYARCHITECTURALDISTORTION.APIBUILD") == false);
             fd = new FileData();
             fd.AbsoluteOutputPath = absolutePath;
-            this.FileItems.Add(fd.AbsoluteOutputPath, fd);
+            this.FileItems.Add(absolutePath.ToUpper().Trim(), fd);
             return true;
         }
 
@@ -532,12 +536,11 @@ namespace Eir.MFSH
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.AddRange(variableBlocks);
 
-            //Debug.Assert(apply.Name != "CSBuild.DefineFragment");
             apply.ApplyCount += 1;
             if ((apply.OnceFlag) && (apply.ApplyCount > 1))
                 return;
 
-            //Debug.Assert(apply.Name.EndsWith("NodeProfile") == false);
+            //Debug.Assert(apply.Name.EndsWith("DefineFragment") == false);
             if (this.MacroMgr.TryGetItem(apply.Usings, apply.Name, out MIApplicable applicableItem) == false)
             {
                 String fullMsg = $"{apply.SourceFile}, line {apply.LineNumber} Macro {apply.Name} not found.";
