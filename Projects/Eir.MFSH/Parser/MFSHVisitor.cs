@@ -462,10 +462,13 @@ namespace Eir.MFSH.Parser
                 lines[0] = lines[0].Substring(3);
             if (lines[^1].EndsWith("\"\"\""))
                 lines[^1] = lines[^1].Substring(0, lines[^1].Length - 3);
-            while (String.IsNullOrWhiteSpace(lines[0]))
+            while ((lines.Count > 0) && (String.IsNullOrWhiteSpace(lines[0])))
                 lines.RemoveAt(0);
-            while (String.IsNullOrWhiteSpace(lines[^1]))
+            while ((lines.Count > 0) && (String.IsNullOrWhiteSpace(lines[^1])))
                 lines.RemoveAt(lines.Count - 1);
+
+            if (lines.Count == 0)
+                return null;
 
             Int32 minMargin = Int32.MaxValue;
             for (Int32 i = 0; i < lines.Count; i++)

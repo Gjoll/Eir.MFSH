@@ -31,6 +31,8 @@ namespace Eir.MFSH
             foreach (String key in this.variables.Keys)
             {
                 String value = this.variables[key];
+                if (value == null)
+                    value = "";
                 text = this.ReplaceText(text, key, value);
             }
 
@@ -162,7 +164,7 @@ namespace Eir.MFSH
                     {
                         String[] byWhatLines = byWhat.Split('\n');
                         sb.AppendLine(byWhatLines[0]);
-                        for (Int32 j = 1; j < byWhatLines.Length-1; j++)
+                        for (Int32 j = 1; j < byWhatLines.Length - 1; j++)
                         {
                             String line = byWhatLines[j].TrimStart();
                             sb.Append(margin);
