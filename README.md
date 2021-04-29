@@ -1,6 +1,6 @@
 # MFSH
 
-FSH prepropcessor
+FSH (FHIR) prepropcessor
 
 ## Installation
 
