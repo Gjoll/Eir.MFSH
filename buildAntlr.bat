@@ -6,4 +6,5 @@ java -jar ..\..\..\Lib\antlr-4.8-complete.jar -o .\Antlr -package Eir.MFSH.Parse
 popd
 
 popd
+
 pause
