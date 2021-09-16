@@ -118,7 +118,7 @@ namespace Eir.MFSH
         public bool TryGetTextByRelativePath(String relativePath, out String text)
         {
             text = null;
-            String absolutePath = Path.Combine(this.BaseOutputDir, relativePath);
+            String absolutePath = Path.Combine(this.BaseOutputDir.ToUpper(), relativePath.ToUpper());
             if (this.FileItems.TryGetValue(absolutePath, out FileData fd) == false)
                 return false;
             text = fd.Text;
@@ -454,6 +454,9 @@ namespace Eir.MFSH
             }
 
             String expandedText = variableBlocks.ReplaceText(text.Line);
+            //if (expandedText.Contains("* bodySite 1..1"))
+            //    Debugger.Break();
+
             fd.Append(expandedText);
             ProcessHeader();
         }

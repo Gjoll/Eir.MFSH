@@ -205,6 +205,9 @@ namespace Eir.MFSH.Tests
             }
         }
 
+        //[Fact]
+        //public void MFshMultiLineQuoteLeftAdjust() => ParseTest("MFshMultiLineQuoteLeftAdjust", "MFshMultiLineQuoteLeftAdjust.results");
+
         [Fact]
         public void FragTest1()
         {
@@ -281,9 +284,6 @@ namespace Eir.MFSH.Tests
             CheckErrors(mfsh);
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("\n");
-            sb.Append("\n");
-            sb.Append("\n");
             sb.Append("  Line one\n");
             sb.Append("  Line one\n");
             sb.Append("  Line two\n");
