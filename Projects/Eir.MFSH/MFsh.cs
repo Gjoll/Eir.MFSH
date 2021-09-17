@@ -159,7 +159,7 @@ namespace Eir.MFSH
                 throw new Exception("Internal error. Path does not start with correct base path");
 
             this.ConversionInfo(this.GetType().Name, fcn, $"Loading file {path}");
-            String mfshText = File.ReadAllText(path);
+            String mfshText = ReadAllText(path);
 
             this.Parser.ParseOne(mfshText, relativePath);
         }
@@ -211,6 +211,28 @@ namespace Eir.MFSH
             this.ProcessFragments();
         }
 
+        /// <summary>
+        /// Read all text. Make sure that last char of file is a line break, adding one if necessary.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        String ReadAllText(String path)
+        {
+            const String fcn = "ReadAllText";
+
+            String retVal = File.ReadAllText(path);
+            // If last line if white space with no end of line, remove it.
+            while (
+                (retVal.Length > 0) &&
+                ((retVal[retVal.Length - 1] == ' ') || (retVal[retVal.Length - 1] == '\t'))
+            )
+                retVal = retVal.Substring(0, retVal.Length - 1);
+
+            if (retVal[retVal.Length - 1] != '\n')
+                retVal += "\r\n";
+            return retVal;
+        }
+
         void ProcessFragments()
         {
             const String fcn = "ProcessFragments";
@@ -230,7 +252,7 @@ namespace Eir.MFSH
                 return;
             }
 
-            String fragTempText = File.ReadAllText(this.FragTemplatePath);
+            String fragTempText = ReadAllText(this.FragTemplatePath);
             MIPreFsh fragTempCmds = this.Parser.ParseOne(fragTempText, this.FragTemplatePath);
 
             foreach (MIFragment frag in this.MacroMgr.Fragments())
