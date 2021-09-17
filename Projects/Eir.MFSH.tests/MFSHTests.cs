@@ -205,8 +205,8 @@ namespace Eir.MFSH.Tests
             }
         }
 
-        //[Fact]
-        //public void MFshMultiLineQuoteLeftAdjust() => ParseTest("MFshMultiLineQuoteLeftAdjust", "MFshMultiLineQuoteLeftAdjust.results");
+        [Fact]
+        public void MFshMultiLineQuoteLeftAdjust() => ParseTest("MFshMultiLineQuoteLeftAdjust", "MFshMultiLineQuoteLeftAdjust.results");
 
         [Fact]
         public void FragTest1()
