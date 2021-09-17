@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestFiles\FragmentTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\MFshMultiLineQuoteLeftAdjust.results">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -115,6 +115,21 @@ namespace Eir.MFSH
         /// </summary>
         /// <param name="relativeFileName"></param>
         /// <returns></returns>
+        public bool TryGetFragTextByRelativePath(String relativePath, out String text)
+        {
+            text = null;
+            String absolutePath = Path.Combine(this.FragDir.ToUpper(), relativePath.ToUpper());
+            if (this.FileItems.TryGetValue(absolutePath, out FileData fd) == false)
+                return false;
+            text = fd.Text;
+            return true;
+        }
+
+        /// <summary>
+        /// Only valid after Process() called.
+        /// </summary>
+        /// <param name="relativeFileName"></param>
+        /// <returns></returns>
         public bool TryGetTextByRelativePath(String relativePath, out String text)
         {
             text = null;

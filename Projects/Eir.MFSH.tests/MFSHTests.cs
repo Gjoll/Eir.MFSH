@@ -25,6 +25,31 @@ namespace Eir.MFSH.Tests
             return input;
         }
 
+        bool Compare(String actualResults, String shouldBe)
+        {
+            String[] actualArr = actualResults.Split('\n');
+            String[] shouldBeArr = shouldBe.Split('\n');
+
+            if (actualArr.Length != shouldBeArr.Length)
+            {
+                Trace.WriteLine($"Lengths differ: {actualArr.Length} {shouldBeArr}");
+                return false;
+            }
+
+            for (Int32 i = 0; i < actualArr.Length; i++)
+            {
+                String actualLine = actualArr[i].Replace("\r", "").Trim();
+                String shouldBeLine = actualArr[i].Replace("\r", "").Trim();
+                if (String.Compare(actualLine, shouldBeLine) != 0)
+                {
+                    Trace.WriteLine($"Expected '{shouldBeLine}'");
+                    Trace.WriteLine($"Actual   '{actualLine}'");
+                    return false;
+                }
+            }
+            return true;
+        }
+
         MFsh CreateMfsh()
         {
             MFsh mfsh = new MFsh();
@@ -47,7 +72,7 @@ namespace Eir.MFSH.Tests
             Assert.True(mfsh.Parser.Fsh.Count == 1);
             String shouldBe = this.GetCleanText(resultsFile);
             Assert.True(mfsh.TryGetTextByRelativePath($"{testFile}.fsh", out String actualResults));
-            Assert.True(String.Compare(actualResults, shouldBe) == 0);
+            Assert.True(Compare(actualResults, shouldBe));
         }
 
         void CheckErrors(MFsh mfsh)
@@ -206,7 +231,23 @@ namespace Eir.MFSH.Tests
         }
 
         [Fact]
-        public void MFshMultiLineQuoteLeftAdjust() => ParseTest("MFshMultiLineQuoteLeftAdjust", "MFshMultiLineQuoteLeftAdjust.results");
+        public void MFshMultiLineQuoteLeftAdjust()
+        {
+            //ParseTest("MFshMultiLineQuoteLeftAdjust", "MFshMultiLineQuoteLeftAdjust.results");
+
+            MFsh mfsh = CreateMfsh();
+            mfsh.FragDir = @"c:\Temp\FragDir";
+            mfsh.FragTemplatePath = TestFile("FragmentTemplate.txt");
+            mfsh.Load(TestFile("MFshMultiLineQuoteLeftAdjust.mfsh"));
+            CheckErrors(mfsh);
+            mfsh.Process();
+            CheckErrors(mfsh);
+
+            String shouldBe = this.GetCleanText("MFshMultiLineQuoteLeftAdjust.results");
+
+            Assert.True(mfsh.TryGetFragTextByRelativePath($"MFshMultiLineQuoteLeftAdjust.fsh", out String actualResults));
+            Assert.True(Compare(actualResults, shouldBe));
+        }
 
         [Fact]
         public void FragTest1()
