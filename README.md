@@ -255,15 +255,6 @@ The following variables are automatically defined.
 | %Title% | Fsh Title header value. This is the title of the current Profile or Extension|
 | %Url% | The name of the current Extension's or Profile's FHIR url. |
 
-
-
-
-
-
-
-
-
-
 #### #if
 
 Con ditionally include element.
