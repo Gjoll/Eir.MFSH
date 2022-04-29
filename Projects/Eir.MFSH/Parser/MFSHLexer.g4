@@ -20,6 +20,7 @@ FRAGMENT: 'Fragment' ;
 INCOMPATIBLE: 'incompatible';
 MACRO: 'macro';
 ONCE: 'once';
+SET: 'set';
 USE: 'use';
 
 PARENT : 'Parent' ;
@@ -39,6 +40,7 @@ LT: '<' ;
 GE: '>=' ;
 LE: '<=' ;
 EQ: '==' ;
+EQ2: '=' ;
 
 NAME: [A-Za-z][A-Za-z0-9.]+ | '$' [A-Za-z][A-Za-z0-9.]+ '$' | '%' [A-Za-z][A-Za-z0-9.]+ '%' ;
 NUMBER: [0-9.]+;

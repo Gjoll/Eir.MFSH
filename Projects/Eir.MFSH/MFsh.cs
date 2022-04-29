@@ -1,23 +1,10 @@
-﻿using Antlr4.Runtime;
+﻿using Eir.DevTools;
+using Eir.MFSH.Manager;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Antlr4.Runtime.Tree;
-using Eir.DevTools;
-using Eir.MFSH;
 using System.Text.RegularExpressions;
-using Eir.MFSH.Manager;
-using System.Xml.Serialization;
 
 namespace Eir.MFSH
 {
@@ -69,7 +56,7 @@ namespace Eir.MFSH
         /// <summary>
         /// Variables that are local to a profile (or a  file)
         /// </summary>
-        VariablesBlock profileVariables = new VariablesBlock();
+        public VariablesBlock ProfileVariables = new VariablesBlock();
 
         /// <summary>
         /// List of all variables block in action.
@@ -218,7 +205,7 @@ namespace Eir.MFSH
         /// <returns></returns>
         String ReadAllText(String path)
         {
-            const String fcn = "ReadAllText";
+            //const String fcn = "ReadAllText";
 
             String retVal = File.ReadAllText(path);
             // If last line if white space with no end of line, remove it.
@@ -296,7 +283,7 @@ namespace Eir.MFSH
             VariablesBlock localVb = StartNewFrag(frag, out String name);
             List<VariablesBlock> local = new List<VariablesBlock>();
             local.Insert(0, this.GlobalVars);
-            local.Insert(0, this.profileVariables);
+            local.Insert(0, this.ProfileVariables);
             local.Insert(0, localVb);
 
             this.skipRedirects = false;
@@ -342,17 +329,17 @@ namespace Eir.MFSH
                 Path.GetFileNameWithoutExtension(relativePath) + ".fsh"
             );
 
-            this.profileVariables = new VariablesBlock();
+            this.ProfileVariables = new VariablesBlock();
             {
                 String baseRPath = relativePath;
                 String baseName = Path.GetFileName(baseRPath);
                 String baseNameNoExtension = Path.GetFileNameWithoutExtension(baseRPath);
                 String baseDir = Path.GetDirectoryName(baseRPath);
 
-                this.profileVariables.Set("%BasePath%", baseRPath);
-                this.profileVariables.Set("%BaseDir%", baseDir);
-                this.profileVariables.Set("%BaseName%", baseNameNoExtension);
-                this.profileVariables.Set("%SavePath%", $"{relativeFshPath}");
+                this.ProfileVariables.Set("%BasePath%", baseRPath);
+                this.ProfileVariables.Set("%BaseDir%", baseDir);
+                this.ProfileVariables.Set("%BaseName%", baseNameNoExtension);
+                this.ProfileVariables.Set("%SavePath%", $"{relativeFshPath}");
             }
             return relativeFshPath;
         }
@@ -368,7 +355,7 @@ namespace Eir.MFSH
             String relativeFshPath = this.SetProfileVariables(fsh.RelativePath);
             this.variableBlocks = new List<VariablesBlock>();
             this.variableBlocks.Insert(0, this.GlobalVars);
-            this.variableBlocks.Insert(0, this.profileVariables);
+            this.variableBlocks.Insert(0, this.ProfileVariables);
 
             if (this.GetFileData(relativeFshPath, this.variableBlocks, out FileData fd) == false)
             {
@@ -379,7 +366,7 @@ namespace Eir.MFSH
             this.Process(fsh.Items, fd, this.variableBlocks);
 
             this.variableBlocks = null;
-            this.profileVariables = null;
+            this.ProfileVariables = null;
         }
 
         void Process(List<MIBase> inputItems,
@@ -404,6 +391,11 @@ namespace Eir.MFSH
 
                     case MIIncompatible incompatible:
                         this.ProcessIncompatible(incompatible, fd, variableBlocks);
+                        i += 1;
+                        break;
+
+                    case MISet set:
+                        this.ProcessSet(set, fd, variableBlocks);
                         i += 1;
                         break;
 
@@ -445,8 +437,8 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String vsName = m.Groups[1].Value;
-                        this.profileVariables.Set("%ValueSetId%", vsName);
-                        this.profileVariables.Set("%Id%", vsName);
+                        this.ProfileVariables.Set("%ValueSetId%", vsName);
+                        this.ProfileVariables.Set("%Id%", vsName);
                         return;
                     }
                 }
@@ -455,8 +447,8 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String csName = m.Groups[1].Value;
-                        this.profileVariables.Set("%CodeSystemId%", csName);
-                        this.profileVariables.Set("%Id%", csName);
+                        this.ProfileVariables.Set("%CodeSystemId%", csName);
+                        this.ProfileVariables.Set("%Id%", csName);
                         return;
                     }
                 }
@@ -474,8 +466,8 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String idName = m.Groups[1].Value;
-                        this.profileVariables.Set("%ProfileId%", idName);
-                        this.profileVariables.Set("%Id%", idName);
+                        this.ProfileVariables.Set("%ProfileId%", idName);
+                        this.ProfileVariables.Set("%Id%", idName);
                         return;
                     }
                 }
@@ -484,7 +476,7 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String title = m.Groups[1].Value;
-                        this.profileVariables.Set("%Title%", title);
+                        this.ProfileVariables.Set("%Title%", title);
                         return;
                     }
                 }
@@ -525,11 +517,11 @@ namespace Eir.MFSH
         void StartNewItem(String name)
         {
             // %Id% defaults to profile unless explicitly set (later)
-            this.profileVariables.Set("%ProfileId%", name);
-            this.profileVariables.Set("%Id%", name);
+            this.ProfileVariables.Set("%ProfileId%", name);
+            this.ProfileVariables.Set("%Id%", name);
 
             String profileUrl = $"{this.BaseUrl}/StructureDefinition/{name}";
-            this.profileVariables.Set("%Url%", profileUrl);
+            this.ProfileVariables.Set("%Url%", profileUrl);
 
             this.appliedMacros.Clear();
             this.incompatibleMacros.Clear();
@@ -726,8 +718,8 @@ namespace Eir.MFSH
         }
 
         void ProcessIncompatible(MIIncompatible incompatible,
-        FileData fd,
-        List<VariablesBlock> variableBlocks)
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
         {
             const String fcn = "ProcessIncompatible";
 
@@ -752,6 +744,16 @@ namespace Eir.MFSH
 
             if (this.incompatibleMacros.Add(incompatible.Name) == true)
                 return;
+        }
+
+        void ProcessSet(MISet set,
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
+        {
+            //const String fcn = "ProcessSet";
+
+            String expandedValue = variableBlocks.ReplaceText(set.Value);
+            this.ProfileVariables.Set(set.Name, expandedValue);
         }
 
         /// <summary>

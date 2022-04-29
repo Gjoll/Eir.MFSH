@@ -17,17 +17,18 @@ mfshExit: MFSHExit;
 
 mfshCmds: MFSH mfshCmd* ;
 
-mfshCmd: apply | description | end | if | elseIf | else | 
+mfshCmd: apply | description | end | if | elseIf | else | set |
          frag | incompatible | macro | parent | title | use;
 
 apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
+description: DESCRIPTION COLON anyString ;
+frag: FRAGMENT COLON ONCE? NAME ;
 incompatible: INCOMPATIBLE NAME ;
 macro: MACRO ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR ? redirect?;
 redirect: GT singleString ;
-frag: FRAGMENT COLON ONCE? NAME ;
 parent: PARENT COLON NAME ;
-description: DESCRIPTION COLON anyString ;
+set: SET NAME EQ2 anyString ;
 title: TITLE COLON anyString ;
 
 use: USE NAME ;

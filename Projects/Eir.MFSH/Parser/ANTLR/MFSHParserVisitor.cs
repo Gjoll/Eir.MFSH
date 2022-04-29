@@ -105,6 +105,18 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEnd([NotNull] MFSHParser.EndContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.description"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDescription([NotNull] MFSHParser.DescriptionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.frag"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFrag([NotNull] MFSHParser.FragContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.incompatible"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -123,23 +135,17 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitRedirect([NotNull] MFSHParser.RedirectContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.frag"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFrag([NotNull] MFSHParser.FragContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.parent"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitParent([NotNull] MFSHParser.ParentContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="MFSHParser.description"/>.
+	/// Visit a parse tree produced by <see cref="MFSHParser.set"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitDescription([NotNull] MFSHParser.DescriptionContext context);
+	Result VisitSet([NotNull] MFSHParser.SetContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.title"/>.
 	/// </summary>

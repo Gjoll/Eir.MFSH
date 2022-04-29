@@ -155,6 +155,22 @@ namespace Eir.MFSH.Parser
 
             return null;
         }
+
+        public override object VisitSet(MFSHParser.SetContext context)
+        {
+            String s = context.GetText();
+            String setName = context.NAME().GetText();
+            String setValue = (String)this.Visit(context.anyString());
+            MISet set = new MISet(this.SourceName, context.Start.Line)
+            {
+                Name = setName,
+                Value = setValue
+            };
+
+            this.Current.Items.Add(set);
+            return null;
+        }
+
         public override object VisitFrag(MFSHParser.FragContext context)
         {
             const String fcn = "VisitFrag";
