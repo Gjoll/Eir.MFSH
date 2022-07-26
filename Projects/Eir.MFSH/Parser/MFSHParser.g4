@@ -18,7 +18,7 @@ mfshExit: MFSHExit;
 mfshCmds: MFSH mfshCmd* ;
 
 mfshCmd: apply | description | end | if | elseIf | else | set |
-         frag | incompatible | macro | parent | title | use;
+         frag | incompatible | macro | parent | title | use | call;
 
 apply: APPLY ONCE? NAME OPAR ( anyString (COMMA anyString)*)? CPAR ;
 end: END ;
@@ -29,8 +29,9 @@ macro: MACRO ONCE? NAME OPAR (NAME (COMMA NAME)* )? CPAR ? redirect?;
 redirect: GT singleString ;
 parent: PARENT COLON NAME ;
 set: SET NAME EQ2 anyString ;
+call: CALL path nameString*;
 title: TITLE COLON anyString ;
-
+path: nameString ( FS nameString)* ;
 use: USE NAME ;
 
 if: IF condition ;
@@ -48,5 +49,6 @@ conditionValueNum: NAME | NUMBER ;
 conditionValueStr: anyString ;
 
 anyString:  singleString | multiLineString;
+nameString:  NAME | singleString | multiLineString;
 multiLineString:  MULTILINE_STRING ;
 singleString: STRING ;

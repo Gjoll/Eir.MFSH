@@ -147,11 +147,23 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitSet([NotNull] MFSHParser.SetContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.call"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCall([NotNull] MFSHParser.CallContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.title"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitTitle([NotNull] MFSHParser.TitleContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.path"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPath([NotNull] MFSHParser.PathContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.use"/>.
 	/// </summary>
@@ -236,6 +248,12 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAnyString([NotNull] MFSHParser.AnyStringContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.nameString"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNameString([NotNull] MFSHParser.NameStringContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.multiLineString"/>.
 	/// </summary>

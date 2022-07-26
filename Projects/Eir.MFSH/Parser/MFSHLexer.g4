@@ -13,6 +13,7 @@ CR: '\r' -> skip ;
 mode MFSHMode;
 
 APPLY: 'apply';
+CALL: 'call';
 END: 'end';
 IF: 'if' ;
 ELSE: 'else' ;
@@ -34,6 +35,7 @@ OPAR: '(' ;
 COMMA: ',' ;
 CPAR: ')' ;
 COLON: ':' ;
+FS: '/' ;
 
 GT: '>' ;
 LT: '<' ;

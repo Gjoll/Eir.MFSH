@@ -2,9 +2,11 @@
 using Eir.MFSH.Manager;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Eir.MFSH
 {
@@ -399,6 +401,11 @@ namespace Eir.MFSH
                         i += 1;
                         break;
 
+                    case MICall call:
+                        this.ProcessCall(call, fd, variableBlocks);
+                        i += 1;
+                        break;
+
                     case MIConditional conditional:
                         this.ProcessConditional(conditional, fd, variableBlocks);
                         i += 1;
@@ -744,6 +751,72 @@ namespace Eir.MFSH
 
             if (this.incompatibleMacros.Add(incompatible.Name) == true)
                 return;
+        }
+
+        void ProcessCall(MICall call,
+            FileData fd,
+            List<VariablesBlock> variableBlocks)
+        {
+            const String fcn = "ProcessCall";
+
+            String command = variableBlocks.ReplaceText(call.Name);
+            command = Path.Combine(BaseInputDir, command);
+            StringBuilder arguments = new StringBuilder();
+            foreach (String param in call.Parameters)
+                arguments.Append($"{variableBlocks.ReplaceText(param)} ");
+            try
+            {
+                async Task ReadOutAsync(Process p)
+                {
+                    do
+                    {
+                        String s = await p.StandardOutput.ReadLineAsync();
+                        s = s?.Replace("\r", "")?.Replace("\n", "")?.Trim();
+                        fd.Append(s);
+                    } while (p.StandardOutput.EndOfStream == false);
+                }
+
+                async Task ReadErrAsync(Process p)
+                {
+                    do
+                    {
+                        String s = await p.StandardError.ReadLineAsync();
+                        s = s?.Replace("\r", "")?.Replace("\n", "")?.Trim();
+                        if (String.IsNullOrEmpty(s) == false)
+                            ConversionError(ClassName, fcn, s);
+                    } while (p.StandardError.EndOfStream == false);
+                }
+
+                if (File.Exists(command) == false)
+                {
+                    ConversionError(ClassName, fcn, $"Command {command} not found.");
+                    return;
+                }
+ 
+                using (Process p = new Process())
+                {
+                    p.StartInfo.FileName = command;
+                    p.StartInfo.Arguments = arguments.ToString();
+                    p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.RedirectStandardError = true;
+                    p.StartInfo.WorkingDirectory = BaseInputDir;
+                    p.Start();
+                    Task errTask = ReadErrAsync(p);
+                    Task outTask = ReadOutAsync(p);
+                    p.WaitForExit(); // Waits here for the process to exit.    }
+                    errTask.Wait();
+                    outTask.Wait();
+                    if (p.ExitCode < 0)
+                        ConversionError(ClassName, fcn, $"Command {command} returned exit code {p.ExitCode}");
+                }
+            }
+            catch (Exception err)
+            {
+                String fullMsg = $"Error processing command {command}. '{err.Message}'";
+                this.ConversionError(ClassName, fcn, fullMsg);
+            }
         }
 
         void ProcessSet(MISet set,

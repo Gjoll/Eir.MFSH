@@ -156,6 +156,31 @@ namespace Eir.MFSH.Parser
             return null;
         }
 
+        public override object VisitCall(MFSHParser.CallContext context)
+        {
+            StringBuilder path = new();
+            MFSHParser.PathContext pathContext = context.path();
+            foreach (MFSHParser.NameStringContext pathItem in pathContext.nameString())
+            {
+                if (path.Length > 0)
+                    path.Append("\\");
+                path.Append(pathItem.GetText());
+            }
+
+            List<String> parameters = new();
+            for (Int32 i = 1; i < context.nameString().Length; i++)
+                parameters.Add(context.nameString(i).GetText());
+
+            MICall call = new MICall(this.SourceName, context.Start.Line)
+            {
+                Name = path.ToString(),
+                Parameters = parameters
+            };
+
+            this.Current.Items.Add(call);
+            return null;
+        }
+
         public override object VisitSet(MFSHParser.SetContext context)
         {
             String s = context.GetText();
