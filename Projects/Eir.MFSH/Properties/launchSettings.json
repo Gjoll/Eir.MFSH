@@ -3,7 +3,7 @@
     "FSHer": {
       "commandName": "Project",
       "commandLineArgs": "AutoMate\\mfsh.json",
-      "workingDirectory": "C:\\Development\\HL7\\BreastRadiologyProfilesV3\\Projects"
+      "workingDirectory": "C:\\Development\\HL7\\Fhir.BreastRadiologyProfiles\\Projects"
     }
   }
 }

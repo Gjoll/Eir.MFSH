@@ -44,7 +44,8 @@ LE: '<=' ;
 EQ: '==' ;
 EQ2: '=' ;
 
-NAME: [A-Za-z][A-Za-z0-9.]+ | '$' [A-Za-z][A-Za-z0-9.]+ '$' | '%' [A-Za-z][A-Za-z0-9.]+ '%' ;
+fragment NAMECHARS : [A-Za-z][A-Za-z0-9.\-]+;
+NAME: NAMECHARS | '$' NAMECHARS '$' | '%' NAMECHARS '%' ;
 NUMBER: [0-9.]+;
 CMNT: '//' ~('\r' | '\n')*				    -> skip;
 
