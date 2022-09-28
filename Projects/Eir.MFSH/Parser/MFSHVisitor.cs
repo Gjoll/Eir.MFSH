@@ -366,6 +366,28 @@ namespace Eir.MFSH.Parser
             return null;
         }
 
+        public override Object VisitConditionBoolIs([NotNull] MFSHParser.ConditionBoolIsContext context)
+        {
+            String value = context.NAME().GetText();
+            MIConditional.CStateBool retVal = new MIConditional.CStateBool()
+            {
+                Lhs = value,
+                Rhs = true
+            };
+            return retVal;
+        }
+
+        public override Object VisitConditionBoolIsNot([NotNull] MFSHParser.ConditionBoolIsNotContext context)
+        {
+            String value = context.NAME().GetText();
+            MIConditional.CStateBool retVal = new MIConditional.CStateBool()
+            {
+                Lhs = value,
+                Rhs = false
+            };
+            return retVal;
+        }
+
         public override Object VisitConditionStrEq([NotNull] MFSHParser.ConditionStrEqContext context)
         {
             MFSHParser.AnyStringContext[] values = context.anyString();

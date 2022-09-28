@@ -38,7 +38,11 @@ if: IF condition ;
 elseIf: ELSE IF condition ;
 else: ELSE ;
 
-condition: conditionStrEq | conditionNumEq | conditionNumLt | conditionNumLe | conditionNumGt | conditionNumGe ;
+condition: conditionStrEq | conditionBoolIs | conditionBoolIsNot |
+           conditionNumEq | conditionNumLt | conditionNumLe | 
+           conditionNumGt | conditionNumGe ;
+conditionBoolIs: NAME ;
+conditionBoolIsNot: BANG NAME ;
 conditionStrEq: anyString EQ anyString;
 conditionNumEq: conditionValueNum EQ conditionValueNum;
 conditionNumLt: conditionValueNum LT conditionValueNum ;

@@ -35,6 +35,7 @@ OPAR: '(' ;
 COMMA: ',' ;
 CPAR: ')' ;
 COLON: ':' ;
+BANG: '!' ;
 FS: '/' ;
 
 GT: '>' ;

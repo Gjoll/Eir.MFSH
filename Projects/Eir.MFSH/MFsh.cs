@@ -32,6 +32,7 @@ namespace Eir.MFSH
         public string BaseInputDir { get; set; }
         public string BaseOutputDir { get; set; }
 
+        public bool Frags { get; set; } = false;
         public string FragDir { get; set; }
         public String FragTemplatePath { get; set; }
 
@@ -197,7 +198,8 @@ namespace Eir.MFSH
             if (String.IsNullOrEmpty(this.BaseUrl) == true)
                 throw new Exception($"BaseUrl not set");
             this.ProcessPreFsh();
-            this.ProcessFragments();
+            if (this.Frags)
+                this.ProcessFragments();
         }
 
         /// <summary>

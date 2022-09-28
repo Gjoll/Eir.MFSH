@@ -195,6 +195,18 @@ public interface IMFSHParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCondition([NotNull] MFSHParser.ConditionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionBoolIs"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConditionBoolIs([NotNull] MFSHParser.ConditionBoolIsContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="MFSHParser.conditionBoolIsNot"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConditionBoolIsNot([NotNull] MFSHParser.ConditionBoolIsNotContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="MFSHParser.conditionStrEq"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

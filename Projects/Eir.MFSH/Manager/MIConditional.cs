@@ -37,6 +37,19 @@ namespace Eir.MFSH
             }
         }
 
+        public class CStateBool : CState
+        {
+            public bool Rhs;
+            public override bool IsTrue(List<VariablesBlock> variableBlocks)
+            {
+                String lhs = variableBlocks.ReplaceText(this.Lhs);
+                if (Boolean.TryParse(lhs, out bool lhsBool) == false)
+                    return false;
+
+                return Rhs == lhsBool;
+            }
+        }
+
         public abstract class CStateNum : CState
         {
             public String Rhs;
