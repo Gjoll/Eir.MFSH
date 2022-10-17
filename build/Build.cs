@@ -82,7 +82,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetNuGetPush(s => s
-                .SetSource("github")
+                .SetSource("gjoll")
                 .CombineWith(OutputDirectory.GlobFiles("*.nupkg"), (s, p) => s.SetTargetPath(p))
             );
         });
