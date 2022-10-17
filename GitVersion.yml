@@ -1,0 +1,8 @@
+﻿assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}'
+assembly-versioning-format: '{Major}.0.0'
+
+branches:
+  main:
+    increment: None
+
