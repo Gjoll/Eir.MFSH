@@ -9,7 +9,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType></RepositoryType>
     <RepositoryUrl>https://github.com/Gjoll/Eir.MFSH</RepositoryUrl>
-    <Version>2.17.0</Version>
+    <Version>2.18.0</Version>
     <PackageTags>Id</PackageTags>
   </PropertyGroup>
 
