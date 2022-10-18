@@ -26,7 +26,7 @@ class Build : NukeBuild
     //[GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
 
-    Project MainProject => Solution.GetProject("Eir.MFSH");
+    Project MainProject => Solution.GetProject("MFSH");
 
     AbsolutePath SourceDirectory => RootDirectory / "Projects";
     AbsolutePath TestsDirectory => RootDirectory / "tests";
