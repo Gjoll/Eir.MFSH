@@ -419,11 +419,13 @@ namespace Eir.MFSH
             }
         }
 
-        Regex rProfile = new Regex("^[ \t]*Profile[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
-        Regex rCodeSystem = new Regex("^[ \t]*CodeSystem[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
-        Regex rValueSet = new Regex("^[ \t]*ValueSet[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
-        Regex rExtension = new Regex("^[ \t]*Extension[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
-        Regex rId = new Regex("^[ \t]*Id[ \t\n]*:[ \t\n]*([A-Za-z0-9\\-]+)");
+        static Regex RegExpName(String name) =>
+            new Regex($"^[ \t]*{name}[ \t\n]*:[ \t\n]*([A-Za-z0-9_\\-]+)");
+        Regex rProfile = RegExpName("Profile");
+        Regex rCodeSystem = RegExpName("CodeSystem");
+        Regex rValueSet = RegExpName("ValueSet");
+        Regex rExtension = RegExpName("Extension");
+        Regex rId = RegExpName("Id");
         Regex rTitle = new Regex("^[ \t]*Title[ \t\n]*:[ \t\n]*\"([^\"]+)\"");
 
         void ProcessText(MIText text,
@@ -447,6 +449,7 @@ namespace Eir.MFSH
                     {
                         String vsName = m.Groups[1].Value;
                         this.ProfileVariables.Set("%ValueSetId%", vsName);
+                        this.ProfileVariables.Set("%ValueSetName%", vsName);
                         this.ProfileVariables.Set("%Id%", vsName);
                         return;
                     }
@@ -456,6 +459,7 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String csName = m.Groups[1].Value;
+                        this.ProfileVariables.Set("%CodeSystemName%", csName);
                         this.ProfileVariables.Set("%CodeSystemId%", csName);
                         this.ProfileVariables.Set("%Id%", csName);
                         return;
@@ -475,7 +479,12 @@ namespace Eir.MFSH
                     if (m.Success == true)
                     {
                         String idName = m.Groups[1].Value;
-                        this.ProfileVariables.Set("%ProfileId%", idName);
+                        if (this.ProfileVariables.IsSet("%ProfileId%"))
+                            this.ProfileVariables.Set("%ProfileId%", idName);
+                        if (this.ProfileVariables.IsSet("%CodeSystemId%"))
+                            this.ProfileVariables.Set("%CodeSystemId%", idName);
+                        if (this.ProfileVariables.IsSet("%ValueSetId%"))
+                            this.ProfileVariables.Set("%ValueSetId%", idName);
                         this.ProfileVariables.Set("%Id%", idName);
                         return;
                     }
@@ -794,7 +803,7 @@ namespace Eir.MFSH
                     ConversionError(ClassName, fcn, $"Command {command} not found.");
                     return;
                 }
- 
+
                 using (Process p = new Process())
                 {
                     p.StartInfo.FileName = command;
